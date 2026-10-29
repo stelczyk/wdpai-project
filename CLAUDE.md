@@ -31,3 +31,13 @@ panel kapitana, tworzenie wyprawy, profil, 404.
 - Najpierw krótki plan, potem implementacja.
 - Małe logiczne commity z czytelnymi komunikatami.
 - Po zmianach krótko wyjaśnij, jak działa kod – muszę go obronić na demo.
+
+## Git
+- Commity w stylu `prefiks: opis` (angielski, tryb rozkazujący): feat, fix, docs, refactor, test, chore.
+  Przykład: `feat: add registration form`. Jeden commit = jedna logiczna zmiana.
+- NIE dopisuj `Co-Authored-By` ani żadnej wzmianki o Claude w commitach i opisach PR.
+- Przed commitem: `git status`, konkretne pliki w `git add` (nie `git add .`), `git diff --cached`.
+- Praca na branchach (`feature/...`, `fix/...`, `docs/...`), do `main` przez Pull Request z opcją
+  „Create a merge commit”. NIE squashuj commitów, nie używaj `rebase -i` ze squash/fixup,
+  nigdy `push --force` na main. Rebase tylko na własnym, lokalnym branchu.
+- Nie commituj `.env` ani sekretów.
