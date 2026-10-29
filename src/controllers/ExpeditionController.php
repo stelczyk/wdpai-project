@@ -6,7 +6,7 @@ namespace App\Controller;
 
 final class ExpeditionController extends AppController
 {
-    // ponytail: dane na sztywno do czasu podłączenia bazy (repozytorium + serwis)
+    // TODO: dane na sztywno do czasu podłączenia bazy (repozytorium + serwis)
     public function index(): void
     {
         $this->render('expeditions', [
