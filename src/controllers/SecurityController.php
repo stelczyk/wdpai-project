@@ -10,6 +10,9 @@ final class SecurityController extends AppController
     {
         $this->render('login', [
             'pageTitle' => 'Logowanie',
+            'email' => '',
+            'errors' => [],
+            'formError' => null,
         ]);
     }
 }
