@@ -96,21 +96,34 @@ input:focus-visible {
   border-bottom: 1px solid var(--color-border);
 }
 
+/* Logo z prototypu: duże „DYST”, małe pomarańczowe „ANS” i kropka */
 .brand {
-  font-size: 1.25rem;
+  display: inline-flex;
+  align-items: baseline;
   font-weight: 700;
-  letter-spacing: -0.01em;
   text-decoration: none;
-  text-transform: uppercase;
   color: var(--color-text);
+}
+
+.brand-main {
+  font-size: 1.5rem;
+  line-height: 1;
+  letter-spacing: 0.05em;
+}
+
+.brand-accent {
+  padding-left: 0.125rem;
+  font-size: 0.875rem;
+  line-height: 1;
+  color: var(--color-accent);
 }
 
 .brand::after {
   content: "";
-  display: inline-block;
+  align-self: center;
   width: 0.375rem;
   height: 0.375rem;
-  margin-left: 0.375rem;
+  margin-left: var(--space-1);
   border-radius: 50%;
   background-color: var(--color-accent);
 }
