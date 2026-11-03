@@ -2,3 +2,4 @@
 .idea/
 /vendor/
 /docs/
+.claude/settings.local.json
