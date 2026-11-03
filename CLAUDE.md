@@ -12,7 +12,25 @@ panel kapitana, tworzenie wyprawy, profil, 404.
 - PostgreSQL: host `localhost:5433` (z kontenera php: `db:5432`); dane z `.env` (POSTGRES_*).
 - Mailpit (podgląd maili): http://localhost:8025, pgAdmin: http://localhost:5050
 - Skrypty .sql w docker/db/ są ładowane przy pierwszym starcie bazy (docker-entrypoint-initdb.d).
-- Stan repo: na razie tylko public/index.php i konfiguracja Dockera; src/, composer.json, docs/ do utworzenia.
+- Stan repo: szkielet MVC (Routing, kontrolery, widoki), ekran logowania z Figmy (sam UI, bez backendu).
+  Brak jeszcze: schematu SQL, repozytoriów, serwisów, sesji, tłumaczeń.
+
+## Design (Figma)
+- Plik: https://www.figma.com/design/7ml6FlTpVbcVdWCaPKE9VO/DYSTans-app (MCP `figma`).
+- Ekrany desktop/mobile: Logowanie, Wybór Wyprawy, Dashboard Wyprawy, Dodaj aktywność, Ranking, Panel Kapitana
+  (+ ramki Header i Footer). Przed implementacją ekranu pobierz jego ramkę z Figmy.
+- Ikony z Figmy pobieraj do public/img/<ekran>/, nigdy nie linkuj tymczasowych URL-i Figmy.
+- Pomijamy elementy spoza kryteriów (logowanie Google/Strava, GPX, eksport CSV) – mogą zostać jako sam UI.
+
+## Zadania (Jira, MCP `atlassian`)
+- Backlog: 8 epików w kolejności Fundamenty → Logowanie → Wybór wyprawy → Dashboard → Dodaj aktywność
+  → Ranking → Panel kapitana → Jakość i oddanie. Źródło importu: docs/zadania-jira.csv.
+- „Weź <KLUCZ>”: przeczytaj zadanie z Jiry, załóż branch `feature/<KLUCZ>-krotki-opis` od aktualnego main,
+  przenieś zadanie do „W toku”, przedstaw plan i poczekaj na akceptację, potem implementuj.
+- „Co dalej?”: pokaż pierwsze niezrobione zadanie z najwcześniejszego epiku (sprawdź zależności).
+- Po skończeniu: dodaj w Jirze komentarz – zmienione pliki, nowe trasy, co pokazać na demo.
+  Do „Gotowe” zadanie przechodzi po merge PR (nie przenoś ręcznie bez prośby).
+- Opis zadania mówi, które kryteria z docs/kryteria.md realizuje – sprawdź je przed oddaniem.
 
 ## Zasady projektu (zgodne z laboratoriami – NIE używać frameworków)
 - PHP 8.3, `declare(strict_types=1);` w każdym pliku, typy parametrów i zwracane.
@@ -29,6 +47,8 @@ panel kapitana, tworzenie wyprawy, profil, 404.
 
 ## Styl pracy
 - Najpierw krótki plan, potem implementacja.
+- Agenci w .claude/agents: database (schemat, SQL, ERD), backend (PHP), frontend (widoki, CSS, JS),
+  reviewer (ocena wg kryteriów, tylko czyta). Kolejność przy nowej funkcji: database → backend → frontend.
 - Małe logiczne commity z czytelnymi komunikatami.
 - Po zmianach krótko wyjaśnij, jak działa kod – muszę go obronić na demo.
 
