@@ -138,6 +138,40 @@ input:focus-visible {
   background-color: var(--color-accent);
 }
 
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+}
+
+/* Ikona zależy od aktualnego motywu: w ciemnym pokazujemy słońce, w jasnym księżyc */
+.theme-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.theme-toggle::before {
+  content: "☾";
+}
+
+[data-theme="dark"] .theme-toggle::before {
+  content: "☀";
+}
+
+.theme-toggle:hover {
+  background-color: var(--color-field-hover);
+}
+
 .site-nav ul {
   display: flex;
   flex-wrap: wrap;
