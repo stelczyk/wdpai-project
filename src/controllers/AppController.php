@@ -15,6 +15,12 @@ abstract class AppController
         }
 
         extract($variables, EXTR_SKIP);
+
+        // Widok renderujemy do bufora, a potem wstawiamy go do wspólnego layoutu jako $content.
+        ob_start();
         require $templatePath;
+        $content = ob_get_clean();
+
+        require dirname(__DIR__, 2) . '/public/views/layout.html.php';
     }
 }

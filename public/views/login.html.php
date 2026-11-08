@@ -1,4 +1,3 @@
-<?php require __DIR__ . '/partials/header.html.php'; ?>
 <main class="auth">
     <section class="auth-card" aria-labelledby="login-title">
         <div class="auth-body">
@@ -87,5 +86,3 @@
         </div>
     </section>
 </main>
-<script type="module" src="/js/login.js"></script>
-<?php require __DIR__ . '/partials/footer.html.php'; ?>

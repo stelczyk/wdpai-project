@@ -1,4 +1,3 @@
-<?php require __DIR__ . '/partials/header.html.php'; ?>
 <main>
     <h1>Panel kapitana – wyprawa nr <?= (int) $expeditionId ?></h1>
     <section aria-labelledby="pending-heading">
@@ -14,4 +13,3 @@
         </ul>
     </section>
 </main>
-<?php require __DIR__ . '/partials/footer.html.php'; ?>

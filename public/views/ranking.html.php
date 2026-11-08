@@ -1,4 +1,3 @@
-<?php require __DIR__ . '/partials/header.html.php'; ?>
 <main>
     <h1>Ranking wyprawy nr <?= (int) $expeditionId ?></h1>
     <table>
@@ -21,4 +20,3 @@
     </table>
     <a href="/expeditions/<?= (int) $expeditionId ?>">Wróć do wyprawy</a>
 </main>
-<?php require __DIR__ . '/partials/footer.html.php'; ?>

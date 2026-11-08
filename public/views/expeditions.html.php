@@ -1,4 +1,3 @@
-<?php require __DIR__ . '/partials/header.html.php'; ?>
 <main>
     <h1>Wyprawy</h1>
     <ul>
@@ -12,4 +11,3 @@
         <?php endforeach; ?>
     </ul>
 </main>
-<?php require __DIR__ . '/partials/footer.html.php'; ?>
