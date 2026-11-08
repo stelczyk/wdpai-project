@@ -1,4 +1,3 @@
-<?php require __DIR__ . '/partials/header.html.php'; ?>
 <main>
     <h1>Dodaj aktywność</h1>
     <form method="post" action="/activities" enctype="multipart/form-data">
@@ -25,4 +24,3 @@
         <button type="submit">Zapisz</button>
     </form>
 </main>
-<?php require __DIR__ . '/partials/footer.html.php'; ?>

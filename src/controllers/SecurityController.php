@@ -11,6 +11,7 @@ final class SecurityController extends AppController
         $this->render('login', [
             'pageTitle' => 'Logowanie',
             'showNav' => false,
+            'scripts' => ['/js/login.js'],
             'email' => '',
             'errors' => [],
             'formError' => null,

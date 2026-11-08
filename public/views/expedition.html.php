@@ -1,4 +1,3 @@
-<?php require __DIR__ . '/partials/header.html.php'; ?>
 <main>
     <h1>Wyprawa: <?= htmlspecialchars($routeName) ?></h1>
     <section aria-labelledby="progress-heading">
@@ -16,4 +15,3 @@
         </ul>
     </nav>
 </main>
-<?php require __DIR__ . '/partials/footer.html.php'; ?>
