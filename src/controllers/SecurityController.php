@@ -11,7 +11,20 @@ final class SecurityController extends AppController
         $this->render('login', [
             'pageTitle' => 'Logowanie',
             'showNav' => false,
-            'scripts' => ['/js/login.js'],
+            'scripts' => ['/js/auth.js'],
+            'email' => '',
+            'errors' => [],
+            'formError' => null,
+        ]);
+    }
+
+    public function register(): void
+    {
+        $this->render('register', [
+            'pageTitle' => 'Rejestracja',
+            'showNav' => false,
+            'scripts' => ['/js/auth.js'],
+            'name' => '',
             'email' => '',
             'errors' => [],
             'formError' => null,

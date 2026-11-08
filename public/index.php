@@ -15,6 +15,7 @@ $routing = new Routing();
 
 $routing->get('/', DefaultController::class, 'index');
 $routing->get('/login', SecurityController::class, 'login');
+$routing->get('/register', SecurityController::class, 'register');
 $routing->get('/expeditions', ExpeditionController::class, 'index');
 $routing->get('/expeditions/{id}', ExpeditionController::class, 'show');
 $routing->get('/expeditions/{id}/ranking', ExpeditionController::class, 'ranking');
