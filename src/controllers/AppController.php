@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Translator;
+
 abstract class AppController
 {
     protected function render(string $template, array $variables = []): void
@@ -13,6 +15,10 @@ abstract class AppController
         if (!is_file($templatePath)) {
             throw new \RuntimeException('View not found: ' . $template);
         }
+
+        // Dostępne w każdym widoku i w layoucie: $t('klucz') zwraca przetłumaczony i już zabezpieczony tekst.
+        $t = static fn (string $key, array $params = []): string => htmlspecialchars(Translator::get($key, $params));
+        $locale = Translator::locale();
 
         extract($variables, EXTR_SKIP);
 
