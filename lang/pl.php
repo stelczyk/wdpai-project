@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 return [
     // Wspólne: header, footer, motyw, język
-    'app.footer' => 'Dystans – projekt zaliczeniowy WDPAI',
+    'footer.brand' => 'Dystans Virtual Expeditions',
+    'footer.copyright' => 'Wszystkie prawa zastrzeżone © {year}',
+    'footer.terms' => 'Regulamin wypraw',
+    'footer.privacy' => 'Polityka prywatności',
+    'footer.support' => 'Wsparcie techniczne',
+    'footer.status' => 'Status satelitarny: Połączono',
     'nav.label' => 'Menu główne',
     'nav.expeditions' => 'Wyprawy',
     'nav.add_activity' => 'Dodaj aktywność',

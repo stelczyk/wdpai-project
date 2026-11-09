@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 return [
     // Shared: header, footer, theme, language
-    'app.footer' => 'Dystans – WDPAI university project',
+    'footer.brand' => 'Dystans Virtual Expeditions',
+    'footer.copyright' => 'All rights reserved © {year}',
+    'footer.terms' => 'Expedition terms',
+    'footer.privacy' => 'Privacy policy',
+    'footer.support' => 'Technical support',
+    'footer.status' => 'Satellite status: Connected',
     'nav.label' => 'Main menu',
     'nav.expeditions' => 'Expeditions',
     'nav.add_activity' => 'Add activity',

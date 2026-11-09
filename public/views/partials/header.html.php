@@ -1,25 +1,50 @@
-<header class="site-header">
-    <a class="brand" href="/" aria-label="Dystans">
-        <span class="brand-main" aria-hidden="true">DYST</span><span class="brand-accent" aria-hidden="true">ANS</span>
-    </a>
-    <div class="header-actions">
-        <?php if ($showNav ?? true): ?>
+<?php
+// Dwa warianty z Figmy: pełny header aplikacji oraz uproszczony na ekranach logowania/rejestracji ($showNav = false).
+$showNav ??= true;
+$currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+$navLinks = [
+    '/expeditions' => 'nav.expeditions',
+    '/activities/new' => 'nav.add_activity',
+];
+?>
+<header class="site-header<?= $showNav ? '' : ' site-header--auth' ?>">
+    <div class="site-header-inner">
+        <a class="brand" href="/" aria-label="Dystans">
+            <span class="brand-main" aria-hidden="true">DYST</span><span class="brand-accent" aria-hidden="true">ANS</span>
+        </a>
+
+        <?php if ($showNav): ?>
             <nav class="site-nav" aria-label="<?= $t('nav.label') ?>">
                 <ul>
-                    <li><a href="/expeditions"><?= $t('nav.expeditions') ?></a></li>
-                    <li><a href="/activities/new"><?= $t('nav.add_activity') ?></a></li>
-                    <li><a href="/login"><?= $t('nav.login') ?></a></li>
+                    <?php foreach ($navLinks as $href => $label): ?>
+                        <li>
+                            <a href="<?= $href ?>"<?= $currentPath === $href ? ' aria-current="page"' : '' ?>><?= $t($label) ?></a>
+                        </li>
+                    <?php endforeach; ?>
                 </ul>
             </nav>
         <?php endif; ?>
-        <nav class="lang-switch" aria-label="<?= $t('lang.label') ?>">
-            <?php foreach (\App\Translator::LOCALES as $code): ?>
-                <a href="?lang=<?= $code ?>" hreflang="<?= $code ?>" lang="<?= $code ?>"
-                   title="<?= $t('lang.' . $code) ?>"
-                   <?= $code === $locale ? 'aria-current="true"' : '' ?>><?= strtoupper($code) ?></a>
-            <?php endforeach; ?>
-        </nav>
-        <button class="theme-toggle" type="button" aria-label="<?= $t('theme.toggle') ?>" data-theme-toggle
-                data-label-light="<?= $t('theme.to_light') ?>" data-label-dark="<?= $t('theme.to_dark') ?>"></button>
+
+        <div class="header-actions">
+            <nav class="lang-switch" aria-label="<?= $t('lang.label') ?>">
+                <?php foreach (\App\Translator::LOCALES as $index => $code): ?>
+                    <?php if ($index > 0): ?><span class="lang-separator" aria-hidden="true">/</span><?php endif; ?>
+                    <a href="?lang=<?= $code ?>" hreflang="<?= $code ?>" lang="<?= $code ?>"
+                       title="<?= $t('lang.' . $code) ?>"
+                       <?= $code === $locale ? 'aria-current="true"' : '' ?>><?= strtoupper($code) ?></a>
+                <?php endforeach; ?>
+            </nav>
+
+            <button class="theme-toggle" type="button" aria-label="<?= $t('theme.toggle') ?>" data-theme-toggle
+                    data-label-light="<?= $t('theme.to_light') ?>" data-label-dark="<?= $t('theme.to_dark') ?>">
+                <span class="theme-icon" aria-hidden="true"></span>
+            </button>
+
+            <?php if ($showNav): ?>
+                <span class="header-divider" aria-hidden="true"></span>
+                <?php // ponytail: w miejscu avatara link do logowania – avatar i menu konta dojdą z sesją (zadanie 202). ?>
+                <a class="header-login" href="/login"><?= $t('nav.login') ?></a>
+            <?php endif; ?>
+        </div>
     </div>
 </header>
