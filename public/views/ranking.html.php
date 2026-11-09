@@ -1,11 +1,11 @@
 <main>
-    <h1>Ranking wyprawy nr <?= (int) $expeditionId ?></h1>
+    <h1><?= $t('ranking.heading', ['id' => $expeditionId]) ?></h1>
     <table>
         <thead>
             <tr>
-                <th scope="col">Miejsce</th>
-                <th scope="col">Uczestnik</th>
-                <th scope="col">Km</th>
+                <th scope="col"><?= $t('ranking.position') ?></th>
+                <th scope="col"><?= $t('ranking.participant') ?></th>
+                <th scope="col"><?= $t('ranking.km') ?></th>
             </tr>
         </thead>
         <tbody>
@@ -18,5 +18,5 @@
             <?php endforeach; ?>
         </tbody>
     </table>
-    <a href="/expeditions/<?= (int) $expeditionId ?>">Wróć do wyprawy</a>
+    <a href="/expeditions/<?= (int) $expeditionId ?>"><?= $t('ranking.back') ?></a>
 </main>

@@ -1,5 +1,5 @@
 <main>
-    <h1>Wyprawy</h1>
+    <h1><?= $t('expeditions.title') ?></h1>
     <ul>
         <?php foreach ($expeditions as $expedition): ?>
             <li>

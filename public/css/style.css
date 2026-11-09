@@ -145,6 +145,30 @@ input:focus-visible {
   gap: var(--space-2) var(--space-4);
 }
 
+/* Przełącznik języka PL / EN – aktywny język wyróżniony przez aria-current */
+.lang-switch {
+  display: flex;
+  gap: var(--space-1);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.lang-switch a {
+  padding: 0.25rem 0.375rem;
+  border-radius: var(--radius-sm);
+  color: var(--color-muted);
+  text-decoration: none;
+}
+
+.lang-switch a:hover {
+  color: var(--color-text);
+}
+
+.lang-switch a[aria-current="true"] {
+  color: var(--color-text);
+  background-color: var(--color-field);
+}
+
 /* Ikona zależy od aktualnego motywu: w ciemnym pokazujemy słońce, w jasnym księżyc */
 .theme-toggle {
   display: inline-grid;

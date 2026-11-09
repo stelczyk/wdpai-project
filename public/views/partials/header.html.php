@@ -4,14 +4,22 @@
     </a>
     <div class="header-actions">
         <?php if ($showNav ?? true): ?>
-            <nav class="site-nav" aria-label="Menu główne">
+            <nav class="site-nav" aria-label="<?= $t('nav.label') ?>">
                 <ul>
-                    <li><a href="/expeditions">Wyprawy</a></li>
-                    <li><a href="/activities/new">Dodaj aktywność</a></li>
-                    <li><a href="/login">Zaloguj</a></li>
+                    <li><a href="/expeditions"><?= $t('nav.expeditions') ?></a></li>
+                    <li><a href="/activities/new"><?= $t('nav.add_activity') ?></a></li>
+                    <li><a href="/login"><?= $t('nav.login') ?></a></li>
                 </ul>
             </nav>
         <?php endif; ?>
-        <button class="theme-toggle" type="button" aria-label="Przełącz motyw" data-theme-toggle></button>
+        <nav class="lang-switch" aria-label="<?= $t('lang.label') ?>">
+            <?php foreach (\App\Translator::LOCALES as $code): ?>
+                <a href="?lang=<?= $code ?>" hreflang="<?= $code ?>" lang="<?= $code ?>"
+                   title="<?= $t('lang.' . $code) ?>"
+                   <?= $code === $locale ? 'aria-current="true"' : '' ?>><?= strtoupper($code) ?></a>
+            <?php endforeach; ?>
+        </nav>
+        <button class="theme-toggle" type="button" aria-label="<?= $t('theme.toggle') ?>" data-theme-toggle
+                data-label-light="<?= $t('theme.to_light') ?>" data-label-dark="<?= $t('theme.to_dark') ?>"></button>
     </div>
 </header>

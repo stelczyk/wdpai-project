@@ -1,7 +1,7 @@
 <main>
-    <h1>Panel kapitana – wyprawa nr <?= (int) $expeditionId ?></h1>
+    <h1><?= $t('captain.heading', ['id' => $expeditionId]) ?></h1>
     <section aria-labelledby="pending-heading">
-        <h2 id="pending-heading">Aktywności do zatwierdzenia</h2>
+        <h2 id="pending-heading"><?= $t('captain.pending') ?></h2>
         <ul>
             <?php foreach ($pending as $activity): ?>
                 <li>

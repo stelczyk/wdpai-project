@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Translator;
+
 final class CaptainController extends AppController
 {
     public function panel(int $id): void
     {
         $this->render('captain-panel', [
-            'pageTitle' => 'Panel kapitana',
+            'pageTitle' => Translator::get('captain.title'),
             'expeditionId' => $id,
             'pending' => [
                 ['id' => 11, 'user' => 'Piotr', 'type' => 'Rower', 'km' => 42],
