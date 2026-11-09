@@ -602,3 +602,28 @@ input:focus-visible {
     border-radius: 0 0 var(--radius-md) var(--radius-md);
   }
 }
+
+/* Strona błędu (400/401/403/404/500) */
+.error-page {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+  padding: 4rem var(--space-3);
+  text-align: center;
+}
+
+.error-page h1,
+.error-page p {
+  margin: 0;
+}
+
+.error-code {
+  font-size: clamp(3rem, 12vw, 6rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-accent);
+}
+
+.error-page a {
+  color: var(--color-link);
+}
