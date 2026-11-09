@@ -19,7 +19,6 @@
   --color-divider: #d8c2ba;
   --color-placeholder: #8b7f7b;
   --color-ghost: rgb(0 0 0 / 0.03);
-  --color-online: #009ae1;
 
   --space-1: 0.5rem;
   --space-2: 0.75rem;
@@ -92,7 +91,7 @@ input:focus-visible {
   outline-offset: 3px;
 }
 
-/* Header i footer (Figma: ramki Header i Footer, desktop 1280 px, treść max 80rem) */
+/* Header i footer (Figma: ramki Header i Footer) – treść rozciągnięta do brzegów okna */
 .site-header {
   position: sticky;
   top: 0;
@@ -107,8 +106,6 @@ input:focus-visible {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  max-width: 80rem;
-  margin-inline: auto;
   padding-inline: var(--space-3);
 }
 
@@ -301,8 +298,7 @@ input:focus-visible {
   color: var(--color-text);
 }
 
-.footer-dot,
-.footer-status {
+.footer-dot {
   color: var(--color-border);
 }
 
@@ -318,22 +314,6 @@ input:focus-visible {
   margin: 0;
   padding: 0;
   list-style: none;
-}
-
-.footer-status {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-}
-
-.status-dot {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
-  background-color: var(--color-online);
 }
 
 /* Logowanie: formularz na całą szerokość, od 48rem karta wyśrodkowana */

@@ -11,9 +11,5 @@
             <li><?= $t('footer.privacy') ?></li>
             <li><?= $t('footer.support') ?></li>
         </ul>
-        <p class="footer-status">
-            <span class="status-dot" aria-hidden="true"></span>
-            <?= $t('footer.status') ?>
-        </p>
     </div>
 </footer>

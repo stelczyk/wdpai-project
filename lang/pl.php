@@ -9,7 +9,6 @@ return [
     'footer.terms' => 'Regulamin wypraw',
     'footer.privacy' => 'Polityka prywatności',
     'footer.support' => 'Wsparcie techniczne',
-    'footer.status' => 'Status satelitarny: Połączono',
     'nav.label' => 'Menu główne',
     'nav.expeditions' => 'Wyprawy',
     'nav.add_activity' => 'Dodaj aktywność',

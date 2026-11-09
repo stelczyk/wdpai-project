@@ -9,7 +9,6 @@ return [
     'footer.terms' => 'Expedition terms',
     'footer.privacy' => 'Privacy policy',
     'footer.support' => 'Technical support',
-    'footer.status' => 'Satellite status: Connected',
     'nav.label' => 'Main menu',
     'nav.expeditions' => 'Expeditions',
     'nav.add_activity' => 'Add activity',
