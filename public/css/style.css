@@ -139,19 +139,9 @@ input:focus-visible {
   color: var(--color-accent);
 }
 
-/* Wariant z ekranu logowania: logo z kropką, bez nawigacji i konta */
+/* Wariant z ekranu logowania: bez nawigacji i konta, header nie jest przyklejony */
 .site-header--auth {
   position: static;
-}
-
-.site-header--auth .brand::after {
-  content: "";
-  align-self: center;
-  width: 0.375rem;
-  height: 0.375rem;
-  margin-left: var(--space-1);
-  border-radius: 50%;
-  background-color: var(--color-accent);
 }
 
 .site-nav {
