@@ -7,7 +7,8 @@ document.querySelectorAll('[data-password-toggle]').forEach((toggle) => {
 
         input.type = visible ? 'password' : 'text';
         toggle.setAttribute('aria-pressed', String(!visible));
-        toggle.setAttribute('aria-label', visible ? 'Pokaż hasło' : 'Ukryj hasło');
+        // Teksty w aktualnym języku przychodzą z atrybutów data-* ustawionych przez widok.
+        toggle.setAttribute('aria-label', visible ? toggle.dataset.labelShow : toggle.dataset.labelHide);
     });
 });
 

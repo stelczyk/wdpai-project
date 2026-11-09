@@ -1,3 +1,3 @@
 <footer class="site-footer">
-    <p>Dystans – projekt zaliczeniowy WDPAI</p>
+    <p><?= $t('app.footer') ?></p>
 </footer>

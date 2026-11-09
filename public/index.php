@@ -9,8 +9,12 @@ use App\Controller\ExpeditionController;
 use App\Controller\SecurityController;
 use App\HttpException;
 use App\Routing;
+use App\Translator;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
+
+// Język ustalamy przed routingiem, żeby także strony błędów były w wybranym języku.
+Translator::initFromRequest();
 
 $routing = new Routing();
 

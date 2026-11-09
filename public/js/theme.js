@@ -4,7 +4,8 @@ const root = document.documentElement;
 
 function updateToggleLabel() {
     const isDark = root.dataset.theme === 'dark';
-    themeToggle.setAttribute('aria-label', isDark ? 'Włącz jasny motyw' : 'Włącz ciemny motyw');
+    // Teksty w aktualnym języku przychodzą z atrybutów data-* ustawionych przez widok.
+    themeToggle.setAttribute('aria-label', isDark ? themeToggle.dataset.labelLight : themeToggle.dataset.labelDark);
 }
 
 themeToggle?.addEventListener('click', () => {
