@@ -8,6 +8,9 @@ use App\Controller\AppController;
 
 final class Routing
 {
+    // Największa wartość typu INT w PostgreSQL – większe id i tak nie istnieją w bazie.
+    private const MAX_ID = 2147483647;
+
     private array $routes = [];
 
     public function get(string $path, string $controller, string $action): void
@@ -34,14 +37,16 @@ final class Routing
         ];
     }
 
-    // Zamienia fragmenty {nazwa} na nazwany parametr przyjmujący tylko cyfry.
+    // Zamienia fragmenty {nazwa} na nazwany parametr. Przyjmuje dowolny fragment adresu,
+    // żeby /expeditions/abc trafiło do walidacji (400), a nie przepadło jako nieznana trasa (404).
+    // Trasy statyczne (np. /expeditions/new) trzeba więc rejestrować przed trasą z {id}.
     private function createPattern(string $path): string
     {
         $parts = explode('/', $path);
 
         foreach ($parts as &$part) {
             if (str_starts_with($part, '{') && str_ends_with($part, '}')) {
-                $part = '(?P<' . trim($part, '{}') . '>\d+)';
+                $part = '(?P<' . trim($part, '{}') . '>[^/]+)';
                 continue;
             }
 
@@ -52,7 +57,10 @@ final class Routing
         return '~^' . implode('/', $parts) . '$~';
     }
 
-    public function dispatch(string $method, string $uri): bool
+    /**
+     * @throws HttpException 400 przy nieprawidłowym id, 404 gdy żadna trasa nie pasuje.
+     */
+    public function dispatch(string $method, string $uri): void
     {
         $path = parse_url($uri, PHP_URL_PATH) ?: '/';
 
@@ -71,10 +79,7 @@ final class Routing
                 ARRAY_FILTER_USE_KEY,
             );
 
-            $parameters = array_map(
-                static fn (string $value): int => (int) $value,
-                $parameters,
-            );
+            $parameters = array_map($this->parseId(...), $parameters);
 
             $controllerClass = $route['controller'];
             $controller = new $controllerClass();
@@ -85,9 +90,19 @@ final class Routing
 
             $controller->{$route['action']}(...$parameters);
 
-            return true;
+            return;
         }
 
-        return false;
+        throw new HttpException(404, 'Route not found: ' . $method . ' ' . $path);
+    }
+
+    // Id musi być dodatnią liczbą całkowitą bez zer wiodących, mieszczącą się w INT bazy.
+    private function parseId(string $value): int
+    {
+        if (preg_match('/^[1-9]\d{0,9}$/', $value) !== 1 || (int) $value > self::MAX_ID) {
+            throw new HttpException(400, 'Invalid id: ' . $value);
+        }
+
+        return (int) $value;
     }
 }
