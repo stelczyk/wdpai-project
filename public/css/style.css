@@ -246,11 +246,16 @@ input:focus-visible {
   background-color: var(--color-divider);
 }
 
-.header-login {
+.header-login,
+.header-user {
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--color-link);
   text-decoration: none;
+}
+
+.header-user {
+  color: var(--color-text);
 }
 
 .site-footer {

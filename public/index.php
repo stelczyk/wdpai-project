@@ -9,17 +9,20 @@ use App\Controller\ExpeditionController;
 use App\Controller\SecurityController;
 use App\HttpException;
 use App\Routing;
+use App\Session;
 use App\Translator;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 // Język ustalamy przed routingiem, żeby także strony błędów były w wybranym języku.
 Translator::initFromRequest();
+Session::start();
 
 $routing = new Routing();
 
 $routing->get('/', DefaultController::class, 'index');
 $routing->get('/login', SecurityController::class, 'login');
+$routing->post('/login', SecurityController::class, 'authenticate');
 $routing->get('/register', SecurityController::class, 'register');
 $routing->get('/expeditions', ExpeditionController::class, 'index');
 $routing->get('/expeditions/{id}', ExpeditionController::class, 'show');

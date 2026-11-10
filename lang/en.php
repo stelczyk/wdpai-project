@@ -77,6 +77,11 @@ return [
     'login.strava' => 'Continue with Strava',
     'login.no_account' => 'Don\'t have an expedition profile yet?',
     'login.register_link' => 'Create a new team account',
+    'login.invalid_credentials' => 'Invalid email or password.',
+
+    // Form validation
+    'validation.required' => 'This field is required.',
+    'validation.email' => 'Enter a valid email address.',
 
     // Sign up
     'register.title' => 'Sign up',

@@ -77,6 +77,11 @@ return [
     'login.strava' => 'Kontynuuj ze Strava',
     'login.no_account' => 'Nie masz jeszcze profilu wyprawy?',
     'login.register_link' => 'Utwórz nowe konto drużynowe',
+    'login.invalid_credentials' => 'Nieprawidłowy e-mail lub hasło.',
+
+    // Walidacja formularzy
+    'validation.required' => 'To pole jest wymagane.',
+    'validation.email' => 'Podaj poprawny adres e-mail.',
 
     // Rejestracja
     'register.title' => 'Rejestracja',
