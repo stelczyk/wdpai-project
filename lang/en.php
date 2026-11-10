@@ -13,6 +13,7 @@ return [
     'nav.expeditions' => 'Expeditions',
     'nav.add_activity' => 'Add activity',
     'nav.login' => 'Log in',
+    'nav.logout' => 'Log out',
     'theme.toggle' => 'Toggle theme',
     'theme.to_light' => 'Switch to light theme',
     'theme.to_dark' => 'Switch to dark theme',

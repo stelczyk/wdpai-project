@@ -13,6 +13,7 @@ return [
     'nav.expeditions' => 'Wyprawy',
     'nav.add_activity' => 'Dodaj aktywność',
     'nav.login' => 'Zaloguj',
+    'nav.logout' => 'Wyloguj',
     'theme.toggle' => 'Przełącz motyw',
     'theme.to_light' => 'Włącz jasny motyw',
     'theme.to_dark' => 'Włącz ciemny motyw',

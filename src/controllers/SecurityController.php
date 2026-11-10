@@ -48,6 +48,13 @@ final class SecurityController extends AppController
         $this->redirect(self::AFTER_LOGIN);
     }
 
+    // Tylko POST: zwykły link (GET) mógłby zostać wywołany np. przez obrazek na obcej stronie.
+    public function logout(): void
+    {
+        (new AuthService())->logout();
+        $this->redirect('/login');
+    }
+
     public function register(): void
     {
         $this->render('register', [

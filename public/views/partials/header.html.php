@@ -43,8 +43,11 @@ $navLinks = [
             <?php if ($showNav): ?>
                 <span class="header-divider" aria-hidden="true"></span>
                 <?php if ($currentUser !== null): ?>
-                    <?php // ponytail: samo imię w miejscu avatara z Figmy – menu konta z wylogowaniem w zadaniu 203. ?>
+                    <?php // ponytail: imię + przycisk zamiast avatara z rozwijanym menu z Figmy – menu, gdy dojdzie profil. ?>
                     <span class="header-user"><?= htmlspecialchars($currentUser->name) ?></span>
+                    <form class="logout-form" method="post" action="/logout">
+                        <button class="header-logout" type="submit"><?= $t('nav.logout') ?></button>
+                    </form>
                 <?php else: ?>
                     <a class="header-login" href="/login"><?= $t('nav.login') ?></a>
                 <?php endif; ?>
