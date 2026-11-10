@@ -42,8 +42,12 @@ $navLinks = [
 
             <?php if ($showNav): ?>
                 <span class="header-divider" aria-hidden="true"></span>
-                <?php // ponytail: w miejscu avatara link do logowania – avatar i menu konta dojdą z sesją (zadanie 202). ?>
-                <a class="header-login" href="/login"><?= $t('nav.login') ?></a>
+                <?php if ($currentUser !== null): ?>
+                    <?php // ponytail: samo imię w miejscu avatara z Figmy – menu konta z wylogowaniem w zadaniu 203. ?>
+                    <span class="header-user"><?= htmlspecialchars($currentUser->name) ?></span>
+                <?php else: ?>
+                    <a class="header-login" href="/login"><?= $t('nav.login') ?></a>
+                <?php endif; ?>
             <?php endif; ?>
         </div>
     </div>

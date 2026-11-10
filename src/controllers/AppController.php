@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\AuthService;
 use App\Translator;
 
 abstract class AppController
@@ -19,6 +20,7 @@ abstract class AppController
         // Dostępne w każdym widoku i w layoucie: $t('klucz') zwraca przetłumaczony i już zabezpieczony tekst.
         $t = static fn (string $key, array $params = []): string => htmlspecialchars(Translator::get($key, $params));
         $locale = Translator::locale();
+        $currentUser = (new AuthService())->currentUser();
 
         extract($variables, EXTR_SKIP);
 
@@ -34,5 +36,12 @@ abstract class AppController
         $content = ob_get_clean();
 
         require dirname(__DIR__, 2) . '/public/views/layout.html.php';
+    }
+
+    // 303 See Other: po POST przeglądarka wykona GET pod nowy adres (odświeżenie nie wyśle formularza ponownie).
+    protected function redirect(string $path): never
+    {
+        header('Location: ' . $path, true, 303);
+        exit;
     }
 }
