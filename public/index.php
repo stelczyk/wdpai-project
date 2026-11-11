@@ -34,6 +34,11 @@ $routing->get('/captain/{id}', CaptainController::class, 'panel');
 // Jedno miejsce obsługi błędów: kontrolowane błędy HTTP dostają swój status,
 // a każdy inny wyjątek kończy się 500 bez pokazywania szczegółów użytkownikowi.
 try {
+    // CSRF sprawdzany centralnie dla każdego POST – nowa trasa nie może przypadkiem zostać bez ochrony.
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && !Session::isValidCsrfToken($_POST['_csrf'] ?? null)) {
+        throw new HttpException(403, 'Invalid CSRF token');
+    }
+
     $routing->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
 } catch (HttpException $exception) {
     http_response_code($exception->getStatusCode());

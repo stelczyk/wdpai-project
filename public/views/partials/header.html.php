@@ -47,6 +47,7 @@ $navLinks = [
                     <?php // ponytail: imię + przycisk zamiast avatara z rozwijanym menu z Figmy – menu, gdy dojdzie profil. ?>
                     <span class="header-user"><?= htmlspecialchars($currentUser->name) ?></span>
                     <form class="logout-form" method="post" action="/logout">
+                        <?= $csrfField ?>
                         <button class="header-logout" type="submit"><?= $t('nav.logout') ?></button>
                     </form>
                 <?php else: ?>
