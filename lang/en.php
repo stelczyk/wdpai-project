@@ -105,6 +105,7 @@ return [
     'error.400.message' => 'The address contains invalid data, e.g. a malformed identifier.',
     'error.401.title' => 'Sign-in required',
     'error.401.message' => 'Sign in to see this page.',
+    'error.401.action' => 'Sign in',
     'error.403.title' => 'Access denied',
     'error.403.message' => 'You do not have permission to view this page.',
     'error.404.title' => 'Page not found',

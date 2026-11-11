@@ -13,7 +13,8 @@ $navLinks = [
             <span class="brand-main" aria-hidden="true">DYST</span><span class="brand-accent" aria-hidden="true">ANS</span>
         </a>
 
-        <?php if ($showNav): ?>
+        <?php // Gość nie widzi linków do stron dla zalogowanych – to tylko wygoda, dostępu pilnuje backend. ?>
+        <?php if ($showNav && $currentUser !== null): ?>
             <nav class="site-nav" aria-label="<?= $t('nav.label') ?>">
                 <ul>
                     <?php foreach ($navLinks as $href => $label): ?>
