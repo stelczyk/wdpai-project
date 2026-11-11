@@ -18,4 +18,10 @@ final readonly class User
         public string $passwordHash,
     ) {
     }
+
+    // ADMIN ma wgląd w każdą wyprawę i każdy panel kapitana bez członkostwa.
+    public function isAdmin(): bool
+    {
+        return $this->role === 'ADMIN';
+    }
 }
