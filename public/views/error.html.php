@@ -2,5 +2,9 @@
     <p class="error-code"><?= (int) $statusCode ?></p>
     <h1><?= htmlspecialchars($pageTitle) ?></h1>
     <p><?= htmlspecialchars($message) ?></p>
-    <a href="/"><?= $t('error.back') ?></a>
+    <?php if ($statusCode === 401): ?>
+        <a href="/login"><?= $t('error.401.action') ?></a>
+    <?php else: ?>
+        <a href="/"><?= $t('error.back') ?></a>
+    <?php endif; ?>
 </main>

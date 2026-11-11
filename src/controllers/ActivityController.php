@@ -10,6 +10,8 @@ final class ActivityController extends AppController
 {
     public function create(): void
     {
+        $this->requireLogin();
+
         $this->render('activity-new', [
             'pageTitle' => Translator::get('activity.title'),
             'activityTypes' => ['Bieg', 'Rower', 'Pływanie', 'Siłownia'],

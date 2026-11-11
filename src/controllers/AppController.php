@@ -4,11 +4,53 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\HttpException;
+use App\Model\User;
+use App\Repository\ExpeditionRepository;
 use App\Service\AuthService;
 use App\Translator;
 
 abstract class AppController
 {
+    // Kontrola dostępu: wywoływana na początku akcji, zanim kontroler cokolwiek odczyta lub zmieni.
+    // Ukrycie linku w widoku to tylko wygoda – o dostępie decydują te metody.
+
+    /** @throws HttpException 401, gdy nikt nie jest zalogowany */
+    protected function requireLogin(): User
+    {
+        return (new AuthService())->currentUser() ?? throw new HttpException(401);
+    }
+
+    /** @throws HttpException 401 / 404 (brak wyprawy) / 403 (nie należy do wyprawy) */
+    protected function requireExpeditionMember(int $expeditionId): User
+    {
+        $user = $this->requireLogin();
+        $expeditions = new ExpeditionRepository();
+
+        if ($expeditions->findCaptainId($expeditionId) === null) {
+            throw new HttpException(404);
+        }
+
+        if (!$user->isAdmin() && !$expeditions->isMember($expeditionId, $user->id)) {
+            throw new HttpException(403);
+        }
+
+        return $user;
+    }
+
+    /** @throws HttpException 401 / 404 (brak wyprawy) / 403 (nie jest kapitanem tej wyprawy) */
+    protected function requireExpeditionCaptain(int $expeditionId): User
+    {
+        $user = $this->requireLogin();
+        $captainId = (new ExpeditionRepository())->findCaptainId($expeditionId) ?? throw new HttpException(404);
+
+        if (!$user->isAdmin() && $captainId !== $user->id) {
+            throw new HttpException(403);
+        }
+
+        return $user;
+    }
+
     protected function render(string $template, array $variables = []): void
     {
         $templatePath = dirname(__DIR__, 2) . '/public/views/' . $template . '.html.php';

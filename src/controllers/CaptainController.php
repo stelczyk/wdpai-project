@@ -10,6 +10,8 @@ final class CaptainController extends AppController
 {
     public function panel(int $id): void
     {
+        $this->requireExpeditionCaptain($id);
+
         $this->render('captain-panel', [
             'pageTitle' => Translator::get('captain.title'),
             'expeditionId' => $id,

@@ -105,6 +105,7 @@ return [
     'error.400.message' => 'Adres zawiera nieprawidłowe dane, np. błędny identyfikator.',
     'error.401.title' => 'Wymagane logowanie',
     'error.401.message' => 'Zaloguj się, aby zobaczyć tę stronę.',
+    'error.401.action' => 'Zaloguj się',
     'error.403.title' => 'Brak dostępu',
     'error.403.message' => 'Nie masz uprawnień do tej strony.',
     'error.404.title' => 'Nie znaleziono strony',
