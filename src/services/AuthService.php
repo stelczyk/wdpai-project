@@ -36,6 +36,12 @@ final class AuthService
         self::$currentUser = $user;
     }
 
+    public function logout(): void
+    {
+        Session::destroy();
+        self::$currentUser = null;
+    }
+
     // Tożsamość odtwarzana z sesji przy każdym żądaniu – dane i rola zawsze świeże z bazy.
     public function currentUser(): ?User
     {
