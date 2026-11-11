@@ -20,6 +20,7 @@
             <?php endif; ?>
 
             <form class="form" method="post" action="/register">
+                <?= $csrfField ?>
                 <div class="field">
                     <label for="name"><?= $t('register.name') ?> <span class="required" aria-hidden="true">*</span></label>
                     <div class="input-wrap">

@@ -1,6 +1,7 @@
 <main>
     <h1><?= $t('activity.title') ?></h1>
     <form method="post" action="/activities" enctype="multipart/form-data">
+        <?= $csrfField ?>
         <p>
             <label for="type"><?= $t('activity.type') ?></label>
             <select id="type" name="type" required>

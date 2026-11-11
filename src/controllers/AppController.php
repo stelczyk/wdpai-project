@@ -8,6 +8,7 @@ use App\HttpException;
 use App\Model\User;
 use App\Repository\ExpeditionRepository;
 use App\Service\AuthService;
+use App\Session;
 use App\Translator;
 
 abstract class AppController
@@ -63,6 +64,8 @@ abstract class AppController
         $t = static fn (string $key, array $params = []): string => htmlspecialchars(Translator::get($key, $params));
         $locale = Translator::locale();
         $currentUser = (new AuthService())->currentUser();
+        // Gotowe ukryte pole z tokenem CSRF – widok wstawia je w każdy formularz POST.
+        $csrfField = '<input type="hidden" name="_csrf" value="' . htmlspecialchars(Session::csrfToken()) . '">';
 
         extract($variables, EXTR_SKIP);
 

@@ -11,6 +11,7 @@ namespace App;
 final class Session
 {
     private const USER_ID = 'user_id';
+    private const CSRF_TOKEN = 'csrf_token';
 
     public static function start(): void
     {
@@ -41,6 +42,21 @@ final class Session
         $id = $_SESSION[self::USER_ID] ?? null;
 
         return is_int($id) ? $id : null;
+    }
+
+    // Token CSRF: losowy, jeden na sesję. Obca strona może wysłać formularz do naszej aplikacji
+    // z cookie użytkownika, ale nie zna tego tokenu, więc żądanie zostanie odrzucone.
+    public static function csrfToken(): string
+    {
+        return $_SESSION[self::CSRF_TOKEN] ??= bin2hex(random_bytes(32));
+    }
+
+    // hash_equals porównuje w stałym czasie – czas odpowiedzi nie zdradza, ile znaków się zgadza.
+    public static function isValidCsrfToken(mixed $token): bool
+    {
+        return is_string($token)
+            && isset($_SESSION[self::CSRF_TOKEN])
+            && hash_equals($_SESSION[self::CSRF_TOKEN], $token);
     }
 
     // Wylogowanie: czyścimy dane, usuwamy sesję po stronie serwera i wygaszamy cookie w przeglądarce.
