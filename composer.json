@@ -7,5 +7,8 @@
       "App\\Service\\": "src/services/",
       "App\\": "src/"
     }
+  },
+  "require": {
+    "phpmailer/phpmailer": "^6.9"
   }
 }
