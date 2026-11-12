@@ -25,6 +25,7 @@ $routing->get('/login', SecurityController::class, 'login');
 $routing->post('/login', SecurityController::class, 'authenticate');
 $routing->post('/logout', SecurityController::class, 'logout');
 $routing->get('/register', SecurityController::class, 'register');
+$routing->post('/register', SecurityController::class, 'store');
 $routing->get('/expeditions', ExpeditionController::class, 'index');
 $routing->get('/expeditions/{id}', ExpeditionController::class, 'show');
 $routing->get('/expeditions/{id}/ranking', ExpeditionController::class, 'ranking');

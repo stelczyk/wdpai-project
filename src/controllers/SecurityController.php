@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Service\AuthService;
+use App\Service\RegistrationService;
 use App\Translator;
 
 final class SecurityController extends AppController
@@ -57,15 +58,38 @@ final class SecurityController extends AppController
 
     public function register(): void
     {
-        $this->render('register', [
-            'pageTitle' => Translator::get('register.title'),
-            'showNav' => false,
-            'scripts' => ['/js/auth.js'],
-            'name' => '',
-            'email' => '',
-            'errors' => [],
-            'formError' => null,
-        ]);
+        if ((new AuthService())->currentUser() !== null) {
+            $this->redirect(self::AFTER_LOGIN);
+        }
+
+        $this->renderRegister();
+    }
+
+    public function store(): void
+    {
+        $name = trim((string) ($_POST['name'] ?? ''));
+        $email = trim((string) ($_POST['email'] ?? ''));
+        $password = (string) ($_POST['password'] ?? '');
+        $passwordConfirm = (string) ($_POST['password_confirm'] ?? '');
+        $termsAccepted = ($_POST['terms'] ?? '') === '1';
+
+        $registration = new RegistrationService();
+        $errors = $registration->validate($name, $email, $password, $passwordConfirm, $termsAccepted);
+
+        $user = $errors === [] ? $registration->register($name, $email, $password) : null;
+        if ($errors === [] && $user === null) {
+            $errors['email'] = Translator::get('validation.email_taken');
+        }
+
+        if ($errors !== []) {
+            http_response_code(422);
+            $this->renderRegister($name, $email, $errors);
+
+            return;
+        }
+
+        (new AuthService())->login($user);   // od razu zalogowany, z nowym ID sesji
+        $this->redirect(self::AFTER_LOGIN);
     }
 
     /** @return array<string, string> komunikaty błędów pól, klucz = nazwa pola */
@@ -84,6 +108,20 @@ final class SecurityController extends AppController
         }
 
         return $errors;
+    }
+
+    // Hasła nigdy nie odsyłamy do formularza – wracają tylko imię i e-mail.
+    private function renderRegister(string $name = '', string $email = '', array $errors = []): void
+    {
+        $this->render('register', [
+            'pageTitle' => Translator::get('register.title'),
+            'showNav' => false,
+            'scripts' => ['/js/auth.js'],
+            'name' => $name,
+            'email' => $email,
+            'errors' => $errors,
+            'formError' => null,
+        ]);
     }
 
     // Hasła nigdy nie odsyłamy do formularza – wraca tylko e-mail.

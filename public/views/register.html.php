@@ -81,10 +81,14 @@
                     <p class="field-error" id="password-confirm-error"><?= htmlspecialchars($errors['password_confirm'] ?? '') ?></p>
                 </div>
 
-                <label class="checkbox">
-                    <input type="checkbox" name="terms" value="1" required>
-                    <?= $t('register.terms') ?>
-                </label>
+                <div class="field">
+                    <label class="checkbox">
+                        <input type="checkbox" name="terms" value="1" required aria-describedby="terms-error"
+                               <?= isset($errors['terms']) ? 'aria-invalid="true"' : '' ?>>
+                        <?= $t('register.terms') ?>
+                    </label>
+                    <p class="field-error" id="terms-error"><?= htmlspecialchars($errors['terms'] ?? '') ?></p>
+                </div>
 
                 <button class="button" type="submit">
                     <?= $t('register.submit') ?>
