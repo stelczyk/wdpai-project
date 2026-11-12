@@ -30,6 +30,18 @@ final class UserRepository
         return $this->map($statement->fetch());
     }
 
+    // Rola i data utworzenia z wartości domyślnych w bazie (role DEFAULT 'USER').
+    public function create(string $email, string $name, string $passwordHash): User
+    {
+        $statement = Database::connect()->prepare(
+            'INSERT INTO users (email, name, password_hash) VALUES (:email, :name, :hash)
+             RETURNING ' . self::COLUMNS
+        );
+        $statement->execute(['email' => $email, 'name' => $name, 'hash' => $passwordHash]);
+
+        return $this->map($statement->fetch());
+    }
+
     private function map(array|false $row): ?User
     {
         if ($row === false) {

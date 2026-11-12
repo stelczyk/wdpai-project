@@ -83,6 +83,11 @@ return [
     // Form validation
     'validation.required' => 'This field is required.',
     'validation.email' => 'Enter a valid email address.',
+    'validation.max_length' => 'At most {max} characters.',
+    'validation.min_length' => 'At least {min} characters.',
+    'validation.email_taken' => 'An account with this email already exists.',
+    'validation.password_mismatch' => 'Passwords do not match.',
+    'validation.terms' => 'You must accept the terms.',
 
     // Sign up
     'register.title' => 'Sign up',
