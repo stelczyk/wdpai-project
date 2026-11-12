@@ -6,6 +6,15 @@
                 <p class="lead"><?= $t('login.lead') ?></p>
             </div>
 
+            <?php if ($passwordChanged): ?>
+                <div class="alert alert--success" role="status">
+                    <div class="alert-content">
+                        <p class="alert-title"><?= $t('reset.changed_title') ?></p>
+                        <p class="alert-text"><?= $t('reset.changed_text') ?></p>
+                    </div>
+                </div>
+            <?php endif; ?>
+
             <?php if ($formError !== null): ?>
                 <div class="alert" role="alert" data-alert>
                     <span class="alert-icon"><img src="/img/login/alert.svg" alt="" width="15" height="15"></span>
