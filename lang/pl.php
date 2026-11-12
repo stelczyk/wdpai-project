@@ -104,6 +104,27 @@ return [
     'register.has_account' => 'Masz już profil wyprawy?',
     'register.login_link' => 'Zaloguj się',
 
+    // Reset hasła
+    'reset.forgot_title' => 'Reset hasła',
+    'reset.forgot_heading' => 'Nie pamiętasz hasła?',
+    'reset.forgot_lead' => 'Podaj adres e-mail konta – wyślemy link do ustawienia nowego hasła.',
+    'reset.send_link' => 'Wyślij link',
+    'reset.sent_title' => 'Sprawdź skrzynkę',
+    'reset.sent_text' => 'Jeśli konto z tym adresem istnieje, wysłaliśmy na nie link do zmiany hasła. Link jest ważny przez godzinę.',
+    'reset.remembered' => 'Pamiętasz hasło?',
+    'reset.new_title' => 'Nowe hasło',
+    'reset.new_heading' => 'Ustaw nowe hasło',
+    'reset.new_lead' => 'Wybierz nowe hasło do swojego konta wyprawy.',
+    'reset.new_password' => 'Nowe hasło',
+    'reset.save_password' => 'Zapisz hasło',
+    'reset.invalid_title' => 'Link wygasł lub jest nieprawidłowy',
+    'reset.invalid_text' => 'Linki do zmiany hasła działają jednorazowo i przez godzinę. Poproś o nowy.',
+    'reset.request_again' => 'Wyślij nowy link',
+    'reset.changed_title' => 'Hasło zmienione',
+    'reset.changed_text' => 'Możesz się teraz zalogować nowym hasłem.',
+    'reset.mail_subject' => 'Dystans – zmiana hasła',
+    'reset.mail_body' => "Cześć {name},\n\nktoś (miejmy nadzieję, że Ty) poprosił o zmianę hasła do konta w Dystansie.\nAby ustawić nowe hasło, otwórz link:\n\n{link}\n\nLink jest ważny przez {minutes} minut i działa tylko raz.\nJeśli to nie Ty – zignoruj tę wiadomość, hasło się nie zmieni.\n\nZespół Dystans",
+
     // Strony błędów
     'error.back' => 'Wróć na stronę główną',
     'error.400.title' => 'Nieprawidłowe żądanie',

@@ -38,16 +38,26 @@ final class RegistrationService
             $errors['email'] = Translator::get('validation.email_taken');
         }
 
+        $errors += self::validatePassword($password, $passwordConfirm);
+
+        if (!$termsAccepted) {
+            $errors['terms'] = Translator::get('validation.terms');
+        }
+
+        return $errors;
+    }
+
+    /** Reguły hasła wspólne dla rejestracji i resetu hasła. */
+    public static function validatePassword(string $password, string $passwordConfirm): array
+    {
+        $errors = [];
+
         if (mb_strlen($password) < self::PASSWORD_MIN_LENGTH) {
             $errors['password'] = Translator::get('validation.min_length', ['min' => self::PASSWORD_MIN_LENGTH]);
         }
 
         if ($passwordConfirm !== $password) {
             $errors['password_confirm'] = Translator::get('validation.password_mismatch');
-        }
-
-        if (!$termsAccepted) {
-            $errors['terms'] = Translator::get('validation.terms');
         }
 
         return $errors;
