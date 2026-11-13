@@ -42,6 +42,12 @@ final class UserRepository
         return $this->map($statement->fetch());
     }
 
+    public function updatePassword(int $userId, string $passwordHash): void
+    {
+        $statement = Database::connect()->prepare('UPDATE users SET password_hash = :hash WHERE id = :id');
+        $statement->execute(['hash' => $passwordHash, 'id' => $userId]);
+    }
+
     private function map(array|false $row): ?User
     {
         if ($row === false) {

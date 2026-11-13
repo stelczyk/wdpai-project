@@ -544,6 +544,15 @@ input:focus-visible {
   color: var(--color-muted);
 }
 
+/* Potwierdzenie (np. „wysłaliśmy link”) – akcent zamiast koloru błędu */
+.alert--success {
+  border-left: 3px solid var(--color-accent);
+}
+
+.alert--success .alert-title {
+  color: var(--color-text);
+}
+
 .alert-close {
   display: flex;
   padding: 0.25rem;
@@ -594,6 +603,7 @@ input:focus-visible {
   color: var(--color-on-accent);
   background-color: var(--color-accent);
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  text-decoration: none;
   cursor: pointer;
   transition: background-color 0.15s;
 }

@@ -134,6 +134,8 @@ final class SecurityController extends AppController
             'email' => $email,
             'errors' => $errors,
             'formError' => $formError,
+            // Po zmianie hasła PasswordController przekierowuje tu z ?password_reset=1.
+            'passwordChanged' => ($_GET['password_reset'] ?? '') === '1',
         ]);
     }
 }

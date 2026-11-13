@@ -104,6 +104,27 @@ return [
     'register.has_account' => 'Already have an expedition profile?',
     'register.login_link' => 'Sign in',
 
+    // Password reset
+    'reset.forgot_title' => 'Password reset',
+    'reset.forgot_heading' => 'Forgot your password?',
+    'reset.forgot_lead' => 'Enter your account email – we will send you a link to set a new password.',
+    'reset.send_link' => 'Send link',
+    'reset.sent_title' => 'Check your inbox',
+    'reset.sent_text' => 'If an account with this email exists, we have sent it a password reset link. The link is valid for one hour.',
+    'reset.remembered' => 'Remember your password?',
+    'reset.new_title' => 'New password',
+    'reset.new_heading' => 'Set a new password',
+    'reset.new_lead' => 'Choose a new password for your expedition account.',
+    'reset.new_password' => 'New password',
+    'reset.save_password' => 'Save password',
+    'reset.invalid_title' => 'The link has expired or is invalid',
+    'reset.invalid_text' => 'Password reset links work once and for one hour. Request a new one.',
+    'reset.request_again' => 'Send a new link',
+    'reset.changed_title' => 'Password changed',
+    'reset.changed_text' => 'You can now sign in with your new password.',
+    'reset.mail_subject' => 'Dystans – password reset',
+    'reset.mail_body' => "Hi {name},\n\nsomeone (hopefully you) asked to reset the password of your Dystans account.\nTo set a new password, open this link:\n\n{link}\n\nThe link is valid for {minutes} minutes and works only once.\nIf this wasn't you, ignore this message – your password will not change.\n\nThe Dystans team",
+
     // Error pages
     'error.back' => 'Back to the home page',
     'error.400.title' => 'Bad request',
