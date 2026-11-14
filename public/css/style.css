@@ -19,6 +19,13 @@
   --color-divider: #d8c2ba;
   --color-placeholder: #8b7f7b;
   --color-ghost: rgb(0 0 0 / 0.03);
+  /* Karty i panele ekranów aplikacji (lista wypraw, dashboard) */
+  --color-card: #ffffff;
+  --color-panel: #f6f2f0;
+  --color-chip: #ece6e3;
+  --color-info: #00639a;
+  --color-info-surface: rgb(0 99 154 / 0.12);
+  --color-accent-surface: rgb(255 90 31 / 0.14);
 
   --space-1: 0.5rem;
   --space-2: 0.75rem;
@@ -51,6 +58,12 @@
   --color-divider: #353436;
   --color-placeholder: #47464a;
   --color-ghost: rgb(255 255 255 / 0.03);
+  --color-card: #1c1b1c;
+  --color-panel: #201f20;
+  --color-chip: #353436;
+  --color-info: #8ecdff;
+  --color-info-surface: rgb(0 154 225 / 0.2);
+  --color-accent-surface: rgb(255 90 31 / 0.2);
 }
 
 *,
@@ -256,6 +269,14 @@ input:focus-visible {
 
 .header-user {
   color: var(--color-text);
+}
+
+/* Na telefonie imię nie mieści się obok logo – zostaje sam przycisk „Wyloguj” */
+@media (max-width: 30rem) {
+  .header-user,
+  .header-divider {
+    display: none;
+  }
 }
 
 .logout-form {
@@ -806,4 +827,620 @@ input:focus-visible {
 
 .error-page a {
   color: var(--color-link);
+}
+
+/* ===== Moje wyprawy (Figma: Wybór Wyprawy — Desktop) ===== */
+.expeditions-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-5) var(--space-3);
+}
+
+.eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.eyebrow-accent {
+  color: var(--color-link);
+}
+
+.dot {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
+.dot--accent {
+  background-color: var(--color-accent);
+}
+
+.dot--small {
+  width: 0.375rem;
+  height: 0.375rem;
+}
+
+.exp-hero h1 {
+  margin: var(--space-1) 0;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+.exp-hero .lead {
+  max-width: 42rem;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-muted);
+}
+
+/* Kafelki statystyk */
+.exp-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: var(--space-3);
+}
+
+.stat-card,
+.exp-card,
+.exp-archive-row,
+.exp-empty {
+  border-radius: var(--radius-md);
+  background-color: var(--color-card);
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+.stat-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stat-card h2,
+.exp-facts dt {
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.stat-value {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  margin: 0;
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.stat-value span {
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--color-muted);
+}
+
+.stat-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.stat-card-foot > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.stat-strong {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+/* Pasek udziału dyscyplin: SVG z prostokątami, kolory segmentów w kolejności udziału */
+.share-bar {
+  display: block;
+  width: 100%;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: var(--color-chip);
+}
+
+.share-legend {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+rect.share-0 { fill: var(--color-accent); }
+rect.share-1 { fill: var(--color-info); }
+rect.share-2 { fill: var(--color-muted); }
+li.share-0 { color: var(--color-accent); }
+li.share-1 { color: var(--color-info); }
+li.share-2 { color: var(--color-muted); }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  background-color: var(--color-field-hover);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+.chip--accent {
+  padding-inline: var(--space-1);
+  background-color: var(--color-panel);
+  color: var(--color-link);
+}
+
+/* Sekcje list */
+.exp-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.exp-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
+}
+
+.exp-section-head h2 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+.exp-section-head p {
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.marker {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 0.25rem;
+}
+
+.marker--accent { background-color: var(--color-accent); }
+.marker--info { background-color: var(--color-info); }
+.marker--neutral { background-color: var(--color-muted); }
+
+.exp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
+  align-items: start;
+  gap: var(--space-4);
+}
+
+/* Karta wyprawy – kolor akcentu z roli */
+.exp-card {
+  --card-accent: var(--color-accent);
+  --card-accent-surface: var(--color-accent-surface);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4);
+}
+
+.exp-card--member,
+.exp-card--planned {
+  --card-accent: var(--color-info);
+  --card-accent-surface: var(--color-info-surface);
+}
+
+.exp-card-top,
+.exp-row,
+.exp-card-actions,
+.exp-planned-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-2);
+}
+
+.exp-card-actions--end {
+  justify-content: flex-end;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.badge--status {
+  color: var(--card-accent);
+  background-color: var(--card-accent-surface);
+}
+
+.badge--status .dot {
+  width: 0.375rem;
+  height: 0.375rem;
+}
+
+.badge--role {
+  color: var(--color-text);
+  background-color: var(--color-chip);
+}
+
+.badge--plain {
+  background-color: var(--color-field-hover);
+}
+
+.badge--info {
+  color: var(--color-info);
+}
+
+.badge--km {
+  padding: 0.125rem var(--space-1);
+  color: var(--color-muted);
+  background-color: var(--color-chip);
+}
+
+.exp-code {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-placeholder);
+}
+
+.exp-card-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+.exp-card-title--small {
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+}
+
+.exp-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-panel);
+}
+
+.exp-panel p {
+  margin: 0;
+}
+
+.exp-km {
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
+
+.exp-km strong {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.exp-percent {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--card-accent);
+}
+
+/* Pasek postępu: natywny <progress>, wygląd ujednolicony dla Chrome/Edge i Firefoksa */
+.exp-bar {
+  width: 100%;
+  height: 0.75rem;
+  border: 0;
+  border-radius: 9999px;
+  overflow: hidden;
+  appearance: none;
+  background-color: var(--color-chip);
+  color: var(--card-accent);
+}
+
+.exp-bar::-webkit-progress-bar {
+  background-color: var(--color-chip);
+}
+
+.exp-bar::-webkit-progress-value {
+  border-radius: 9999px;
+  background-color: var(--card-accent);
+}
+
+.exp-bar::-moz-progress-bar {
+  border-radius: 9999px;
+  background-color: var(--card-accent);
+}
+
+.exp-row--small {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.exp-stage,
+.exp-team-size,
+.exp-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.exp-strong {
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.exp-team {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-size: 0.75rem;
+}
+
+.exp-team-size {
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.exp-captain {
+  color: var(--color-muted);
+}
+
+.exp-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0.625rem var(--space-4);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.exp-button--primary {
+  color: var(--color-on-accent);
+  background-color: var(--color-accent);
+}
+
+.exp-button--primary:hover {
+  color: var(--color-on-accent);
+  background-color: var(--color-accent-hover);
+}
+
+/* Ciemny przycisk z Figmy w obu motywach (jasna strzałka z Figmy wymaga ciemnego tła) */
+.exp-button--secondary {
+  color: #e5e2e3;
+  background-color: #39393a;
+}
+
+.exp-button--secondary:hover {
+  color: #ffffff;
+  background-color: #4a4a4b;
+}
+
+.exp-button--ghost {
+  padding: var(--space-1) var(--space-3);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  background-color: var(--color-panel);
+}
+
+.exp-button--ghost:hover {
+  color: var(--color-text);
+  background-color: var(--color-chip);
+}
+
+/* Zaplanowane */
+.exp-planned-km {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin: 0;
+}
+
+.exp-planned-km strong {
+  font-size: 1.25rem;
+}
+
+.exp-planned-km span {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.exp-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: var(--space-3);
+}
+
+.exp-facts dd {
+  margin: 0.25rem 0 0;
+  font-weight: 500;
+}
+
+.exp-note {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+/* Archiwum */
+.exp-archive {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.exp-archive-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+.exp-archive-main {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.exp-archive-icon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-md);
+  background-color: var(--color-panel);
+}
+
+.exp-archive-main h3 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.exp-archive-main p {
+  margin: 0.125rem 0 0;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.exp-archive-side {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.exp-archive-side p {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.exp-archive-goal {
+  color: var(--color-link);
+}
+
+.exp-empty {
+  padding: var(--space-5);
+  text-align: center;
+}
+
+.exp-empty h2 {
+  margin: 0 0 var(--space-1);
+  font-size: 1.25rem;
+}
+
+.exp-empty p {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+@media (min-width: 48rem) {
+  .expeditions-page {
+    padding: var(--space-5) 3rem;
+  }
 }
