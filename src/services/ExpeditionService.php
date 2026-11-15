@@ -16,6 +16,12 @@ final class ExpeditionService
     public const PLANNED = 'planned';
     public const COMPLETED = 'completed';
 
+    // Dozwolone wartości filtrów z adresu (?status=, ?sort=) – wszystko inne kontroler odrzuca (400).
+    public const STATUS_ALL = 'all';
+    public const STATUSES = [self::STATUS_ALL, self::IN_PROGRESS, self::PLANNED, self::COMPLETED];
+    public const SORT_START = 'start';
+    public const SORTS = [self::SORT_START, 'progress', 'name'];
+
     // Na kafelku wkładu pokazujemy dwie główne dyscypliny, resztę łączymy w „inne”.
     private const MAIN_DISCIPLINES = 2;
 
@@ -23,11 +29,42 @@ final class ExpeditionService
     {
     }
 
-    /** @return array{sections: array<string, list<array>>, stats: array} */
-    public function overviewFor(User $user, ?DateTimeImmutable $today = null): array
-    {
+    /**
+     * Kafelki statystyk liczone są zawsze ze wszystkich wypraw użytkownika;
+     * wyszukiwanie, zakładka statusu i sortowanie zmieniają tylko listy.
+     *
+     * @return array{sections: array<string, list<array>>, counts: array<string, int>, stats: array}
+     */
+    public function overviewFor(
+        User $user,
+        string $search = '',
+        string $status = self::STATUS_ALL,
+        string $sort = self::SORT_START,
+        ?DateTimeImmutable $today = null,
+    ): array {
         $today ??= new DateTimeImmutable('today');
-        $rows = $this->expeditions->findForMember($user->id);
+        $all = $this->group($this->expeditions->findForMember($user->id), $user, $today);
+        $found = $search === '' ? $all : $this->group($this->expeditions->findForMember($user->id, $search), $user, $today);
+
+        $counts = array_map('count', $found);
+        $counts[self::STATUS_ALL] = array_sum($counts);
+
+        $sections = [];
+        foreach ($found as $sectionStatus => $expeditions) {
+            $visible = $status === self::STATUS_ALL || $status === $sectionStatus;
+            $sections[$sectionStatus] = $visible ? $this->sort($expeditions, $sort) : [];
+        }
+
+        return [
+            'sections' => $sections,
+            'counts' => $counts,
+            'stats' => $this->stats($all, $user, (int) $today->format('Y')),
+        ];
+    }
+
+    /** Wiersze z bazy → wyprawy pogrupowane w sekcje według statusu. */
+    private function group(array $rows, User $user, DateTimeImmutable $today): array
+    {
         $checkpoints = $this->expeditions->findCheckpoints(array_column($rows, 'id'));
 
         $sections = [self::IN_PROGRESS => [], self::PLANNED => [], self::COMPLETED => []];
@@ -39,10 +76,19 @@ final class ExpeditionService
         // Archiwum od najświeższej wyprawy.
         $sections[self::COMPLETED] = array_reverse($sections[self::COMPLETED]);
 
-        return [
-            'sections' => $sections,
-            'stats' => $this->stats($sections, $user, (int) $today->format('Y')),
-        ];
+        return $sections;
+    }
+
+    // Domyślnie kolejność z bazy (data startu); poza tym postęp trasy malejąco albo nazwa A–Z.
+    private function sort(array $expeditions, string $sort): array
+    {
+        match ($sort) {
+            'progress' => usort($expeditions, static fn (array $a, array $b): int => $b['progressPercent'] <=> $a['progressPercent']),
+            'name' => usort($expeditions, static fn (array $a, array $b): int => mb_strtolower($a['name']) <=> mb_strtolower($b['name'])),
+            default => null,
+        };
+
+        return $expeditions;
     }
 
     private function describe(array $row, array $checkpoints, User $user, DateTimeImmutable $today): array
@@ -111,6 +157,7 @@ final class ExpeditionService
         $reachedGoal = count(array_filter($completed, static fn (array $e): bool => $e['progressPercent'] >= 100));
 
         return [
+            'totalCount' => array_sum(array_map('count', $sections)),
             'activeCount' => count($active),
             'activeAsCaptain' => $captainActive,
             'activeAsParticipant' => count($active) - $captainActive,

@@ -6,6 +6,21 @@ $inProgress = $sections[ExpeditionService::IN_PROGRESS];
 $planned = $sections[ExpeditionService::PLANNED];
 $completed = $sections[ExpeditionService::COMPLETED];
 $contribution = $stats['contribution'];
+
+// Adres z bieżącymi filtrami i zmianą jednego z nich; wartości domyślne pomijamy, żeby URL był krótki.
+$filterUrl = static function (array $changes) use ($filters): string {
+    $query = array_filter(
+        array_merge($filters, $changes),
+        static fn (string $value, string $key): bool => $value !== ''
+            && !($key === 'status' && $value === ExpeditionService::STATUS_ALL)
+            && !($key === 'sort' && $value === ExpeditionService::SORT_START),
+        ARRAY_FILTER_USE_BOTH,
+    );
+
+    return '/expeditions' . ($query === [] ? '' : '?' . http_build_query($query));
+};
+$hasExpeditions = $stats['totalCount'] > 0;
+$nothingVisible = $inProgress === [] && $planned === [] && $completed === [];
 ?>
 <main class="expeditions-page">
     <section class="exp-hero" aria-labelledby="exp-title">
@@ -68,11 +83,59 @@ $contribution = $stats['contribution'];
         </article>
     </section>
 
-    <?php if ($inProgress === [] && $planned === [] && $completed === []): ?>
+    <?php if (!$hasExpeditions): ?>
         <section class="exp-empty">
             <h2><?= $t('expeditions.empty_title') ?></h2>
             <p><?= $t('expeditions.empty_text') ?></p>
         </section>
+    <?php else: ?>
+        <div class="exp-filters">
+            <nav aria-label="<?= $t('expeditions.filters_label') ?>">
+                <ul class="exp-tabs">
+                    <?php foreach (ExpeditionService::STATUSES as $tab): ?>
+                        <li>
+                            <a href="<?= htmlspecialchars($filterUrl(['status' => $tab])) ?>"
+                               <?= $filters['status'] === $tab ? 'aria-current="page"' : '' ?>>
+                                <?= $t('expeditions.tab_' . $tab) ?>
+                                <span class="exp-tab-count">(<?= (int) $counts[$tab] ?>)</span>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </nav>
+
+            <?php // Zwykły formularz GET – działa bez JavaScriptu; JS tylko wysyła go od razu po zmianie sortowania. ?>
+            <form class="exp-search" method="get" action="/expeditions" role="search">
+                <?php if ($filters['status'] !== ExpeditionService::STATUS_ALL): ?>
+                    <input type="hidden" name="status" value="<?= htmlspecialchars($filters['status']) ?>">
+                <?php endif; ?>
+                <label class="visually-hidden" for="exp-q"><?= $t('expeditions.search_label') ?></label>
+                <div class="exp-search-field">
+                    <img src="/img/expeditions/search.svg" alt="" width="18" height="18">
+                    <input type="search" id="exp-q" name="q" maxlength="100"
+                           value="<?= htmlspecialchars($filters['q']) ?>"
+                           placeholder="<?= $t('expeditions.search_placeholder') ?>">
+                </div>
+                <label class="visually-hidden" for="exp-sort"><?= $t('expeditions.sort_label') ?></label>
+                <div class="exp-select">
+                    <select id="exp-sort" name="sort" data-auto-submit>
+                        <?php foreach (ExpeditionService::SORTS as $option): ?>
+                            <option value="<?= $option ?>" <?= $filters['sort'] === $option ? 'selected' : '' ?>><?= $t('expeditions.sort_' . $option) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <img src="/img/expeditions/chevron-down.svg" alt="" width="12" height="7">
+                </div>
+                <button class="visually-hidden" type="submit"><?= $t('expeditions.search_submit') ?></button>
+            </form>
+        </div>
+
+        <?php if ($nothingVisible): ?>
+            <section class="exp-empty">
+                <h2><?= $t('expeditions.no_results_title') ?></h2>
+                <p><?= $t('expeditions.no_results_text') ?></p>
+                <p><a href="/expeditions"><?= $t('expeditions.clear_filters') ?></a></p>
+            </section>
+        <?php endif; ?>
     <?php endif; ?>
 
     <?php if ($inProgress !== []): ?>
