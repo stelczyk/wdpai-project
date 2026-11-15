@@ -89,4 +89,19 @@ abstract class AppController
         header('Location: ' . $path, true, 303);
         exit;
     }
+
+    // Odpowiedź dla żądań fetch(): JSON z kodem statusu HTTP.
+    protected function json(array $data, int $status = 200): never
+    {
+        http_response_code($status);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+        exit;
+    }
+
+    // fetch() w naszym JS wysyła Accept: application/json – wtedy błędy też zwracamy jako JSON.
+    protected function wantsJson(): bool
+    {
+        return str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json');
+    }
 }

@@ -24,14 +24,33 @@ $nothingVisible = $inProgress === [] && $planned === [] && $completed === [];
 ?>
 <main class="expeditions-page">
     <section class="exp-hero" aria-labelledby="exp-title">
-        <p class="eyebrow">
-            <span class="dot dot--accent" aria-hidden="true"></span>
-            <span class="eyebrow-accent"><?= $t('expeditions.eyebrow') ?></span>
-            <span aria-hidden="true">/</span>
-            <span><?= $t('expeditions.season', ['year' => $stats['year']]) ?></span>
-        </p>
-        <h1 id="exp-title"><?= $t('expeditions.welcome', ['name' => $user->name]) ?></h1>
-        <p class="lead"><?= $t('expeditions.lead') ?></p>
+        <div class="exp-hero-text">
+            <p class="eyebrow">
+                <span class="dot dot--accent" aria-hidden="true"></span>
+                <span class="eyebrow-accent"><?= $t('expeditions.eyebrow') ?></span>
+                <span aria-hidden="true">/</span>
+                <span><?= $t('expeditions.season', ['year' => $stats['year']]) ?></span>
+            </p>
+            <h1 id="exp-title"><?= $t('expeditions.welcome', ['name' => $user->name]) ?></h1>
+            <p class="lead"><?= $t('expeditions.lead') ?></p>
+        </div>
+
+        <?php // Wysyłany przez fetch() w expeditions.js (JSON + nagłówek X-CSRF-Token), bez przeładowania strony. ?>
+        <form class="exp-join" method="post" action="/expeditions/join" novalidate data-join-form
+              data-invalid-message="<?= $t('expeditions.join_invalid') ?>"
+              data-error-message="<?= $t('expeditions.join_error') ?>"
+              data-loading-label="<?= $t('expeditions.join_loading') ?>">
+            <?= $csrfField ?>
+            <div class="exp-join-field">
+                <img src="/img/expeditions/key.svg" alt="" width="23" height="12">
+                <label class="visually-hidden" for="join-code"><?= $t('expeditions.join_label') ?></label>
+                <input type="text" id="join-code" name="code" inputmode="numeric" pattern="\d{6}" maxlength="6"
+                       autocomplete="off" placeholder="<?= $t('expeditions.join_placeholder') ?>"
+                       aria-describedby="join-message">
+                <button type="submit"><?= $t('expeditions.join_submit') ?></button>
+            </div>
+            <p class="exp-join-message" id="join-message" role="status" aria-live="polite" data-join-message></p>
+        </form>
     </section>
 
     <section class="exp-stats" aria-label="<?= $t('expeditions.stats_label') ?>">
