@@ -19,9 +19,18 @@ final readonly class User
     ) {
     }
 
+    public const ROLE_CAPTAIN = 'CAPTAIN';
+    public const ROLE_ADMIN = 'ADMIN';
+
     // ADMIN ma wgląd w każdą wyprawę i każdy panel kapitana bez członkostwa.
     public function isAdmin(): bool
     {
-        return $this->role === 'ADMIN';
+        return $this->role === self::ROLE_ADMIN;
+    }
+
+    // Zakładać wyprawy mogą kapitanowie i administrator.
+    public function canCreateExpeditions(): bool
+    {
+        return in_array($this->role, [self::ROLE_CAPTAIN, self::ROLE_ADMIN], true);
     }
 }
