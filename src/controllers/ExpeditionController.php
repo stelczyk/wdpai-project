@@ -4,24 +4,25 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\ExpeditionService;
 use App\Translator;
 
 final class ExpeditionController extends AppController
 {
-    // TODO: dane na sztywno do czasu podłączenia bazy (repozytorium + serwis)
     public function index(): void
     {
-        $this->requireLogin();
+        $user = $this->requireLogin();
+        $overview = (new ExpeditionService())->overviewFor($user);
 
         $this->render('expeditions', [
             'pageTitle' => Translator::get('expeditions.title'),
-            'expeditions' => [
-                ['id' => 1, 'name' => 'Kraków → Monza', 'distanceKm' => 1100],
-                ['id' => 2, 'name' => 'Gdańsk → Zakopane', 'distanceKm' => 650],
-            ],
+            'user' => $user,
+            'sections' => $overview['sections'],
+            'stats' => $overview['stats'],
         ]);
     }
 
+    // TODO: dane na sztywno do czasu dashboardu wyprawy (epik 4)
     public function show(int $id): void
     {
         $this->requireExpeditionMember($id);

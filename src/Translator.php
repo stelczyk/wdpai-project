@@ -70,6 +70,14 @@ final class Translator
         return strtr($text, $replacements);
     }
 
+    // Liczby w zapisie danego języka: PL „1 330,5”, EN „1,330.5”.
+    public static function number(float $value, int $decimals = 1): string
+    {
+        return self::$locale === 'pl'
+            ? number_format($value, $decimals, ',', ' ')
+            : number_format($value, $decimals, '.', ',');
+    }
+
     private static function isSupported(mixed $locale): bool
     {
         return is_string($locale) && in_array($locale, self::LOCALES, true);
