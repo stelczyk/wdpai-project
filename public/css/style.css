@@ -1672,3 +1672,234 @@ li.share-2 { color: var(--color-muted); }
 .exp-join-message[data-type="success"] {
   color: var(--color-info);
 }
+
+/* Przyciski pod polem kodu w nagłówku listy wypraw */
+.exp-hero-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  width: min(100%, 26rem);
+}
+
+.exp-hero-actions .exp-join {
+  width: 100%;
+}
+
+/* Formularz tworzenia wyprawy */
+.create-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 56rem;
+}
+
+.create-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background-color: var(--color-card);
+}
+
+.create-card h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+.create-hint {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+/* Pola na karcie: tło panelu – w ciemnym motywie kolor pola z logowania zlewałby się z kartą */
+.create-card .field input {
+  padding-right: var(--space-3);
+  background-color: var(--color-panel);
+}
+
+.create-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  gap: var(--space-3);
+}
+
+/* Wiersze trasy: nazwa | km | akcja (na telefonie węższe kolumny km i „Usuń”) */
+.checkpoint-head,
+.checkpoint-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 5.5rem 3.5rem;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+@media (min-width: 48rem) {
+  .checkpoint-head,
+  .checkpoint-row {
+    grid-template-columns: minmax(0, 1fr) 8rem 5rem;
+    gap: var(--space-2);
+  }
+}
+
+.checkpoint-head {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.checkpoint-list,
+.discipline-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.checkpoint-row input,
+.factor input {
+  width: 100%;
+  height: 2.75rem;
+  padding: 0 var(--space-3);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font: inherit;
+  color: var(--color-text);
+  background-color: var(--color-panel);
+}
+
+.checkpoint-row input:focus-visible,
+.factor input:focus-visible {
+  outline: 3px solid var(--color-link);
+  outline-offset: 2px;
+}
+
+.checkpoint-row input[readonly] {
+  color: var(--color-muted);
+}
+
+.checkpoint-tag {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.checkpoint-remove {
+  padding: var(--space-1);
+  border: 0;
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  background: none;
+  cursor: pointer;
+}
+
+.checkpoint-remove:hover:not(:disabled) {
+  color: var(--color-error);
+  background-color: var(--color-panel);
+}
+
+.checkpoint-remove:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.create-row,
+.create-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.create-actions {
+  justify-content: flex-end;
+}
+
+.create-actions .exp-button--ghost {
+  font-size: 0.875rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.create-actions button {
+  border: 0;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.route-total {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
+
+.route-total output {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.discipline-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-panel);
+}
+
+.discipline-row .checkbox {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.factor {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.factor input {
+  width: 6rem;
+  height: 2.25rem;
+}
+
+.factor input:disabled {
+  opacity: 0.4;
+}
+
+.form-error {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-error);
+}
+
+.form-error:empty {
+  display: none;
+}
+
+.create-form button.exp-button--ghost {
+  border: 0;
+  font: inherit;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  cursor: pointer;
+}

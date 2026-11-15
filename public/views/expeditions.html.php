@@ -35,6 +35,7 @@ $nothingVisible = $inProgress === [] && $planned === [] && $completed === [];
             <p class="lead"><?= $t('expeditions.lead') ?></p>
         </div>
 
+        <div class="exp-hero-actions">
         <?php // Wysyłany przez fetch() w expeditions.js (JSON + nagłówek X-CSRF-Token), bez przeładowania strony. ?>
         <form class="exp-join" method="post" action="/expeditions/join" novalidate data-join-form
               data-invalid-message="<?= $t('expeditions.join_invalid') ?>"
@@ -51,7 +52,23 @@ $nothingVisible = $inProgress === [] && $planned === [] && $completed === [];
             </div>
             <p class="exp-join-message" id="join-message" role="status" aria-live="polite" data-join-message></p>
         </form>
+        <?php if ($user->canCreateExpeditions()): ?>
+            <a class="exp-button exp-button--primary" href="/expeditions/new">
+                <img src="/img/expeditions/plus.svg" alt="" width="14" height="14">
+                <?= $t('create.open') ?>
+            </a>
+        <?php endif; ?>
+        </div>
     </section>
+
+    <?php if ($created !== null): ?>
+        <div class="alert alert--success" role="status">
+            <div class="alert-content">
+                <p class="alert-title"><?= $t('create.success_title', ['name' => $created['name']]) ?></p>
+                <p class="alert-text"><?= $t('create.success_text', ['code' => $created['joinCode']]) ?></p>
+            </div>
+        </div>
+    <?php endif; ?>
 
     <section class="exp-stats" aria-label="<?= $t('expeditions.stats_label') ?>">
         <article class="stat-card">

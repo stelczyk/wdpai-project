@@ -33,6 +33,9 @@ $routing->get('/reset-password', PasswordController::class, 'resetForm');
 $routing->post('/reset-password', PasswordController::class, 'reset');
 $routing->get('/expeditions', ExpeditionController::class, 'index');
 $routing->post('/expeditions/join', ExpeditionController::class, 'join');
+// Trasa statyczna przed /expeditions/{id} – inaczej „new” trafiłoby do walidacji id (400).
+$routing->get('/expeditions/new', ExpeditionController::class, 'create');
+$routing->post('/expeditions', ExpeditionController::class, 'store');
 $routing->get('/expeditions/{id}', ExpeditionController::class, 'show');
 $routing->get('/expeditions/{id}/ranking', ExpeditionController::class, 'ranking');
 $routing->get('/activities/new', ActivityController::class, 'create');

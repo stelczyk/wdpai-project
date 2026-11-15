@@ -154,6 +154,60 @@ final class ExpeditionRepository
         }
     }
 
+    /** Słownik dyscyplin do formularza tworzenia wyprawy. */
+    public function findAllDisciplines(): array
+    {
+        return Database::connect()->query('SELECT id, name, unit FROM disciplines ORDER BY id')->fetchAll();
+    }
+
+    public function joinCodeExists(string $code): bool
+    {
+        $statement = Database::connect()->prepare('SELECT 1 FROM expeditions WHERE join_code = :code');
+        $statement->execute(['code' => $code]);
+
+        return $statement->fetchColumn() !== false;
+    }
+
+    // Poniższe zapisy wywołuje ExpeditionService wewnątrz jednej transakcji.
+
+    public function insertExpedition(string $name, int $captainId, string $startDate, string $endDate, int $maxMembers, string $joinCode): int
+    {
+        $statement = Database::connect()->prepare(
+            'INSERT INTO expeditions (name, captain_id, start_date, end_date, max_members, join_code)
+             VALUES (:name, :captain, :start, :end, :max, :code) RETURNING id'
+        );
+        $statement->execute([
+            'name' => $name, 'captain' => $captainId, 'start' => $startDate,
+            'end' => $endDate, 'max' => $maxMembers, 'code' => $joinCode,
+        ]);
+
+        return (int) $statement->fetchColumn();
+    }
+
+    public function insertCheckpoint(int $expeditionId, string $name, float $km): void
+    {
+        $statement = Database::connect()->prepare(
+            'INSERT INTO checkpoints (expedition_id, name, km_from_start) VALUES (:expedition, :name, :km)'
+        );
+        $statement->execute(['expedition' => $expeditionId, 'name' => $name, 'km' => $km]);
+    }
+
+    public function insertDiscipline(int $expeditionId, int $disciplineId, float $kmFactor): void
+    {
+        $statement = Database::connect()->prepare(
+            'INSERT INTO expedition_disciplines (expedition_id, discipline_id, km_factor) VALUES (:expedition, :discipline, :factor)'
+        );
+        $statement->execute(['expedition' => $expeditionId, 'discipline' => $disciplineId, 'factor' => $kmFactor]);
+    }
+
+    public function insertMember(int $expeditionId, int $userId): void
+    {
+        $statement = Database::connect()->prepare(
+            'INSERT INTO expedition_members (expedition_id, user_id) VALUES (:expedition, :user)'
+        );
+        $statement->execute(['expedition' => $expeditionId, 'user' => $userId]);
+    }
+
     public function isMember(int $expeditionId, int $userId): bool
     {
         $statement = Database::connect()->prepare(
