@@ -23,6 +23,10 @@ final class DefaultController extends AppController
     {
         $code = in_array($statusCode, self::ERROR_CODES, true) ? $statusCode : 500;
 
+        if ($this->wantsJson()) {
+            $this->json(['error' => Translator::get("error.$code.message")], $statusCode);
+        }
+
         $this->render('error', [
             'pageTitle' => Translator::get("error.$code.title"),
             'statusCode' => $statusCode,

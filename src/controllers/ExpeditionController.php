@@ -39,6 +39,36 @@ final class ExpeditionController extends AppController
         ]);
     }
 
+    // Dołączanie kodem PIN – wywoływane przez fetch() z ekranu „Moje wyprawy”, odpowiada JSON-em.
+    public function join(): void
+    {
+        $user = $this->requireLogin();
+
+        try {
+            $body = json_decode((string) file_get_contents('php://input'), true, 4, JSON_THROW_ON_ERROR);
+        } catch (\JsonException) {
+            $body = null;
+        }
+        $code = is_array($body) ? trim((string) ($body['code'] ?? '')) : '';
+
+        if (preg_match('/^\d{6}$/', $code) !== 1) {
+            $this->json(['error' => Translator::get('expeditions.join_invalid')], 422);
+        }
+
+        $join = (new ExpeditionService())->join($user, $code);
+        $expedition = $join['expedition'];
+
+        // Wynik serwisu → status HTTP: 404 brak kodu, 409 konflikt ze stanem wyprawy.
+        match ($join['result']) {
+            ExpeditionService::JOINED => $this->json([
+                'message' => Translator::get('expeditions.join_success', ['name' => $expedition['name']]),
+                'redirect' => '/expeditions/' . $expedition['id'],
+            ]),
+            ExpeditionService::JOIN_NOT_FOUND => $this->json(['error' => Translator::get('expeditions.join_not_found')], 404),
+            default => $this->json(['error' => Translator::get('expeditions.join_' . $join['result'])], 409),
+        };
+    }
+
     // TODO: dane na sztywno do czasu dashboardu wyprawy (epik 4)
     public function show(int $id): void
     {

@@ -62,6 +62,30 @@ final class ExpeditionService
         ];
     }
 
+    // Wyniki dołączania kodem PIN – kontroler zamienia je na status HTTP i komunikat.
+    public const JOINED = 'joined';
+    public const JOIN_NOT_FOUND = 'not_found';
+    public const JOIN_ALREADY_MEMBER = 'already_member';
+    public const JOIN_FINISHED = 'finished';
+    public const JOIN_FULL = 'full';
+
+    /** @return array{result: string, expedition: ?array} */
+    public function join(User $user, string $code, ?DateTimeImmutable $today = null): array
+    {
+        $today ??= new DateTimeImmutable('today');
+        $expedition = $this->expeditions->findByJoinCode($code);
+
+        $result = match (true) {
+            $expedition === null => self::JOIN_NOT_FOUND,
+            $this->expeditions->isMember($expedition['id'], $user->id) => self::JOIN_ALREADY_MEMBER,
+            new DateTimeImmutable($expedition['endDate']) < $today => self::JOIN_FINISHED,
+            !$this->expeditions->addMemberIfSpace($expedition['id'], $user->id) => self::JOIN_FULL,
+            default => self::JOINED,
+        };
+
+        return ['result' => $result, 'expedition' => $expedition];
+    }
+
     /** Wiersze z bazy → wyprawy pogrupowane w sekcje według statusu. */
     private function group(array $rows, User $user, DateTimeImmutable $today): array
     {

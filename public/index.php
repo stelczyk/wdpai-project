@@ -32,6 +32,7 @@ $routing->post('/forgot-password', PasswordController::class, 'sendLink');
 $routing->get('/reset-password', PasswordController::class, 'resetForm');
 $routing->post('/reset-password', PasswordController::class, 'reset');
 $routing->get('/expeditions', ExpeditionController::class, 'index');
+$routing->post('/expeditions/join', ExpeditionController::class, 'join');
 $routing->get('/expeditions/{id}', ExpeditionController::class, 'show');
 $routing->get('/expeditions/{id}/ranking', ExpeditionController::class, 'ranking');
 $routing->get('/activities/new', ActivityController::class, 'create');
@@ -41,7 +42,9 @@ $routing->get('/captain/{id}', CaptainController::class, 'panel');
 // a każdy inny wyjątek kończy się 500 bez pokazywania szczegółów użytkownikowi.
 try {
     // CSRF sprawdzany centralnie dla każdego POST – nowa trasa nie może przypadkiem zostać bez ochrony.
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && !Session::isValidCsrfToken($_POST['_csrf'] ?? null)) {
+    // Formularze wysyłają token w polu _csrf, żądania fetch() – w nagłówku X-CSRF-Token.
+    $csrfToken = $_POST['_csrf'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? null;
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && !Session::isValidCsrfToken($csrfToken)) {
         throw new HttpException(403, 'Invalid CSRF token');
     }
 

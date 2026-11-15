@@ -109,6 +109,51 @@ final class ExpeditionRepository
         );
     }
 
+    /** Wyprawa o podanym kodzie PIN (id, nazwa, data końca) albo null. */
+    public function findByJoinCode(string $code): ?array
+    {
+        $statement = Database::connect()->prepare('SELECT id, name, end_date FROM expeditions WHERE join_code = :code');
+        $statement->execute(['code' => $code]);
+        $row = $statement->fetch();
+
+        return $row === false ? null : ['id' => (int) $row['id'], 'name' => $row['name'], 'endDate' => $row['end_date']];
+    }
+
+    /**
+     * Dodaje członka, jeśli wyprawa ma wolne miejsce. Wiersz wyprawy jest blokowany (FOR UPDATE)
+     * do końca transakcji, więc dwie osoby dołączające naraz nie przekroczą limitu.
+     * Zwraca false, gdy brak miejsc.
+     */
+    public function addMemberIfSpace(int $expeditionId, int $userId): bool
+    {
+        $db = Database::connect();
+        $db->beginTransaction();
+
+        try {
+            $limit = $db->prepare('SELECT max_members FROM expeditions WHERE id = :id FOR UPDATE');
+            $limit->execute(['id' => $expeditionId]);
+            $maxMembers = (int) $limit->fetchColumn();
+
+            $count = $db->prepare('SELECT count(*) FROM expedition_members WHERE expedition_id = :id');
+            $count->execute(['id' => $expeditionId]);
+
+            if ((int) $count->fetchColumn() >= $maxMembers) {
+                $db->rollBack();
+
+                return false;
+            }
+
+            $insert = $db->prepare('INSERT INTO expedition_members (expedition_id, user_id) VALUES (:expedition, :user)');
+            $insert->execute(['expedition' => $expeditionId, 'user' => $userId]);
+            $db->commit();
+
+            return true;
+        } catch (\Throwable $exception) {
+            $db->rollBack();
+            throw $exception;
+        }
+    }
+
     public function isMember(int $expeditionId, int $userId): bool
     {
         $statement = Database::connect()->prepare(
