@@ -21,9 +21,22 @@ final class ExpeditionRepository
     /**
      * Wyprawy, do których należy użytkownik, z postępem drużyny, jego wkładem i pozycją w drużynie.
      * Pozycja liczona funkcją okna rank() po sumie zatwierdzonych km każdego członka.
+     * $search (opcjonalnie): fragment nazwy wyprawy albo nazwy któregoś z jej checkpointów.
      */
-    public function findForMember(int $userId): array
+    public function findForMember(int $userId, string $search = ''): array
     {
+        $params = ['user' => $userId];
+        $searchCondition = '';
+
+        if ($search !== '') {
+            // Znaki %, _ i \ wpisane przez użytkownika traktujemy dosłownie, a nie jak wzorzec LIKE.
+            $pattern = '%' . addcslashes($search, '%_\\') . '%';
+            $params += ['name_pattern' => $pattern, 'checkpoint_pattern' => $pattern];
+            $searchCondition = 'AND (e.name ILIKE :name_pattern OR EXISTS (
+                                     SELECT 1 FROM checkpoints c
+                                     WHERE c.expedition_id = e.id AND c.name ILIKE :checkpoint_pattern))';
+        }
+
         $statement = Database::connect()->prepare(
             "WITH contributions AS (
                  SELECT m.expedition_id, m.user_id,
@@ -49,10 +62,10 @@ final class ExpeditionRepository
              JOIN expeditions e ON e.id = r.expedition_id
              JOIN expedition_progress p ON p.expedition_id = e.id
              JOIN users captain ON captain.id = e.captain_id
-             WHERE r.user_id = :user
+             WHERE r.user_id = :user $searchCondition
              ORDER BY e.start_date"
         );
-        $statement->execute(['user' => $userId]);
+        $statement->execute($params);
 
         return $statement->fetchAll();
     }

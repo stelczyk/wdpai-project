@@ -1444,3 +1444,140 @@ li.share-2 { color: var(--color-muted); }
     padding: var(--space-5) 3rem;
   }
 }
+
+/* Tekst tylko dla czytników ekranu (etykiety pól, przycisk formularza bez JS) */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Pasek filtrów listy wypraw (Figma: Filter & Tab Switcher Controls) */
+.exp-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  background-color: var(--color-card);
+}
+
+.exp-tabs {
+  display: flex;
+  gap: 0.375rem;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  list-style: none;
+}
+
+.exp-tabs a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-1) 1.25rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1rem;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--color-muted);
+  text-decoration: none;
+}
+
+.exp-tabs a:hover {
+  color: var(--color-text);
+}
+
+.exp-tabs a[aria-current="page"] {
+  color: var(--color-text);
+  background-color: var(--color-field-hover);
+}
+
+/* min-width: 0 – zakładki przewijają się w poziomie wewnątrz paska, zamiast rozpychać stronę na telefonie */
+.exp-filters > nav {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.exp-search {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.exp-search-field {
+  flex: 1 1 12rem;
+  max-width: 16rem;
+}
+
+.exp-search-field,
+.exp-select {
+  position: relative;
+}
+
+.exp-search-field img {
+  position: absolute;
+  top: 50%;
+  left: 0.9375rem;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.exp-search-field input,
+.exp-select select {
+  height: 2.25rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  font: inherit;
+  color: var(--color-text);
+  background-color: var(--color-panel);
+}
+
+.exp-search-field input {
+  width: 100%;
+  padding: 0 var(--space-3) 0 2.25rem;
+  font-size: 0.75rem;
+}
+
+.exp-search-field input::placeholder {
+  color: var(--color-muted);
+}
+
+.exp-select select {
+  padding: 0 2rem 0 var(--space-3);
+  appearance: none;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.exp-select img {
+  position: absolute;
+  top: 50%;
+  right: 0.625rem;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.exp-search-field input:focus-visible,
+.exp-select select:focus-visible {
+  outline: 3px solid var(--color-link);
+  outline-offset: 2px;
+}
