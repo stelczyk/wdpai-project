@@ -48,6 +48,14 @@ try {
         throw new HttpException(403, 'Invalid CSRF token');
     }
 
+    // Dane spoza UTF-8 odrzucamy od razu (400) – inaczej baza zwróciłaby błąd kodowania i 500.
+    array_walk_recursive($_GET, $rejectInvalidUtf8 = static function (mixed $value): void {
+        if (is_string($value) && !mb_check_encoding($value, 'UTF-8')) {
+            throw new HttpException(400, 'Invalid UTF-8 in request');
+        }
+    });
+    array_walk_recursive($_POST, $rejectInvalidUtf8);
+
     $routing->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
 } catch (HttpException $exception) {
     http_response_code($exception->getStatusCode());
