@@ -33,6 +33,9 @@ $routing->get('/reset-password', PasswordController::class, 'resetForm');
 $routing->post('/reset-password', PasswordController::class, 'reset');
 $routing->get('/expeditions', ExpeditionController::class, 'index');
 $routing->post('/expeditions/join', ExpeditionController::class, 'join');
+// Trasa statyczna przed /expeditions/{id} – inaczej „new” trafiłoby do walidacji id (400).
+$routing->get('/expeditions/new', ExpeditionController::class, 'create');
+$routing->post('/expeditions', ExpeditionController::class, 'store');
 $routing->get('/expeditions/{id}', ExpeditionController::class, 'show');
 $routing->get('/expeditions/{id}/ranking', ExpeditionController::class, 'ranking');
 $routing->get('/activities/new', ActivityController::class, 'create');
@@ -47,6 +50,14 @@ try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && !Session::isValidCsrfToken($csrfToken)) {
         throw new HttpException(403, 'Invalid CSRF token');
     }
+
+    // Dane spoza UTF-8 odrzucamy od razu (400) – inaczej baza zwróciłaby błąd kodowania i 500.
+    array_walk_recursive($_GET, $rejectInvalidUtf8 = static function (mixed $value): void {
+        if (is_string($value) && !mb_check_encoding($value, 'UTF-8')) {
+            throw new HttpException(400, 'Invalid UTF-8 in request');
+        }
+    });
+    array_walk_recursive($_POST, $rejectInvalidUtf8);
 
     $routing->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
 } catch (HttpException $exception) {

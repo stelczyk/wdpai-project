@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\HttpException;
+use App\Model\User;
+use App\Service\ExpeditionCreationService;
 use App\Service\ExpeditionService;
+use DateTimeImmutable;
 use App\Translator;
 
 final class ExpeditionController extends AppController
@@ -28,7 +31,17 @@ final class ExpeditionController extends AppController
 
         $overview = (new ExpeditionService())->overviewFor($user, $search, $status, $sort);
 
+        // Po utworzeniu wyprawy (?created=id) pokazujemy jej kod PIN – tylko jej kapitanowi.
+        $createdId = (int) ($_GET['created'] ?? 0);
+        $created = null;
+        foreach (array_merge(...array_values($overview['sections'])) as $expedition) {
+            if ($expedition['id'] === $createdId && $expedition['isCaptain']) {
+                $created = $expedition;
+            }
+        }
+
         $this->render('expeditions', [
+            'created' => $created,
             'pageTitle' => Translator::get('expeditions.title'),
             'scripts' => ['/js/expeditions.js'],
             'user' => $user,
@@ -36,6 +49,43 @@ final class ExpeditionController extends AppController
             'counts' => $overview['counts'],
             'stats' => $overview['stats'],
             'filters' => ['status' => $status, 'sort' => $sort, 'q' => $search],
+        ]);
+    }
+
+    public function create(): void
+    {
+        $this->requireRole(User::ROLE_CAPTAIN, User::ROLE_ADMIN);
+        $creation = new ExpeditionCreationService();
+
+        $this->renderCreateForm($creation->emptyForm(new DateTimeImmutable('today')), [], $creation);
+    }
+
+    public function store(): void
+    {
+        $captain = $this->requireRole(User::ROLE_CAPTAIN, User::ROLE_ADMIN);
+        $creation = new ExpeditionCreationService();
+        $validation = $creation->validate($_POST, new DateTimeImmutable('today'));
+
+        if ($validation['errors'] !== []) {
+            http_response_code(422);
+            $this->renderCreateForm($validation['form'], $validation['errors'], $creation);
+
+            return;
+        }
+
+        $created = $creation->create($captain, $validation['form']);
+        // Lista wypraw pokaże komunikat z kodem PIN do przekazania drużynie.
+        $this->redirect('/expeditions?created=' . $created['id']);
+    }
+
+    private function renderCreateForm(array $form, array $errors, ExpeditionCreationService $creation): void
+    {
+        $this->render('expedition-new', [
+            'pageTitle' => Translator::get('create.title'),
+            'scripts' => ['/js/expedition-form.js'],
+            'form' => $form,
+            'errors' => $errors,
+            'disciplines' => $creation->disciplines(),
         ]);
     }
 

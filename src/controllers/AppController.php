@@ -22,6 +22,18 @@ abstract class AppController
         return (new AuthService())->currentUser() ?? throw new HttpException(401);
     }
 
+    /** @throws HttpException 401 dla gościa, 403 gdy rola użytkownika nie jest na liście */
+    protected function requireRole(string ...$roles): User
+    {
+        $user = $this->requireLogin();
+
+        if (!in_array($user->role, $roles, true)) {
+            throw new HttpException(403);
+        }
+
+        return $user;
+    }
+
     /** @throws HttpException 401 / 404 (brak wyprawy) / 403 (nie należy do wyprawy) */
     protected function requireExpeditionMember(int $expeditionId): User
     {
