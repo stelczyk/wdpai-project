@@ -183,6 +183,28 @@ return [
     'expedition.cp_planned' => '{km} km • Zaplanowany',
     'expedition.cp_finish' => '{km} km • Meta',
 
+    // Feed i karta aktywności
+    'feed.title' => 'Ostatnie aktywności drużyny',
+    'feed.count' => 'Wpisy: {count}',
+    'feed.empty' => 'Nikt jeszcze nie dodał aktywności – bądź pierwszy!',
+    'feed.more' => 'Pokazano {shown} najnowszych z {total}.',
+    'activity.today' => 'Dziś',
+    'activity.yesterday' => 'Wczoraj',
+    'activity.days_ago' => '{days} dni temu',
+    'activity.you' => '(Ty)',
+    'metric.distance' => 'Dystans',
+    'metric.duration' => 'Czas trwania',
+    'metric.pace' => 'Średnie tempo',
+    'metric.speed' => 'Prędkość śr.',
+    'metric.heart_rate' => 'Śr. tętno',
+    'metric.route_equivalent' => 'Ekwiwalent km',
+    'activity.metrics_label' => 'Parametry treningu',
+    'activity.route_km' => '+{km} km do wspólnego celu',
+    'activity.pending_km' => '+{km} km po akceptacji kapitana',
+    'activity.rejected_km' => 'Odrzucona – nie wlicza się do trasy',
+    'activity.status_PENDING' => 'Czeka na akceptację',
+    'activity.status_REJECTED' => 'Odrzucona',
+
     // Ranking
     'ranking.title' => 'Ranking wyprawy',
     'ranking.heading' => 'Ranking wyprawy nr {id}',

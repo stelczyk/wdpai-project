@@ -122,4 +122,22 @@ $checkpointLanes = $e['route'] === [] ? 0 : max(array_column($e['route'], 'lane'
             </ol>
         </div>
     </section>
+
+    <section class="feed" aria-labelledby="feed-title">
+        <header class="feed-head">
+            <h2 id="feed-title"><?= $t('feed.title') ?></h2>
+            <span class="badge badge--km"><?= $t('feed.count', ['count' => $feed['total']]) ?></span>
+        </header>
+
+        <?php if ($feed['items'] === []): ?>
+            <p class="feed-empty"><?= $t('feed.empty') ?></p>
+        <?php else: ?>
+            <?php foreach ($feed['items'] as $activity): ?>
+                <?php require __DIR__ . '/partials/activity-card.html.php'; ?>
+            <?php endforeach; ?>
+            <?php if ($feed['total'] > count($feed['items'])): ?>
+                <p class="feed-more"><?= $t('feed.more', ['shown' => count($feed['items']), 'total' => $feed['total']]) ?></p>
+            <?php endif; ?>
+        <?php endif; ?>
+    </section>
 </main>

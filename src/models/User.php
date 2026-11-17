@@ -28,6 +28,17 @@ final readonly class User
         return $this->role === self::ROLE_ADMIN;
     }
 
+    /** Inicjały do awatara: „Jan Kowalski” → „JK” (pasek trasy, feed aktywności). */
+    public static function initialsOf(string $name): string
+    {
+        $parts = preg_split('/\s+/u', trim($name), -1, PREG_SPLIT_NO_EMPTY) ?: ['?'];
+
+        return mb_strtoupper(implode('', array_map(
+            static fn (string $part): string => mb_substr($part, 0, 1),
+            array_slice($parts, 0, 2),
+        )));
+    }
+
     // Zakładać wyprawy mogą kapitanowie i administrator.
     public function canCreateExpeditions(): bool
     {

@@ -2302,3 +2302,278 @@ li.share-2 { color: var(--color-muted); }
     translate: 0 0;
   }
 }
+
+/* Dashboard wyprawy – feed ostatnich aktywności */
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.feed-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background-color: var(--color-card);
+}
+
+.feed-head h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.feed-empty,
+.feed-more {
+  margin: 0;
+  padding: var(--space-3);
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
+
+.feed-empty {
+  border: 1px dashed var(--color-divider);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+/* Karta aktywności (partial activity-card) */
+.activity-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background-color: var(--color-card);
+}
+
+.activity-card--rejected {
+  opacity: 0.7;
+}
+
+.activity-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.activity-avatar {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-text);
+  background-color: var(--color-chip);
+}
+
+.activity-avatar--me {
+  color: var(--color-on-accent);
+  background-color: var(--color-accent);
+}
+
+.activity-who {
+  flex: 1;
+  min-width: 10rem;
+}
+
+.activity-who h3 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.activity-you {
+  font-weight: 500;
+  color: var(--color-muted);
+}
+
+.activity-captain {
+  padding: 0.0625rem 0.375rem;
+  font-size: 0.625rem;
+  color: var(--color-link);
+  background-color: var(--color-accent-surface);
+}
+
+.activity-meta {
+  margin: 0.125rem 0 0;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  overflow-wrap: anywhere;
+}
+
+/* Odznaka dyscypliny – kolory z Figmy (rower zielony, bieg niebieski, basen turkus, siłownia fiolet) */
+.activity-discipline {
+  --discipline: var(--color-muted);
+  --discipline-surface: var(--color-chip);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--discipline);
+  background-color: var(--discipline-surface);
+}
+
+.activity-discipline .dot {
+  width: 0.375rem;
+  height: 0.375rem;
+}
+
+.activity-discipline--run {
+  --discipline: #00639a;
+  --discipline-surface: rgb(0 99 154 / 0.12);
+}
+
+.activity-discipline--bike {
+  --discipline: #047857;
+  --discipline-surface: rgb(4 120 87 / 0.12);
+}
+
+.activity-discipline--swim {
+  --discipline: #0f766e;
+  --discipline-surface: rgb(15 118 110 / 0.12);
+}
+
+.activity-discipline--gym {
+  --discipline: #6d28d9;
+  --discipline-surface: rgb(109 40 217 / 0.12);
+}
+
+[data-theme="dark"] .activity-discipline--run {
+  --discipline: #8ecdff;
+  --discipline-surface: rgb(0 154 225 / 0.2);
+}
+
+[data-theme="dark"] .activity-discipline--bike {
+  --discipline: #34d399;
+  --discipline-surface: #064e3b;
+}
+
+[data-theme="dark"] .activity-discipline--swim {
+  --discipline: #5eead4;
+  --discipline-surface: #134e4a;
+}
+
+[data-theme="dark"] .activity-discipline--gym {
+  --discipline: #c4b5fd;
+  --discipline-surface: #3b0764;
+}
+
+.activity-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-panel);
+}
+
+.activity-metrics > div + div {
+  padding-left: var(--space-2);
+  border-left: 1px solid var(--color-divider);
+}
+
+.activity-metrics > div:not(:last-child) {
+  padding-right: var(--space-2);
+}
+
+.activity-metrics dt {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.activity-metrics dd {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.activity-metrics dd span {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--color-muted);
+}
+
+.activity-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1);
+}
+
+.activity-km {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-link);
+}
+
+.activity-km--muted {
+  font-weight: 500;
+  color: var(--color-muted);
+}
+
+.activity-status {
+  padding: 0.125rem var(--space-1);
+  border-radius: 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  background-color: var(--color-chip);
+}
+
+.activity-card--rejected .activity-status {
+  color: var(--color-error);
+  background-color: var(--color-error-surface);
+}
+
+[data-theme="dark"] .activity-card--rejected .activity-status {
+  color: var(--color-on-error-surface);
+}
+
+@media (max-width: 30rem) {
+  .activity-card {
+    padding: var(--space-3);
+  }
+
+  .activity-metrics {
+    padding: var(--space-2);
+  }
+
+  .activity-metrics dd {
+    font-size: 1rem;
+  }
+
+  .activity-metrics dt {
+    letter-spacing: 0.04em;
+  }
+}

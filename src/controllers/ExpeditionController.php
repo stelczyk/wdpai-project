@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\HttpException;
 use App\Model\User;
+use App\Service\ActivityFeedService;
 use App\Service\ExpeditionCreationService;
 use App\Service\ExpeditionService;
 use DateTimeImmutable;
@@ -130,6 +131,7 @@ final class ExpeditionController extends AppController
         $this->render('expedition', [
             'pageTitle' => $expedition['name'],
             'expedition' => $expedition,
+            'feed' => (new ActivityFeedService())->recentForExpedition($user, $id),
         ]);
     }
 

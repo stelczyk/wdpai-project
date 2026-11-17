@@ -183,6 +183,28 @@ return [
     'expedition.cp_planned' => '{km} km • Upcoming',
     'expedition.cp_finish' => '{km} km • Finish',
 
+    // Activity feed and card
+    'feed.title' => 'Recent team activity',
+    'feed.count' => 'Entries: {count}',
+    'feed.empty' => 'No activities yet – be the first!',
+    'feed.more' => 'Showing the {shown} most recent of {total}.',
+    'activity.today' => 'Today',
+    'activity.yesterday' => 'Yesterday',
+    'activity.days_ago' => '{days} days ago',
+    'activity.you' => '(You)',
+    'metric.distance' => 'Distance',
+    'metric.duration' => 'Duration',
+    'metric.pace' => 'Average pace',
+    'metric.speed' => 'Average speed',
+    'metric.heart_rate' => 'Avg heart rate',
+    'metric.route_equivalent' => 'Km equivalent',
+    'activity.metrics_label' => 'Workout details',
+    'activity.route_km' => '+{km} km towards the team goal',
+    'activity.pending_km' => '+{km} km once the captain approves',
+    'activity.rejected_km' => 'Rejected – does not count towards the route',
+    'activity.status_PENDING' => 'Awaiting approval',
+    'activity.status_REJECTED' => 'Rejected',
+
     // Leaderboard
     'ranking.title' => 'Expedition leaderboard',
     'ranking.heading' => 'Leaderboard – expedition #{id}',
