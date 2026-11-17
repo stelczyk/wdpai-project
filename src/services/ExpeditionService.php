@@ -156,7 +156,7 @@ final class ExpeditionService
     {
         $members = array_map(static fn (array $member): array => $member + [
             'percent' => $percent($member['km']),
-            'initials' => self::initials($member['name']),
+            'initials' => User::initialsOf($member['name']),
             'isMe' => $member['id'] === $user->id,
         ], $members);
         usort($members, static fn (array $a, array $b): int => $a['percent'] <=> $b['percent']);
@@ -182,16 +182,6 @@ final class ExpeditionService
         unset($item);
 
         return $items;
-    }
-
-    private static function initials(string $name): string
-    {
-        $parts = preg_split('/\s+/u', trim($name), -1, PREG_SPLIT_NO_EMPTY) ?: ['?'];
-
-        return mb_strtoupper(implode('', array_map(
-            static fn (string $part): string => mb_substr($part, 0, 1),
-            array_slice($parts, 0, 2),
-        )));
     }
 
     /** Wiersze z bazy → wyprawy pogrupowane w sekcje według statusu. */
