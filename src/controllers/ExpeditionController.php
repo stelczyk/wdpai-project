@@ -119,17 +119,17 @@ final class ExpeditionController extends AppController
         };
     }
 
-    // TODO: dane na sztywno do czasu dashboardu wyprawy (epik 4)
+    // Dashboard wyprawy: postęp trasy z widoku expedition_progress, checkpointy i pozycje uczestników.
     public function show(int $id): void
     {
-        $this->requireExpeditionMember($id);
+        $user = $this->requireExpeditionMember($id);
+
+        $expedition = (new ExpeditionService())->dashboard($user, $id)
+            ?? throw new HttpException(404, 'Expedition not found');
 
         $this->render('expedition', [
-            'pageTitle' => Translator::get('expedition.title'),
-            'expeditionId' => $id,
-            'routeName' => 'Kraków → Monza',
-            'progressKm' => 312,
-            'totalKm' => 1100,
+            'pageTitle' => $expedition['name'],
+            'expedition' => $expedition,
         ]);
     }
 

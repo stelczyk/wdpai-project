@@ -86,6 +86,114 @@ final class ExpeditionService
         return ['result' => $result, 'expedition' => $expedition];
     }
 
+    // Znaczniki uczestników bliżej niż tyle % trasy trafiają do kolejnego rzędu, żeby się nie nakładały.
+    private const MARKER_GAP_PERCENT = 10.0;
+    // Podpisy checkpointów („660 km • Zaplanowany”) są szersze, więc potrzebują większego odstępu.
+    private const CHECKPOINT_GAP_PERCENT = 15.0;
+
+    /**
+     * Dashboard wyprawy: dane z describe() + pasek trasy (checkpointy i uczestnicy w % długości),
+     * pozostały dystans, średnie tempo drużyny i szacowana data dotarcia do mety.
+     * Null, gdy wyprawa nie istnieje (kontroler sprawdził już członkostwo).
+     */
+    public function dashboard(User $user, int $expeditionId, ?DateTimeImmutable $today = null): ?array
+    {
+        $today ??= new DateTimeImmutable('today');
+        $row = $this->expeditions->findOneForUser($expeditionId, $user->id);
+        if ($row === null) {
+            return null;
+        }
+
+        $checkpoints = $this->expeditions->findCheckpoints([$expeditionId])[$expeditionId] ?? [];
+        $expedition = $this->describe($row, $checkpoints, $user, $today);
+        $members = $this->expeditions->findMembersProgress($expeditionId);
+        $expedition['memberCount'] = count($members);
+
+        $totalKm = $expedition['totalKm'];
+        $approvedKm = $expedition['approvedKm'];
+        $percent = static fn (float $km): float => $totalKm > 0 ? min(100.0, $km / $totalKm * 100) : 0.0;
+        $targetIndex = $expedition['stage'] === null ? null : $expedition['stage']['number'];
+        $lastIndex = count($checkpoints) - 1;
+
+        $route = [];
+        foreach ($checkpoints as $index => $checkpoint) {
+            $route[] = $checkpoint + [
+                'percent' => $percent($checkpoint['km']),
+                'state' => match (true) {
+                    $index === 0 => 'start',
+                    $index === $targetIndex => 'target',
+                    $checkpoint['km'] <= $approvedKm => 'passed',
+                    $index === $lastIndex => 'finish',
+                    default => 'planned',
+                },
+                'isFinish' => $index === $lastIndex,
+            ];
+        }
+
+        // Tempo liczone od startu do dziś (albo do końca wyprawy, gdy już się skończyła).
+        $daysElapsed = match ($expedition['status']) {
+            self::PLANNED => 0,
+            self::COMPLETED => $expedition['durationDays'],
+            default => $expedition['day'],
+        };
+        $pace = $daysElapsed > 0 ? $approvedKm / $daysElapsed : null;
+        $remainingKm = max(0.0, $totalKm - $approvedKm);
+        $eta = $pace > 0 && $remainingKm > 0 && $expedition['status'] === self::IN_PROGRESS
+            ? $today->modify('+' . (int) ceil($remainingKm / $pace) . ' days')
+            : null;
+
+        return $expedition + [
+            'route' => self::assignLanes($route, self::CHECKPOINT_GAP_PERCENT),
+            'members' => $this->placeMarkers($members, $user, $percent),
+            'remainingKm' => $remainingKm,
+            'paceKmPerDay' => $pace,
+            'eta' => $eta,
+        ];
+    }
+
+    /** Pozycja każdego uczestnika na pasku (% trasy) i rząd, w którym rysujemy jego znacznik. */
+    private function placeMarkers(array $members, User $user, callable $percent): array
+    {
+        $members = array_map(static fn (array $member): array => $member + [
+            'percent' => $percent($member['km']),
+            'initials' => self::initials($member['name']),
+            'isMe' => $member['id'] === $user->id,
+        ], $members);
+        usort($members, static fn (array $a, array $b): int => $a['percent'] <=> $b['percent']);
+
+        return self::assignLanes($members, self::MARKER_GAP_PERCENT);
+    }
+
+    /**
+     * Elementy posortowane po 'percent' dostają 'lane' – zachłannie pierwszy rząd,
+     * w którym poprzedni element jest dalej niż $gap % trasy (inaczej podpisy by się nakładały).
+     */
+    private static function assignLanes(array $items, float $gap): array
+    {
+        $laneEnds = [];
+        foreach ($items as &$item) {
+            $lane = 0;
+            while (isset($laneEnds[$lane]) && $item['percent'] - $laneEnds[$lane] < $gap) {
+                $lane++;
+            }
+            $laneEnds[$lane] = $item['percent'];
+            $item['lane'] = $lane;
+        }
+        unset($item);
+
+        return $items;
+    }
+
+    private static function initials(string $name): string
+    {
+        $parts = preg_split('/\s+/u', trim($name), -1, PREG_SPLIT_NO_EMPTY) ?: ['?'];
+
+        return mb_strtoupper(implode('', array_map(
+            static fn (string $part): string => mb_substr($part, 0, 1),
+            array_slice($parts, 0, 2),
+        )));
+    }
+
     /** Wiersze z bazy → wyprawy pogrupowane w sekcje według statusu. */
     private function group(array $rows, User $user, DateTimeImmutable $today): array
     {

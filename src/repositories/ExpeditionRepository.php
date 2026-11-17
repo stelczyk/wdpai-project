@@ -37,6 +37,46 @@ final class ExpeditionRepository
                                      WHERE c.expedition_id = e.id AND c.name ILIKE :checkpoint_pattern))';
         }
 
+        return $this->selectWithProgress('JOIN', "TRUE $searchCondition", $params);
+    }
+
+    /**
+     * Jedna wyprawa z postępem i wkładem użytkownika (dashboard). LEFT JOIN, bo admin
+     * może oglądać wyprawę, do której nie należy – wtedy jego km i pozycja są puste.
+     */
+    public function findOneForUser(int $expeditionId, int $userId): ?array
+    {
+        $rows = $this->selectWithProgress('LEFT JOIN', 'e.id = :expedition', ['user' => $userId, 'expedition' => $expeditionId]);
+
+        return $rows[0] ?? null;
+    }
+
+    /** Członkowie wyprawy z sumą zatwierdzonych km, od największego wkładu. */
+    public function findMembersProgress(int $expeditionId): array
+    {
+        $statement = Database::connect()->prepare(
+            "SELECT u.id, u.name, COALESCE(sum(a.route_km) FILTER (WHERE a.status = 'APPROVED'), 0) AS km
+             FROM expedition_members m
+             JOIN users u ON u.id = m.user_id
+             LEFT JOIN activities a ON a.expedition_id = m.expedition_id AND a.user_id = m.user_id
+             WHERE m.expedition_id = :id
+             GROUP BY u.id, u.name
+             ORDER BY km DESC, u.name"
+        );
+        $statement->execute(['id' => $expeditionId]);
+
+        return array_map(
+            static fn (array $row): array => ['id' => (int) $row['id'], 'name' => $row['name'], 'km' => (float) $row['km']],
+            $statement->fetchAll(),
+        );
+    }
+
+    /**
+     * Wspólne zapytanie listy i dashboardu. $join i $where to stałe fragmenty z tej klasy,
+     * nigdy dane od użytkownika – te idą wyłącznie przez $params.
+     */
+    private function selectWithProgress(string $join, string $where, array $params): array
+    {
         $statement = Database::connect()->prepare(
             "WITH contributions AS (
                  SELECT m.expedition_id, m.user_id,
@@ -58,11 +98,11 @@ final class ExpeditionRepository
                     (SELECT string_agg(d.name, ', ' ORDER BY d.id)
                      FROM expedition_disciplines ed JOIN disciplines d ON d.id = ed.discipline_id
                      WHERE ed.expedition_id = e.id) AS disciplines
-             FROM ranked r
-             JOIN expeditions e ON e.id = r.expedition_id
+             FROM expeditions e
+             $join ranked r ON r.expedition_id = e.id AND r.user_id = :user
              JOIN expedition_progress p ON p.expedition_id = e.id
              JOIN users captain ON captain.id = e.captain_id
-             WHERE r.user_id = :user $searchCondition
+             WHERE $where
              ORDER BY e.start_date"
         );
         $statement->execute($params);

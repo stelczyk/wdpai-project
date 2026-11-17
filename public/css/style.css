@@ -1903,3 +1903,402 @@ li.share-2 { color: var(--color-muted); }
   font-weight: 600;
   cursor: pointer;
 }
+
+/* Dashboard wyprawy – nagłówek */
+.dash-head,
+.dash-progress {
+  padding: var(--space-4);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background-color: var(--color-card);
+}
+
+.dash-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.dash-head h1 {
+  margin: var(--space-1) 0 0;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+.dash-status {
+  --card-accent: var(--color-link);
+  --card-accent-surface: var(--color-chip);
+  padding-inline: var(--space-1);
+}
+
+.dash-status .dot {
+  background-color: var(--color-accent);
+}
+
+.dash-status--planned .dot {
+  background-color: var(--color-info);
+}
+
+.dash-status--completed .dot {
+  background-color: var(--color-muted);
+}
+
+.dash-day {
+  color: var(--color-text);
+}
+
+.dash-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.dash-actions .exp-button--ghost {
+  padding: 0.625rem var(--space-3);
+  font-size: 0.75rem;
+}
+
+/* Dashboard wyprawy – zbiorczy dystans i pasek trasy */
+.dash-progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  overflow: hidden;
+}
+
+.dash-progress-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.dash-label {
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.dash-total {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1);
+  margin: var(--space-1) 0 0;
+  font-size: clamp(1.25rem, 4vw, 2rem);
+  font-weight: 500;
+  color: var(--color-muted);
+}
+
+.dash-total strong {
+  font-size: clamp(2.5rem, 8vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: var(--color-text);
+}
+
+.dash-percent {
+  align-self: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-link);
+  background-color: var(--color-accent-surface);
+}
+
+.dash-readouts {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: var(--space-1) 0;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-panel);
+}
+
+.dash-readouts > div {
+  padding: 0.25rem var(--space-3);
+}
+
+.dash-readouts > div + div {
+  border-left: 1px solid var(--color-divider);
+}
+
+.dash-readouts dt {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.dash-readouts dd {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Pasek trasy: widok ustawia tylko --pos (procent długości trasy), wygląd jest tutaj. */
+.route {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-top: 2.75rem;
+}
+
+.route-track {
+  position: relative;
+  margin-inline: 0.625rem;
+}
+
+.route-bar {
+  display: block;
+  width: 100%;
+  height: 0.625rem;
+  border: 0;
+  border-radius: 9999px;
+  background-color: var(--color-chip);
+  appearance: none;
+}
+
+.route-bar::-webkit-progress-bar {
+  border-radius: 9999px;
+  background-color: var(--color-chip);
+}
+
+.route-bar::-webkit-progress-value {
+  border-radius: 9999px;
+  background: linear-gradient(to right, var(--color-accent), #ff8a5c);
+}
+
+.route-bar::-moz-progress-bar {
+  border-radius: 9999px;
+  background: linear-gradient(to right, var(--color-accent), #ff8a5c);
+}
+
+.route-dot,
+.route-group {
+  position: absolute;
+  left: var(--pos);
+  translate: -50% 0;
+}
+
+.route-dot {
+  top: 50%;
+  width: 1rem;
+  height: 1rem;
+  margin-top: -0.5rem;
+  border: 2px solid var(--color-card);
+  border-radius: 50%;
+  background-color: var(--color-chip);
+}
+
+.route-dot--start {
+  background: radial-gradient(circle, var(--color-on-accent) 0 0.1875rem, var(--color-accent) 0.1875rem);
+}
+
+.route-dot--passed,
+.route-dot--target,
+.route-dot--finish {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: -0.625rem;
+}
+
+.route-dot--passed {
+  border: 0;
+  background: var(--color-accent) url("/img/dashboard/check.svg") center / 0.625rem no-repeat;
+}
+
+.route-dot--target {
+  border-color: var(--color-accent);
+  background: radial-gradient(circle, var(--color-accent) 0 0.25rem, var(--color-panel) 0.25rem);
+  box-shadow: 0 0 0 0.25rem var(--color-accent-surface);
+}
+
+.route-dot--finish {
+  border-color: var(--color-chip);
+  background: var(--color-panel) url("/img/dashboard/flag.svg") center / 0.5rem no-repeat;
+}
+
+.route-group {
+  bottom: calc(100% + 0.5rem);
+  padding: 0.125rem var(--space-1);
+  border-radius: 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  color: var(--color-on-accent);
+  background-color: var(--color-accent);
+}
+
+/* Znaczniki uczestników – kolejne rzędy (--lane), gdy stoją zbyt blisko siebie.
+   Środek kółka z inicjałami stoi dokładnie na --pos, podpis obok. */
+.route-members {
+  position: relative;
+  height: calc(var(--lanes) * 2rem);
+  margin: 0 0.625rem;
+  padding: 0;
+  list-style: none;
+}
+
+.route-member {
+  position: absolute;
+  top: calc(var(--lane) * 2rem);
+  left: var(--pos);
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  translate: -0.875rem 0;
+}
+
+/* Przy końcu trasy podpis po lewej, żeby nie wychodził poza kartę */
+.route-member--flip {
+  flex-direction: row-reverse;
+  translate: calc(-100% + 0.875rem) 0;
+}
+
+.route-avatar {
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--color-text);
+  background-color: var(--color-chip);
+}
+
+.route-member--me {
+  z-index: 1;
+}
+
+.route-member--me .route-avatar {
+  color: var(--color-on-accent);
+  background-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-card), 0 0 0 4px var(--color-accent);
+}
+
+/* Na telefonie same inicjały, podpis zostaje dla czytników ekranu */
+.route-member-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Na telefonie punkty trasy jako lista pod paskiem */
+.route-checkpoints {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.route-cp {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 var(--space-2);
+  font-size: 0.75rem;
+}
+
+.route-cp strong {
+  font-weight: 600;
+}
+
+.route-cp span {
+  color: var(--color-muted);
+}
+
+.route-cp--planned strong,
+.route-cp--finish strong {
+  font-weight: 500;
+  color: var(--color-muted);
+}
+
+.route-cp--target strong {
+  font-weight: 700;
+}
+
+.route-cp--target span {
+  font-weight: 500;
+  color: var(--color-link);
+}
+
+@media (min-width: 48rem) {
+  .dash-head,
+  .dash-progress {
+    padding: var(--space-5);
+  }
+
+  .route-member-label {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    padding: 0 0.375rem;
+    border-radius: 0.25rem;
+    font-size: 0.625rem;
+    line-height: 1.25rem;
+    color: var(--color-muted);
+    background-color: var(--color-panel);
+  }
+
+  .route-member--me .route-member-label {
+    font-weight: 600;
+    color: var(--color-link);
+  }
+
+  /* Na szerokim ekranie etykiety stoją pod swoim punktem na trasie */
+  .route-checkpoints {
+    position: relative;
+    display: block;
+    height: calc(var(--cp-lanes) * 2.75rem);
+    margin-inline: 0.625rem;
+  }
+
+  .route-cp {
+    position: absolute;
+    top: calc(var(--lane) * 2.75rem);
+    left: var(--pos);
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    white-space: nowrap;
+    translate: -50% 0;
+  }
+
+  .route-cp:first-child {
+    align-items: flex-start;
+    text-align: left;
+    translate: -0.625rem 0;
+  }
+
+  .route-cp--last {
+    left: auto;
+    right: -0.625rem;
+    align-items: flex-end;
+    text-align: right;
+    translate: 0 0;
+  }
+}
