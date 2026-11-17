@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Model\User;
+use App\Repository\ActivityRepository;
 use App\Repository\ExpeditionRepository;
 use App\Translator;
 use DateTimeImmutable;
@@ -25,8 +26,10 @@ final class ExpeditionService
     // Na kafelku wkładu pokazujemy dwie główne dyscypliny, resztę łączymy w „inne”.
     private const MAIN_DISCIPLINES = 2;
 
-    public function __construct(private readonly ExpeditionRepository $expeditions = new ExpeditionRepository())
-    {
+    public function __construct(
+        private readonly ExpeditionRepository $expeditions = new ExpeditionRepository(),
+        private readonly ActivityRepository $activities = new ActivityRepository(),
+    ) {
     }
 
     /**
@@ -148,6 +151,71 @@ final class ExpeditionService
             'remainingKm' => $remainingKm,
             'paceKmPerDay' => $pace,
             'eta' => $eta,
+            'myStats' => self::memberStats($this->activities->findDailyTotals($expeditionId, $user->id), $members, $user->id, $today),
+        ];
+    }
+
+    /**
+     * Kafelki uczestnika: km w tym tygodniu (od poniedziałku) vs poprzedni, miejsce w drużynie
+     * z przewagą/stratą i seria kolejnych dni z aktywnością. Null dla nie-członka (admin podgląda).
+     *
+     * @param list<array{date: string, km: float}> $days dni z aktywnością, od najnowszego
+     * @param list<array{id: int, name: string, km: float}> $members od największego wkładu
+     */
+    public static function memberStats(array $days, array $members, int $userId, DateTimeImmutable $today): ?array
+    {
+        $myKm = null;
+        foreach ($members as $member) {
+            if ($member['id'] === $userId) {
+                $myKm = $member['km'];
+            }
+        }
+        if ($myKm === null) {
+            return null;
+        }
+
+        // Miejsce = 1 + liczba osób z większym dystansem (remis = to samo miejsce).
+        $above = array_filter($members, static fn (array $m): bool => $m['km'] > $myKm);
+        $below = array_filter($members, static fn (array $m): bool => $m['km'] < $myKm);
+        $position = count($above) + 1;
+
+        $weekStart = $today->modify('monday this week');
+        $previousStart = $weekStart->modify('-7 days');
+        $weekKm = $previousKm = 0.0;
+        foreach ($days as $day) {
+            $date = new DateTimeImmutable($day['date']);
+            if ($date >= $weekStart && $date <= $today) {
+                $weekKm += $day['km'];
+            } elseif ($date >= $previousStart && $date < $weekStart) {
+                $previousKm += $day['km'];
+            }
+        }
+
+        // Seria trwa, jeśli ostatni wpis jest z dziś albo wczoraj; liczymy kolejne dni wstecz.
+        $pastDays = array_values(array_filter($days, static fn (array $d): bool => new DateTimeImmutable($d['date']) <= $today));
+        $lastDate = $pastDays === [] ? null : new DateTimeImmutable($pastDays[0]['date']);
+        $streak = 0;
+        if ($lastDate !== null && $lastDate >= $today->modify('-1 day')) {
+            $expected = $lastDate;
+            foreach ($pastDays as $day) {
+                if (new DateTimeImmutable($day['date']) != $expected) {
+                    break;
+                }
+                $streak++;
+                $expected = $expected->modify('-1 day');
+            }
+        }
+
+        return [
+            'weekKm' => $weekKm,
+            'weekChangePercent' => $previousKm > 0 ? ($weekKm - $previousKm) / $previousKm * 100 : null,
+            'position' => $position,
+            'memberCount' => count($members),
+            // Przewaga nad następną osobą (gdy prowadzę) albo strata do osoby tuż nade mną.
+            'leadKm' => $position === 1 && $below !== [] ? $myKm - max(array_column($below, 'km')) : null,
+            'behindKm' => $above === [] ? null : min(array_column($above, 'km')) - $myKm,
+            'streak' => $streak,
+            'lastEntry' => $lastDate === null ? null : ActivityFeedService::relativeDay($lastDate, $today),
         ];
     }
 
@@ -263,6 +331,8 @@ final class ExpeditionService
                     'number' => $index,
                     'from' => $checkpoints[$index - 1]['name'],
                     'to' => $checkpoint['name'],
+                    'fromKm' => $checkpoints[$index - 1]['km'],
+                    'toKm' => $checkpoint['km'],
                     'kmLeft' => $checkpoint['km'] - $approvedKm,
                 ];
             }

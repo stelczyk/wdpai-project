@@ -123,21 +123,62 @@ $checkpointLanes = $e['route'] === [] ? 0 : max(array_column($e['route'], 'lane'
         </div>
     </section>
 
-    <section class="feed" aria-labelledby="feed-title">
-        <header class="feed-head">
-            <h2 id="feed-title"><?= $t('feed.title') ?></h2>
-            <span class="badge badge--km"><?= $t('feed.count', ['count' => $feed['total']]) ?></span>
-        </header>
+    <?php if ($e['myStats'] !== null): ?>
+        <?php require __DIR__ . '/partials/member-stats.html.php'; ?>
+    <?php endif; ?>
 
-        <?php if ($feed['items'] === []): ?>
-            <p class="feed-empty"><?= $t('feed.empty') ?></p>
-        <?php else: ?>
-            <?php foreach ($feed['items'] as $activity): ?>
-                <?php require __DIR__ . '/partials/activity-card.html.php'; ?>
-            <?php endforeach; ?>
-            <?php if ($feed['total'] > count($feed['items'])): ?>
-                <p class="feed-more"><?= $t('feed.more', ['shown' => count($feed['items']), 'total' => $feed['total']]) ?></p>
+    <div class="dash-columns">
+        <section class="feed" aria-labelledby="feed-title">
+            <header class="feed-head">
+                <h2 id="feed-title"><?= $t('feed.title') ?></h2>
+                <span class="badge badge--km"><?= $t('feed.count', ['count' => $feed['total']]) ?></span>
+            </header>
+
+            <?php if ($feed['items'] === []): ?>
+                <p class="feed-empty"><?= $t('feed.empty') ?></p>
+            <?php else: ?>
+                <?php foreach ($feed['items'] as $activity): ?>
+                    <?php require __DIR__ . '/partials/activity-card.html.php'; ?>
+                <?php endforeach; ?>
+                <?php if ($feed['total'] > count($feed['items'])): ?>
+                    <p class="feed-more"><?= $t('feed.more', ['shown' => count($feed['items']), 'total' => $feed['total']]) ?></p>
+                <?php endif; ?>
             <?php endif; ?>
-        <?php endif; ?>
-    </section>
-</main>
+        </section>
+
+        <aside class="dash-aside">
+            <?php $stage = $e['stage']; ?>
+            <section class="stat-card stage-card" aria-labelledby="stage-title">
+                <?php if ($stage === null): ?>
+                    <h2 id="stage-title"><?= $t('stage.finished_title') ?></h2>
+                    <p class="stage-route">
+                        <img src="/img/dashboard/flag.svg" alt="" width="16" height="16">
+                        <?= $t('stage.finished_text', ['km' => $km($e['totalKm'])]) ?>
+                    </p>
+                <?php else: ?>
+                    <header class="stat-card-head">
+                        <h2 id="stage-title"><?= $t('stage.title', ['number' => $stage['number']]) ?></h2>
+                        <?php if ($e['status'] !== ExpeditionService::COMPLETED): ?>
+                            <span class="badge badge--status dash-status dash-status--<?= $e['status'] ?>">
+                                <?= $t($e['status'] === ExpeditionService::PLANNED ? 'stage.before_start' : 'stage.on_route') ?>
+                            </span>
+                        <?php endif; ?>
+                    </header>
+                    <p class="stage-route"><?= htmlspecialchars($stage['from']) ?> → <?= htmlspecialchars($stage['to']) ?></p>
+                    <div class="stage-box">
+                        <p class="stage-left">
+                            <span><?= $t('stage.left', ['to' => $stage['to']]) ?></span>
+                            <strong><?= $km($stage['kmLeft']) ?> km</strong>
+                        </p>
+                        <progress class="exp-bar" value="<?= round(max(0.0, $e['approvedKm'] - $stage['fromKm']), 2) ?>"
+                                  max="<?= round($stage['toKm'] - $stage['fromKm'], 2) ?>" aria-label="<?= $t('stage.progress_label') ?>"></progress>
+                        <p class="stage-ends">
+                            <span><?= htmlspecialchars($stage['from']) ?> (<?= $km($stage['fromKm']) ?> km)</span>
+                            <span><?= htmlspecialchars($stage['to']) ?> (<?= $km($stage['toKm']) ?> km)</span>
+                        </p>
+                    </div>
+                <?php endif; ?>
+            </section>
+        </aside>
+        </div>
+    </main>
