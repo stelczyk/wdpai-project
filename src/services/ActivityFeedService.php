@@ -36,20 +36,13 @@ final class ActivityFeedService
     /** Wiersz z bazy → dane karty aktywności (partial activity-card). */
     private function card(array $row, User $viewer, DateTimeImmutable $today): array
     {
-        $date = new DateTimeImmutable($row['activity_date']);
-        $daysAgo = (int) $date->diff($today)->format('%r%a');
-
         return [
             'id' => (int) $row['id'],
             'userName' => $row['user_name'],
             'initials' => User::initialsOf($row['user_name']),
             'isMe' => (int) $row['user_id'] === $viewer->id,
             'isCaptain' => (bool) $row['is_captain'],
-            'when' => match (true) {
-                $daysAgo <= 0 => Translator::get('activity.today'),
-                $daysAgo === 1 => Translator::get('activity.yesterday'),
-                default => Translator::get('activity.days_ago', ['days' => $daysAgo]),
-            },
+            'when' => self::relativeDay(new DateTimeImmutable($row['activity_date']), $today),
             'discipline' => Translator::get('discipline.' . $row['discipline']),
             'style' => self::DISCIPLINE_STYLES[$row['discipline']] ?? 'other',
             'note' => $row['note'],
@@ -57,6 +50,18 @@ final class ActivityFeedService
             'routeKm' => (float) $row['route_km'],
             'status' => $row['status'],
         ];
+    }
+
+    /** „Dziś” / „Wczoraj” / „N dni temu” – wspólne dla kart feedu i kafelka serii. */
+    public static function relativeDay(DateTimeImmutable $date, DateTimeImmutable $today): string
+    {
+        $daysAgo = (int) $date->diff($today)->format('%r%a');
+
+        return match (true) {
+            $daysAgo <= 0 => Translator::get('activity.today'),
+            $daysAgo === 1 => Translator::get('activity.yesterday'),
+            default => Translator::get('activity.days_ago', ['days' => $daysAgo]),
+        };
     }
 
     /**

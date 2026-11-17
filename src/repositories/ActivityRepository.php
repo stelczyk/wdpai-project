@@ -35,4 +35,25 @@ final class ActivityRepository
 
         return $statement->fetchAll();
     }
+
+    /**
+     * Dni, w których użytkownik dodał aktywność na tej wyprawie (bez odrzuconych), od najnowszego,
+     * z sumą zatwierdzonych km danego dnia – z tego serwis liczy km tygodnia i serię dni.
+     */
+    public function findDailyTotals(int $expeditionId, int $userId): array
+    {
+        $statement = Database::connect()->prepare(
+            "SELECT activity_date, COALESCE(sum(route_km) FILTER (WHERE status = 'APPROVED'), 0) AS approved_km
+             FROM activities
+             WHERE expedition_id = :expedition AND user_id = :user AND status <> 'REJECTED'
+             GROUP BY activity_date
+             ORDER BY activity_date DESC"
+        );
+        $statement->execute(['expedition' => $expeditionId, 'user' => $userId]);
+
+        return array_map(
+            static fn (array $row): array => ['date' => $row['activity_date'], 'km' => (float) $row['approved_km']],
+            $statement->fetchAll(),
+        );
+    }
 }
