@@ -12,6 +12,7 @@ final class Session
 {
     private const USER_ID = 'user_id';
     private const CSRF_TOKEN = 'csrf_token';
+    private const ACTIVE_EXPEDITION = 'active_expedition';
 
     public static function start(): void
     {
@@ -40,6 +41,20 @@ final class Session
     public static function userId(): ?int
     {
         $id = $_SESSION[self::USER_ID] ?? null;
+
+        return is_int($id) ? $id : null;
+    }
+
+    // Aktywna wyprawa = ostatnio otwarty dashboard. To tylko wskazówka dla headera:
+    // dostęp do wyprawy i tak sprawdza kontroler przy każdym żądaniu.
+    public static function setActiveExpedition(int $id): void
+    {
+        $_SESSION[self::ACTIVE_EXPEDITION] = $id;
+    }
+
+    public static function activeExpeditionId(): ?int
+    {
+        $id = $_SESSION[self::ACTIVE_EXPEDITION] ?? null;
 
         return is_int($id) ? $id : null;
     }
