@@ -8,6 +8,7 @@ use App\HttpException;
 use App\Model\User;
 use App\Repository\ExpeditionRepository;
 use App\Service\AuthService;
+use App\Service\ExpeditionService;
 use App\Session;
 use App\Translator;
 
@@ -76,6 +77,10 @@ abstract class AppController
         $t = static fn (string $key, array $params = []): string => htmlspecialchars(Translator::get($key, $params));
         $locale = Translator::locale();
         $currentUser = (new AuthService())->currentUser();
+        // Przełącznik wypraw w headerze – tylko dla zalogowanych, którzy mają jakąś wyprawę.
+        $expeditionSwitcher = $currentUser === null
+            ? null
+            : (new ExpeditionService())->switcherFor($currentUser, Session::activeExpeditionId());
         // Gotowe ukryte pole z tokenem CSRF – widok wstawia je w każdy formularz POST.
         $csrfField = '<input type="hidden" name="_csrf" value="' . htmlspecialchars(Session::csrfToken()) . '">';
 

@@ -229,6 +229,14 @@ return [
     'stage.finished_title' => 'Meta osiągnięta',
     'stage.finished_text' => 'Drużyna pokonała całą trasę: {km} km.',
 
+    // Przełącznik wyprawy w headerze
+    'switcher.label' => 'Przełącz wyprawę',
+    'switcher.title' => 'Twoje wyprawy',
+    'switcher.active_count' => 'Aktywne: {count}',
+    'switcher.meta' => '{km} km • uczestnicy: {members} • {percent}',
+    'switcher.meta_planned' => '{km} km • start {date}',
+    'switcher.all' => 'Wszystkie wyprawy',
+
     // Ranking
     'ranking.title' => 'Ranking wyprawy',
     'ranking.heading' => 'Ranking wyprawy nr {id}',

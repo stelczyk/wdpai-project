@@ -65,6 +65,34 @@ final class ExpeditionService
         ];
     }
 
+    /**
+     * Przełącznik wypraw w headerze: wyprawy użytkownika i ta aktywna – zapamiętana w sesji,
+     * a gdy jej nie ma na liście, pierwsza w trakcie (albo po prostu pierwsza). Null bez wypraw.
+     */
+    public function switcherFor(User $user, ?int $activeId, ?DateTimeImmutable $today = null): ?array
+    {
+        $today ??= new DateTimeImmutable('today');
+        // Checkpointy niepotrzebne – przełącznik nie pokazuje etapu, więc jedno zapytanie na stronę.
+        $expeditions = array_map(
+            fn (array $row): array => $this->describe($row, [], $user, $today),
+            $this->expeditions->findForMember($user->id),
+        );
+        if ($expeditions === []) {
+            return null;
+        }
+
+        // Najpierw trwające, potem zaplanowane, archiwum na końcu (usort jest stabilny – w grupie kolejność startu).
+        $order = array_flip([self::IN_PROGRESS, self::PLANNED, self::COMPLETED]);
+        usort($expeditions, static fn (array $a, array $b): int => $order[$a['status']] <=> $order[$b['status']]);
+
+        $inProgress = array_values(array_filter($expeditions, static fn (array $e): bool => $e['status'] === self::IN_PROGRESS));
+        $active = array_values(array_filter($expeditions, static fn (array $e): bool => $e['id'] === $activeId))[0]
+            ?? $inProgress[0]
+            ?? $expeditions[0];
+
+        return ['items' => $expeditions, 'active' => $active, 'activeCount' => count($inProgress)];
+    }
+
     // Wyniki dołączania kodem PIN – kontroler zamienia je na status HTTP i komunikat.
     public const JOINED = 'joined';
     public const JOIN_NOT_FOUND = 'not_found';
