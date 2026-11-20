@@ -33,12 +33,21 @@ $checkpointLanes = $e['route'] === [] ? 0 : max(array_column($e['route'], 'lane'
             <?php if ($e['isCaptain']): ?>
                 <a class="exp-button exp-button--ghost" href="/captain/<?= $e['id'] ?>"><?= $t('expedition.captain_panel') ?></a>
             <?php endif; ?>
-            <a class="exp-button exp-button--primary" href="/activities/new">
+            <a class="exp-button exp-button--primary" href="/activities/new?expedition=<?= $e['id'] ?>">
                 <img src="/img/expeditions/plus.svg" alt="" width="14" height="14">
                 <?= $t('nav.add_activity') ?>
             </a>
         </nav>
     </section>
+
+    <?php if ($added): ?>
+        <div class="alert alert--success" role="status">
+            <div class="alert-content">
+                <p class="alert-title"><?= $t('activity.added_title') ?></p>
+                <p class="alert-text"><?= $t('activity.added_text') ?></p>
+            </div>
+        </div>
+    <?php endif; ?>
 
     <section class="dash-progress" aria-labelledby="progress-title">
         <div class="dash-progress-top">
