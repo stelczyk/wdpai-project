@@ -229,6 +229,14 @@ return [
     'stage.finished_title' => 'Finish reached',
     'stage.finished_text' => 'The team has covered the whole route: {km} km.',
 
+    // Expedition switcher in the header
+    'switcher.label' => 'Switch expedition',
+    'switcher.title' => 'Your expeditions',
+    'switcher.active_count' => 'Active: {count}',
+    'switcher.meta' => '{km} km • members: {members} • {percent}',
+    'switcher.meta_planned' => '{km} km • starts {date}',
+    'switcher.all' => 'All expeditions',
+
     // Leaderboard
     'ranking.title' => 'Expedition leaderboard',
     'ranking.heading' => 'Leaderboard – expedition #{id}',

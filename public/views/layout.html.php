@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="/css/style.css">
     <!-- defer: pobieranie równolegle, wykonanie po sparsowaniu całego HTML, w kolejności tagów. -->
     <script src="/js/theme.js" defer></script>
+    <script src="/js/expedition-switcher.js" defer></script>
     <?php foreach ($scripts ?? [] as $script): ?>
         <script src="<?= htmlspecialchars($script) ?>" defer></script>
     <?php endforeach; ?>

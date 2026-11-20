@@ -2669,3 +2669,212 @@ li.share-2 { color: var(--color-muted); }
     order: 0;
   }
 }
+
+/* Przełącznik aktywnej wyprawy w headerze (<details>): na telefonie panel na całą szerokość headera */
+/* Na telefonie osobny rząd pod logo i akcjami (przed linkami nawigacji, które mają order: 3) */
+.exp-switch {
+  order: 2;
+  width: 100%;
+  min-width: 0;
+  margin-top: var(--space-2);
+}
+
+.exp-switch-button {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0.375rem var(--space-2);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.exp-switch-button::-webkit-details-marker {
+  display: none;
+}
+
+.exp-switch-button:hover {
+  background-color: var(--color-field);
+}
+
+.exp-switch-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.exp-switch-percent {
+  padding: 0.0625rem 0.25rem;
+  border-radius: 0.25rem;
+  font-size: 0.625rem;
+  color: var(--color-link);
+  background-color: var(--color-accent-surface);
+}
+
+.exp-switch-chevron {
+  flex-shrink: 0;
+  margin-left: auto;
+  transition: transform 0.15s;
+}
+
+.exp-switch[open] .exp-switch-chevron {
+  transform: rotate(180deg);
+}
+
+/* Kolor kropki = status wyprawy (jak na dashboardzie) */
+.exp-switch .dot {
+  background-color: var(--color-accent);
+}
+
+.exp-switch .dash-status--planned .dot {
+  background-color: var(--color-info);
+}
+
+.exp-switch .dash-status--completed .dot {
+  background-color: var(--color-muted);
+}
+
+.exp-switch-panel {
+  position: absolute;
+  top: 100%;
+  right: var(--space-2);
+  left: var(--space-2);
+  z-index: 20;
+  margin-top: var(--space-1);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background-color: var(--color-card);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.25);
+  overflow: hidden;
+}
+
+.exp-switch-head,
+.exp-switch-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.6875rem;
+}
+
+.exp-switch-head {
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.exp-switch-head .badge {
+  padding: 0.125rem var(--space-1);
+  font-size: 0.625rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.exp-switch-list {
+  max-height: 60vh;
+  margin: 0;
+  padding: var(--space-1);
+  list-style: none;
+  overflow-y: auto;
+}
+
+.exp-switch-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding: var(--space-2) 2rem var(--space-2) var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.exp-switch-item:hover {
+  background-color: var(--color-field);
+}
+
+.exp-switch-item[aria-current="true"] {
+  border-color: var(--color-accent);
+  background-color: var(--color-accent-surface);
+}
+
+.exp-switch-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.exp-switch-title .badge {
+  padding: 0.0625rem 0.375rem;
+  font-size: 0.5625rem;
+}
+
+.exp-switch-meta {
+  padding-left: 0.875rem;
+  font-size: 0.6875rem;
+  color: var(--color-muted);
+}
+
+/* Ikona z Figmy jako maska – kolor z motywu (plik SVG ma ciemny kolor na sztywno) */
+.exp-switch-check {
+  position: absolute;
+  top: 50%;
+  right: var(--space-2);
+  width: 14px;
+  height: 14px;
+  transform: translateY(-50%);
+  background-color: var(--color-link);
+  mask: url("/img/dashboard/check.svg") center / contain no-repeat;
+}
+
+.exp-switch-foot {
+  border-top: 1px solid var(--color-divider);
+}
+
+.exp-switch-foot a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-weight: 600;
+  color: var(--color-link);
+  text-decoration: none;
+}
+
+.exp-switch-foot a:last-child {
+  color: var(--color-muted);
+}
+
+.exp-switch-foot a:hover {
+  text-decoration: underline;
+}
+
+@media (min-width: 48rem) {
+  .exp-switch {
+    position: relative;
+    order: 0;
+    width: auto;
+    margin-top: 0;
+  }
+
+  .exp-switch-button {
+    max-width: 16rem;
+  }
+
+  .exp-switch-panel {
+    right: auto;
+    left: 0;
+    width: 22rem;
+  }
+}

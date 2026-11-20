@@ -9,6 +9,7 @@ use App\Model\User;
 use App\Service\ActivityFeedService;
 use App\Service\ExpeditionCreationService;
 use App\Service\ExpeditionService;
+use App\Session;
 use DateTimeImmutable;
 use App\Translator;
 
@@ -124,6 +125,7 @@ final class ExpeditionController extends AppController
     public function show(int $id): void
     {
         $user = $this->requireExpeditionMember($id);
+        Session::setActiveExpedition($id);
 
         $expedition = (new ExpeditionService())->dashboard($user, $id)
             ?? throw new HttpException(404, 'Expedition not found');

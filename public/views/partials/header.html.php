@@ -13,6 +13,10 @@ $navLinks = [
             <span class="brand-main" aria-hidden="true">DYST</span><span class="brand-accent" aria-hidden="true">ANS</span>
         </a>
 
+        <?php if ($showNav && ($expeditionSwitcher ?? null) !== null): ?>
+            <?php require __DIR__ . '/expedition-switcher.html.php'; ?>
+        <?php endif; ?>
+
         <?php // Gość nie widzi linków do stron dla zalogowanych – to tylko wygoda, dostępu pilnuje backend. ?>
         <?php if ($showNav && $currentUser !== null): ?>
             <nav class="site-nav" aria-label="<?= $t('nav.label') ?>">
