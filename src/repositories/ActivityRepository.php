@@ -36,6 +36,30 @@ final class ActivityRepository
         return $statement->fetchAll();
     }
 
+    /** Nowa aktywność – status PENDING nadaje baza (DEFAULT), do akceptacji kapitana. */
+    public function insert(array $activity): int
+    {
+        $statement = Database::connect()->prepare(
+            'INSERT INTO activities (expedition_id, user_id, discipline_id, distance_km, duration_min,
+                                     activity_date, avg_heart_rate, note, route_km)
+             VALUES (:expedition, :user, :discipline, :distance, :duration, :date, :heart_rate, :note, :route_km)
+             RETURNING id'
+        );
+        $statement->execute([
+            'expedition' => $activity['expeditionId'],
+            'user' => $activity['userId'],
+            'discipline' => $activity['disciplineId'],
+            'distance' => $activity['distanceKm'],
+            'duration' => $activity['durationMin'],
+            'date' => $activity['date'],
+            'heart_rate' => $activity['heartRate'],
+            'note' => $activity['note'],
+            'route_km' => $activity['routeKm'],
+        ]);
+
+        return (int) $statement->fetchColumn();
+    }
+
     /**
      * Dni, w których użytkownik dodał aktywność na tej wyprawie (bez odrzuconych), od najnowszego,
      * z sumą zatwierdzonych km danego dnia – z tego serwis liczy km tygodnia i serię dni.

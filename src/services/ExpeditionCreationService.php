@@ -82,8 +82,8 @@ final class ExpeditionCreationService
             $errors['name'] = Translator::get('validation.max_length', ['max' => self::NAME_MAX_LENGTH]);
         }
 
-        $start = $this->parseDate($form['startDate']);
-        $end = $this->parseDate($form['endDate']);
+        $start = FormInput::date($form['startDate']);
+        $end = FormInput::date($form['endDate']);
         if ($start === null) {
             $errors['start_date'] = Translator::get('validation.date');
         } elseif ($start < $today) {
@@ -133,11 +133,11 @@ final class ExpeditionCreationService
             );
 
             foreach ($form['checkpoints'] as $checkpoint) {
-                $this->expeditions->insertCheckpoint($id, $checkpoint['name'], self::toNumber($checkpoint['km']));
+                $this->expeditions->insertCheckpoint($id, $checkpoint['name'], FormInput::number($checkpoint['km']));
             }
 
             foreach ($form['enabled'] as $disciplineId) {
-                $this->expeditions->insertDiscipline($id, $disciplineId, self::toNumber($form['factors'][$disciplineId]));
+                $this->expeditions->insertDiscipline($id, $disciplineId, FormInput::number($form['factors'][$disciplineId]));
             }
 
             $this->expeditions->insertMember($id, $captain->id);
@@ -176,7 +176,7 @@ final class ExpeditionCreationService
 
         $previousKm = null;
         foreach ($checkpoints as $index => $checkpoint) {
-            $km = self::toNumber($checkpoint['km']);
+            $km = FormInput::number($checkpoint['km']);
 
             if ($checkpoint['name'] === '' || mb_strlen($checkpoint['name']) > self::NAME_MAX_LENGTH) {
                 return Translator::get('create.checkpoint_name');
@@ -206,7 +206,7 @@ final class ExpeditionCreationService
         }
 
         foreach ($enabled as $id) {
-            $factor = self::toNumber($factors[$id] ?? '');
+            $factor = FormInput::number($factors[$id] ?? '');
             if ($factor === null || $factor <= 0 || $factor > self::FACTOR_MAX) {
                 return Translator::get('create.factor_invalid');
             }
@@ -227,20 +227,5 @@ final class ExpeditionCreationService
         }
 
         throw new RuntimeException('Could not generate a unique join code');
-    }
-
-    private function parseDate(string $value): ?DateTimeImmutable
-    {
-        $date = DateTimeImmutable::createFromFormat('!Y-m-d', $value);
-
-        return $date !== false && $date->format('Y-m-d') === $value ? $date : null;
-    }
-
-    // Akceptujemy przecinek dziesiętny („0,35”), bo tak piszą użytkownicy w PL.
-    private static function toNumber(string $value): ?float
-    {
-        $number = filter_var(str_replace(',', '.', $value), FILTER_VALIDATE_FLOAT);
-
-        return $number === false ? null : $number;
     }
 }

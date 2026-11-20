@@ -15,7 +15,7 @@ final class ActivityFeedService
     public const FEED_LIMIT = 10;
 
     // Nazwy dyscyplin w bazie → klasa CSS z kolorem odznaki (jak w Figmie).
-    private const DISCIPLINE_STYLES = ['Bieg' => 'run', 'Rower' => 'bike', 'Pływanie' => 'swim', 'Siłownia' => 'gym'];
+    public const DISCIPLINE_STYLES = ['Bieg' => 'run', 'Rower' => 'bike', 'Pływanie' => 'swim', 'Siłownia' => 'gym'];
 
     public function __construct(private readonly ActivityRepository $activities = new ActivityRepository())
     {

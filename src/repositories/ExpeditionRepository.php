@@ -132,6 +132,24 @@ final class ExpeditionRepository
         return $grouped;
     }
 
+    /** Dyscypliny włączone w wyprawie z jej przelicznikiem (km trasy za 1 km lub 1 minutę treningu). */
+    public function findDisciplineFactors(int $expeditionId): array
+    {
+        $statement = Database::connect()->prepare(
+            'SELECT d.id, d.name, d.unit, ed.km_factor
+             FROM expedition_disciplines ed JOIN disciplines d ON d.id = ed.discipline_id
+             WHERE ed.expedition_id = :expedition ORDER BY d.id'
+        );
+        $statement->execute(['expedition' => $expeditionId]);
+
+        return array_map(static fn (array $row): array => [
+            'id' => (int) $row['id'],
+            'name' => $row['name'],
+            'unit' => $row['unit'],
+            'factor' => (float) $row['km_factor'],
+        ], $statement->fetchAll());
+    }
+
     /** Zatwierdzone km użytkownika w danym roku, z podziałem na dyscypliny (od największego udziału). */
     public function findContributionByDiscipline(int $userId, int $year): array
     {

@@ -134,6 +134,8 @@ final class ExpeditionController extends AppController
             'pageTitle' => $expedition['name'],
             'expedition' => $expedition,
             'feed' => (new ActivityFeedService())->recentForExpedition($user, $id),
+            // ?added=1 po zapisie aktywności (ActivityController::store) – komunikat dla dodającego.
+            'added' => isset($_GET['added']),
         ]);
     }
 

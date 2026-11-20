@@ -39,6 +39,7 @@ $routing->post('/expeditions', ExpeditionController::class, 'store');
 $routing->get('/expeditions/{id}', ExpeditionController::class, 'show');
 $routing->get('/expeditions/{id}/ranking', ExpeditionController::class, 'ranking');
 $routing->get('/activities/new', ActivityController::class, 'create');
+$routing->post('/activities', ActivityController::class, 'store');
 $routing->get('/captain/{id}', CaptainController::class, 'panel');
 
 // Jedno miejsce obsługi błędów: kontrolowane błędy HTTP dostają swój status,
