@@ -3,6 +3,7 @@
 // Bez JS działa cały formularz; activity-form.js dokłada walidację na bieżąco i chowa dystans dla siłowni,
 // activity-preview.js przelicza podgląd przy każdej zmianie.
 use App\Service\ActivityService;
+use App\Service\PhotoUploadService;
 
 $fieldError = static fn (string $key): string => htmlspecialchars($errors[$key] ?? '');
 $invalid = static fn (string $key): string => isset($errors[$key]) ? ' aria-invalid="true"' : '';
@@ -54,7 +55,9 @@ $e = $expedition;
         </section>
     <?php else: ?>
         <div class="activity-layout">
-            <form class="create-form activity-form" method="post" action="/activities" novalidate data-activity-form
+            <form class="create-form activity-form" method="post" action="/activities" enctype="multipart/form-data" novalidate data-activity-form
+                  data-msg-photo-size="<?= $t('photo.too_large', ['max' => PhotoUploadService::MAX_BYTES / 1024 / 1024]) ?>"
+                  data-msg-photo-type="<?= $t('photo.invalid_type') ?>"
                   data-msg-discipline="<?= $t('activity.discipline_invalid') ?>"
                   data-msg-distance="<?= $t('activity.distance_range', ['max' => (int) ActivityService::DISTANCE_MAX]) ?>"
                   data-msg-duration="<?= $t('activity.duration_range') ?>"
@@ -144,6 +147,25 @@ $e = $expedition;
                                value="<?= htmlspecialchars($form['note']) ?>" aria-describedby="note-error"<?= $invalid('note') ?>>
                         <p class="field-error" id="note-error"><?= $fieldError('note') ?></p>
                     </div>
+                </section>
+
+                <section class="create-card" aria-labelledby="photo-title">
+                    <h2 id="photo-title"><?= $t('photo.title') ?></h2>
+                    <?php // Strefa to <label> pola pliku: klik i klawiatura działają bez JS, JS dokłada podgląd. ?>
+                    <label class="photo-drop" for="photo">
+                        <img src="/img/expeditions/plus.svg" alt="" width="16" height="16">
+                        <span class="photo-drop-title"><?= $t('photo.drop') ?></span>
+                        <span class="photo-drop-hint" id="photo-hint"><?= $t('photo.hint', ['max' => PhotoUploadService::MAX_BYTES / 1024 / 1024]) ?></span>
+                    </label>
+                    <input class="visually-hidden" type="file" id="photo" name="photo"
+                           accept="<?= implode(',', array_keys(PhotoUploadService::TYPES)) ?>" data-max-bytes="<?= PhotoUploadService::MAX_BYTES ?>"
+                           aria-describedby="photo-hint photo-error"<?= $invalid('photo') ?>>
+                    <div class="photo-preview" data-photo-preview hidden>
+                        <img src="" alt="" width="64" height="64" data-photo-thumb>
+                        <span data-photo-name></span>
+                        <button class="exp-button exp-button--ghost" type="button" data-photo-remove><?= $t('photo.remove') ?></button>
+                    </div>
+                    <p class="field-error" id="photo-error"><?= $fieldError('photo') ?></p>
                 </section>
 
                 <div class="create-actions">

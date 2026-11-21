@@ -3214,3 +3214,77 @@ li.share-2 { color: var(--color-muted); }
     top: 5rem;
   }
 }
+
+/* Zdjęcie z treningu: strefa wyboru (label pola pliku), podgląd w formularzu i zdjęcie na karcie feedu */
+.photo-drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-5) var(--space-3);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  text-align: center;
+  background-color: var(--color-panel);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.photo-drop:hover,
+.create-card:has(#photo:focus-visible) .photo-drop {
+  border-color: var(--color-accent);
+}
+
+.create-card:has(#photo:focus-visible) .photo-drop {
+  outline: 3px solid var(--color-link);
+  outline-offset: 2px;
+}
+
+.create-card:has(#photo[aria-invalid="true"]) .photo-drop {
+  border-color: var(--color-error);
+}
+
+.photo-drop-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.photo-drop-hint {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.photo-preview {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background-color: var(--color-panel);
+}
+
+.photo-preview img {
+  flex-shrink: 0;
+  width: 4rem;
+  height: 4rem;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+}
+
+.photo-preview span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.activity-photo {
+  display: block;
+  width: 100%;
+  max-height: 20rem;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+}

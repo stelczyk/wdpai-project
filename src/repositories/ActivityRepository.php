@@ -18,7 +18,7 @@ final class ActivityRepository
         $statement = Database::connect()->prepare(
             "SELECT a.id, a.user_id, u.name AS user_name, (e.captain_id = a.user_id) AS is_captain,
                     d.name AS discipline, d.unit, a.distance_km, a.duration_min, a.avg_heart_rate,
-                    a.activity_date, a.note, a.route_km, a.status,
+                    a.activity_date, a.note, a.photo_path, a.route_km, a.status,
                     count(*) OVER () AS total
              FROM activities a
              JOIN users u ON u.id = a.user_id
@@ -41,8 +41,8 @@ final class ActivityRepository
     {
         $statement = Database::connect()->prepare(
             'INSERT INTO activities (expedition_id, user_id, discipline_id, distance_km, duration_min,
-                                     activity_date, avg_heart_rate, note, route_km)
-             VALUES (:expedition, :user, :discipline, :distance, :duration, :date, :heart_rate, :note, :route_km)
+                                     activity_date, avg_heart_rate, note, photo_path, route_km)
+             VALUES (:expedition, :user, :discipline, :distance, :duration, :date, :heart_rate, :note, :photo, :route_km)
              RETURNING id'
         );
         $statement->execute([
@@ -54,6 +54,7 @@ final class ActivityRepository
             'date' => $activity['date'],
             'heart_rate' => $activity['heartRate'],
             'note' => $activity['note'],
+            'photo' => $activity['photoPath'] ?? null,
             'route_km' => $activity['routeKm'],
         ]);
 
