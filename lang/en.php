@@ -291,6 +291,21 @@ return [
     'activity.added_title' => 'Activity saved!',
     'activity.added_text' => 'It is awaiting the captain’s approval – once approved, its kilometres count towards the route.',
 
+    // Live route preview
+    'preview.title' => 'Route preview',
+    'preview.live' => 'Live',
+    'preview.added_label' => 'Distance added to {name}',
+    'preview.formula_km' => '{amount} km × rate {factor}',
+    'preview.formula_min' => '{amount} min × rate {factor}',
+    'preview.progress' => 'Route progress',
+    'preview.now' => 'Now: {km} km',
+    'preview.after' => 'After approval: {km} km',
+    'preview.next' => '{km} km left to {name}',
+    'preview.passes' => 'This workout passes {name}!',
+    'preview.rank_title' => 'Leaderboard impact',
+    'preview.rank_same' => '#{position} – no change',
+    'preview.rank_up' => 'Moving up: #{from} → #{to}',
+
     // Sign in and sign up – shared
     'auth.email' => 'Email address',
     'auth.email_placeholder' => 'john.smith@dystans.app',

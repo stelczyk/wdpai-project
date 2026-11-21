@@ -1,8 +1,8 @@
 <?php
-// Dodaj aktywność (Figma: „Dodaj aktywność — Dystans”): formularz po lewej, przeliczniki wyprawy po prawej.
-// Bez JS działa cały formularz; activity-form.js dokłada walidację na bieżąco i chowa dystans dla siłowni.
+// Dodaj aktywność (Figma: „Dodaj aktywność — Dystans”): formularz po lewej, podgląd na trasie po prawej.
+// Bez JS działa cały formularz; activity-form.js dokłada walidację na bieżąco i chowa dystans dla siłowni,
+// activity-preview.js przelicza podgląd przy każdej zmianie.
 use App\Service\ActivityService;
-use App\Translator;
 
 $fieldError = static fn (string $key): string => htmlspecialchars($errors[$key] ?? '');
 $invalid = static fn (string $key): string => isset($errors[$key]) ? ' aria-invalid="true"' : '';
@@ -81,7 +81,7 @@ $e = $expedition;
                     <div class="discipline-options">
                         <?php foreach ($e['disciplines'] as $discipline): ?>
                             <label class="discipline-option discipline-option--<?= $discipline['style'] ?>">
-                                <input type="radio" name="discipline" value="<?= $discipline['id'] ?>" data-unit="<?= $discipline['unit'] ?>"
+                                <input type="radio" name="discipline" value="<?= $discipline['id'] ?>" data-unit="<?= $discipline['unit'] ?>" data-factor="<?= $discipline['factor'] ?>"
                                        <?= $discipline['id'] === $form['discipline'] ? 'checked' : '' ?>>
                                 <span class="dot" aria-hidden="true"></span>
                                 <span><?= htmlspecialchars($discipline['label']) ?></span>
@@ -152,21 +152,7 @@ $e = $expedition;
                 </div>
             </form>
 
-            <aside class="activity-aside">
-                <section class="stat-card activity-factors" aria-labelledby="factors-title">
-                    <h2 id="factors-title"><?= $t('activity.factors_title') ?></h2>
-                    <p class="activity-expedition"><?= htmlspecialchars($e['name']) ?></p>
-                    <ul>
-                        <?php foreach ($e['disciplines'] as $discipline): ?>
-                            <li class="discipline-option--<?= $discipline['style'] ?>">
-                                <span><span class="dot" aria-hidden="true"></span><?= htmlspecialchars($discipline['label']) ?></span>
-                                <strong><?= $t($discipline['unit'] === 'min' ? 'activity.factor_min' : 'activity.factor_km', ['factor' => Translator::number($discipline['factor'], 2)]) ?></strong>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-                    <p class="activity-review"><?= $t('activity.review_note') ?></p>
-                </section>
-            </aside>
+            <?php require __DIR__ . '/partials/route-preview.html.php'; ?>
         </div>
     <?php endif; ?>
 </main>

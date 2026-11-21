@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Model\User;
 use App\Service\ActivityService;
+use App\Service\ExpeditionService;
 use App\Session;
 use App\Translator;
 use DateTimeImmutable;
@@ -19,7 +21,7 @@ final class ActivityController extends AppController
         $service = new ActivityService();
         $choice = $service->choose($user, self::idFrom($_GET['expedition'] ?? null), Session::activeExpeditionId(), $today);
 
-        $this->renderForm($choice, $choice['expedition'] === null ? [] : $service->emptyForm($choice['expedition'], $today), []);
+        $this->renderForm($user, $choice, $choice['expedition'] === null ? [] : $service->emptyForm($choice['expedition'], $today), []);
     }
 
     public function store(): void
@@ -34,7 +36,7 @@ final class ActivityController extends AppController
         if ($choice['expedition'] === null || $choice['expedition']['id'] !== $requestedId) {
             http_response_code(422);
             $form = $choice['expedition'] === null ? [] : $service->emptyForm($choice['expedition'], $today);
-            $this->renderForm($choice, $form, ['expedition' => Translator::get('activity.expedition_unavailable')]);
+            $this->renderForm($user, $choice, $form, ['expedition' => Translator::get('activity.expedition_unavailable')]);
 
             return;
         }
@@ -42,7 +44,7 @@ final class ActivityController extends AppController
         $validation = $service->validate($user, $choice['expedition'], $_POST, $today);
         if ($validation['errors'] !== []) {
             http_response_code(422);
-            $this->renderForm($choice, $validation['form'], $validation['errors']);
+            $this->renderForm($user, $choice, $validation['form'], $validation['errors']);
 
             return;
         }
@@ -53,13 +55,17 @@ final class ActivityController extends AppController
         $this->redirect('/expeditions/' . $requestedId . '?added=1');
     }
 
-    private function renderForm(array $choice, array $form, array $errors): void
+    private function renderForm(User $user, array $choice, array $form, array $errors): void
     {
+        $expedition = $choice['expedition'];
+
         $this->render('activity-new', [
             'pageTitle' => Translator::get('activity.title'),
-            'scripts' => ['/js/activity-form.js'],
+            'scripts' => ['/js/activity-form.js', '/js/activity-preview.js'],
             'expeditions' => $choice['expeditions'],
-            'expedition' => $choice['expedition'],
+            'expedition' => $expedition,
+            // Stan trasy i rankingu dla podglądu na żywo – te same dane co dashboard, bez nowego SQL.
+            'route' => $expedition === null ? null : (new ExpeditionService())->dashboard($user, $expedition['id']),
             'form' => $form,
             'errors' => $errors,
         ]);
