@@ -27,6 +27,11 @@ $routeKm = \App\Translator::number($activity['routeKm']);
         </span>
     </header>
 
+    <?php if ($activity['photo'] !== null): ?>
+        <img class="activity-photo" src="/<?= htmlspecialchars($activity['photo']) ?>" loading="lazy"
+             alt="<?= $t('photo.alt', ['name' => $activity['userName']]) ?>">
+    <?php endif; ?>
+
     <dl class="activity-metrics" aria-label="<?= $t('activity.metrics_label') ?>">
         <?php foreach ($activity['metrics'] as $metric): ?>
             <div>

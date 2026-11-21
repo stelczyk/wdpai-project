@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Model\User;
 use App\Service\ActivityService;
 use App\Service\ExpeditionService;
+use App\Service\PhotoUploadService;
 use App\Session;
 use App\Translator;
 use DateTimeImmutable;
@@ -42,14 +43,32 @@ final class ActivityController extends AppController
         }
 
         $validation = $service->validate($user, $choice['expedition'], $_POST, $today);
-        if ($validation['errors'] !== []) {
+        $photos = new PhotoUploadService();
+        $photo = $photos->validate($_FILES['photo'] ?? null);
+        $errors = $validation['errors'] + ($photo['error'] === null ? [] : ['photo' => $photo['error']]);
+
+        if ($errors !== []) {
             http_response_code(422);
-            $this->renderForm($user, $choice, $validation['form'], $validation['errors']);
+            // Przeglądarka nie odtworzy wybranego pliku – prosimy o wybranie go ponownie.
+            if (($photo['file'] !== null) && !isset($errors['photo'])) {
+                $errors['photo'] = Translator::get('photo.choose_again');
+            }
+            $this->renderForm($user, $choice, $validation['form'], $errors);
 
             return;
         }
 
-        $service->save($validation['activity']);
+        // Plik przenosimy dopiero przy poprawnym formularzu; gdy zapis w bazie padnie, usuwamy go.
+        $activity = $validation['activity'];
+        $activity['photoPath'] = $photo['file'] === null ? null : $photos->store($photo['file']);
+        try {
+            $service->save($activity);
+        } catch (\Throwable $exception) {
+            if ($activity['photoPath'] !== null) {
+                $photos->delete($activity['photoPath']);
+            }
+            throw $exception;
+        }
         Session::setActiveExpedition($requestedId);
         // POST → przekierowanie → GET: odświeżenie dashboardu nie wyśle formularza drugi raz.
         $this->redirect('/expeditions/' . $requestedId . '?added=1');

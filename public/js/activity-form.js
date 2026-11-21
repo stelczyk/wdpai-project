@@ -76,6 +76,19 @@ const rules = {
         const input = activityForm.elements.note;
         return input.value.trim().length <= Number(input.maxLength) ? null : activityForm.dataset.msgNote;
     },
+
+    // Wstępna kontrola zdjęcia (typ zgłoszony przez przeglądarkę i rozmiar) – prawdziwy MIME sprawdza serwer.
+    photo: () => {
+        const input = activityForm.elements.photo;
+        const file = input.files[0];
+        if (!file) {
+            return null;
+        }
+        if (!input.accept.split(',').includes(file.type)) {
+            return activityForm.dataset.msgPhotoType;
+        }
+        return file.size <= Number(input.dataset.maxBytes) ? null : activityForm.dataset.msgPhotoSize;
+    },
 };
 
 // Pola, które dana reguła oznacza jako błędne (aria-invalid) i na które przenosimy fokus.
@@ -86,6 +99,7 @@ const fieldsOf = {
     date: () => [activityForm.elements.date],
     'heart-rate': () => [activityForm.elements.heart_rate],
     note: () => [activityForm.elements.note],
+    photo: () => [activityForm.elements.photo],
 };
 
 function check(key) {
@@ -117,6 +131,34 @@ function toggleDistance() {
     }
 }
 
+// Miniatura i nazwa wybranego zdjęcia; adres blob: zwalniamy, gdy przestaje być potrzebny.
+let photoUrl = null;
+
+function showPhoto() {
+    const input = activityForm.elements.photo;
+    const preview = activityForm.querySelector('[data-photo-preview]');
+    const file = input.files[0];
+    if (photoUrl) {
+        URL.revokeObjectURL(photoUrl);
+        photoUrl = null;
+    }
+
+    if (!check('photo') || !file) {
+        preview.hidden = true;
+        return;
+    }
+    photoUrl = URL.createObjectURL(file);
+    preview.querySelector('[data-photo-thumb]').src = photoUrl;
+    preview.querySelector('[data-photo-name]').textContent = file.name;   // textContent – nazwa pliku to dane od użytkownika
+    preview.hidden = false;
+}
+
+function removePhoto() {
+    activityForm.elements.photo.value = '';
+    showPhoto();
+    activityForm.elements.photo.focus();
+}
+
 function handleSubmit(event) {
     const failed = Object.keys(rules).filter((key) => !check(key));
     if (failed.length > 0) {
@@ -140,7 +182,12 @@ if (activityForm) {
             toggleDistance();
             check('discipline');
         }
+        if (event.target.name === 'photo') {
+            showPhoto();
+        }
     });
+
+    activityForm.querySelector('[data-photo-remove]').addEventListener('click', removePhoto);
 
     activityForm.addEventListener('submit', handleSubmit);
     toggleDistance();

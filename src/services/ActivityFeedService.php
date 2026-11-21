@@ -46,6 +46,8 @@ final class ActivityFeedService
             'discipline' => Translator::get('discipline.' . $row['discipline']),
             'style' => self::DISCIPLINE_STYLES[$row['discipline']] ?? 'other',
             'note' => $row['note'],
+            // Ścieżka względna z bazy (uploads/activities/…) – w widoku poprzedzona „/”.
+            'photo' => $row['photo_path'],
             'metrics' => self::metrics($row),
             'routeKm' => (float) $row['route_km'],
             'status' => $row['status'],

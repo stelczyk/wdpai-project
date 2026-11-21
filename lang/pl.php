@@ -306,6 +306,17 @@ return [
     'preview.rank_same' => '{position}. miejsce – bez zmian',
     'preview.rank_up' => 'Awans: {from}. → {to}. miejsce',
 
+    // Zdjęcie z treningu
+    'photo.title' => 'Zdjęcie z treningu (opcjonalnie)',
+    'photo.drop' => 'Przeciągnij zdjęcie lub kliknij, aby wybrać',
+    'photo.hint' => 'JPG, PNG lub WebP, maks. {max} MB.',
+    'photo.remove' => 'Usuń',
+    'photo.too_large' => 'Zdjęcie może mieć maksymalnie {max} MB.',
+    'photo.invalid_type' => 'Dozwolone są tylko zdjęcia JPG, PNG lub WebP.',
+    'photo.failed' => 'Nie udało się przesłać zdjęcia – spróbuj ponownie.',
+    'photo.choose_again' => 'Popraw pozostałe pola i wybierz zdjęcie ponownie.',
+    'photo.alt' => 'Zdjęcie z treningu: {name}',
+
     // Logowanie i rejestracja – wspólne
     'auth.email' => 'Adres e-mail',
     'auth.email_placeholder' => 'jan.kowalski@dystans.app',

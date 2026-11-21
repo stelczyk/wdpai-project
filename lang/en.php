@@ -306,6 +306,17 @@ return [
     'preview.rank_same' => '#{position} – no change',
     'preview.rank_up' => 'Moving up: #{from} → #{to}',
 
+    // Workout photo
+    'photo.title' => 'Workout photo (optional)',
+    'photo.drop' => 'Drag a photo here or click to choose',
+    'photo.hint' => 'JPG, PNG or WebP, max {max} MB.',
+    'photo.remove' => 'Remove',
+    'photo.too_large' => 'The photo can be at most {max} MB.',
+    'photo.invalid_type' => 'Only JPG, PNG or WebP photos are allowed.',
+    'photo.failed' => 'The photo could not be uploaded – please try again.',
+    'photo.choose_again' => 'Fix the other fields and choose the photo again.',
+    'photo.alt' => 'Workout photo: {name}',
+
     // Sign in and sign up – shared
     'auth.email' => 'Email address',
     'auth.email_placeholder' => 'john.smith@dystans.app',
