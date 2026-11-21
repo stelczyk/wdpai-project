@@ -291,6 +291,21 @@ return [
     'activity.added_title' => 'Aktywność zapisana!',
     'activity.added_text' => 'Czeka na akceptację kapitana – po zatwierdzeniu jej kilometry doliczą się do trasy.',
 
+    // Podgląd treningu na trasie
+    'preview.title' => 'Podgląd na trasie',
+    'preview.live' => 'Na żywo',
+    'preview.added_label' => 'Dystans dopisany do trasy {name}',
+    'preview.formula_km' => '{amount} km × przelicznik {factor}',
+    'preview.formula_min' => '{amount} min × przelicznik {factor}',
+    'preview.progress' => 'Postęp trasy',
+    'preview.now' => 'Obecnie: {km} km',
+    'preview.after' => 'Po akceptacji: {km} km',
+    'preview.next' => 'Do punktu {name} zostanie {km} km',
+    'preview.passes' => 'Trening minie punkt {name}!',
+    'preview.rank_title' => 'Wpływ na ranking',
+    'preview.rank_same' => '{position}. miejsce – bez zmian',
+    'preview.rank_up' => 'Awans: {from}. → {to}. miejsce',
+
     // Logowanie i rejestracja – wspólne
     'auth.email' => 'Adres e-mail',
     'auth.email_placeholder' => 'jan.kowalski@dystans.app',
