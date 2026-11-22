@@ -3,23 +3,9 @@
 const preview = document.querySelector('[data-route-preview]');
 const previewForm = document.querySelector('[data-activity-form]');
 
-// Jak Translator::number w PHP (number_format): PL „1 330,5”, EN „1,330.5”.
-function formatNumber(value, decimals = 1) {
-    // toFixed zaokrągla binarną wartość (151.95 → „151.9”); przesunięcie przez notację „e” daje połówki w górę jak w PHP.
-    const rounded = Number(`${Math.round(Number(`${Math.abs(value)}e${decimals}`))}e-${decimals}`);
-    const [whole, fraction] = rounded.toFixed(decimals).split('.');
-    const pl = preview.dataset.locale === 'pl';
-    const grouped = whole.replace(/\B(?=(\d{3})+(?!\d))/g, pl ? ' ' : ',');
-    const sign = value < 0 ? '-' : '';
-    return sign + grouped + (fraction ? (pl ? ',' : '.') + fraction : '');
-}
-
-// Szablony z katalogu tłumaczeń, np. „Do punktu {name} zostanie {km} km”.
+// Szablon tekstu z atrybutu data-msg-* panelu (fillTemplate i formatNumber są w format.js).
 function message(name, params) {
-    return Object.entries(params).reduce(
-        (text, [key, value]) => text.replaceAll(`{${key}}`, value),
-        preview.dataset[name],
-    );
+    return fillTemplate(preview.dataset[name], params);
 }
 
 function toNumber(value) {
