@@ -67,17 +67,7 @@ $members = array_map(static fn (array $m): array => ['km' => $m['km'], 'me' => $
             </div>
         <?php endif; ?>
 
-        <div class="activity-factors">
-            <h3><?= $t('activity.factors_title') ?></h3>
-            <ul>
-                <?php foreach ($e['disciplines'] as $discipline): ?>
-                    <li class="discipline-option--<?= $discipline['style'] ?>" data-factor-for="<?= $discipline['id'] ?>">
-                        <span><span class="dot" aria-hidden="true"></span><?= htmlspecialchars($discipline['label']) ?></span>
-                        <strong><?= $t($discipline['unit'] === 'min' ? 'activity.factor_min' : 'activity.factor_km', ['factor' => Translator::number($discipline['factor'], 2)]) ?></strong>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
+        <?php $disciplines = $e['disciplines']; require __DIR__ . '/discipline-factors.html.php'; ?>
         <p class="activity-review"><?= $t('activity.review_note') ?></p>
     </section>
 </aside>

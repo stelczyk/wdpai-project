@@ -202,10 +202,7 @@ final class ExpeditionService
             return null;
         }
 
-        // Miejsce = 1 + liczba osób z większym dystansem (remis = to samo miejsce).
-        $above = array_filter($members, static fn (array $m): bool => $m['km'] > $myKm);
-        $below = array_filter($members, static fn (array $m): bool => $m['km'] < $myKm);
-        $position = count($above) + 1;
+        $standing = self::standing($myKm, array_column($members, 'km'));
 
         $weekStart = $today->modify('monday this week');
         $previousStart = $weekStart->modify('-7 days');
@@ -237,13 +234,30 @@ final class ExpeditionService
         return [
             'weekKm' => $weekKm,
             'weekChangePercent' => $previousKm > 0 ? ($weekKm - $previousKm) / $previousKm * 100 : null,
-            'position' => $position,
             'memberCount' => count($members),
-            // Przewaga nad następną osobą (gdy prowadzę) albo strata do osoby tuż nade mną.
-            'leadKm' => $position === 1 && $below !== [] ? $myKm - max(array_column($below, 'km')) : null,
-            'behindKm' => $above === [] ? null : min(array_column($above, 'km')) - $myKm,
+            ...$standing,
             'streak' => $streak,
             'lastEntry' => $lastDate === null ? null : ActivityFeedService::relativeDay($lastDate, $today),
+        ];
+    }
+
+    /**
+     * Miejsce w drużynie dla danego dystansu: 1 + liczba osób z większym (remis = to samo miejsce),
+     * przewaga nad następną osobą (gdy prowadzę) albo strata do osoby tuż nade mną.
+     * Wspólne dla kafelków dashboardu i rankingu.
+     *
+     * @param list<float> $kms km wszystkich uczestników (mogą zawierać moje)
+     * @return array{position: int, leadKm: ?float, behindKm: ?float}
+     */
+    public static function standing(float $myKm, array $kms): array
+    {
+        $above = array_filter($kms, static fn (float $km): bool => $km > $myKm);
+        $below = array_filter($kms, static fn (float $km): bool => $km < $myKm);
+
+        return [
+            'position' => count($above) + 1,
+            'leadKm' => $above === [] && $below !== [] ? $myKm - max($below) : null,
+            'behindKm' => $above === [] ? null : min($above) - $myKm,
         ];
     }
 

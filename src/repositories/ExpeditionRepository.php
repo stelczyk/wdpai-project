@@ -132,6 +132,50 @@ final class ExpeditionRepository
         return $grouped;
     }
 
+    /**
+     * Ranking uczestników z zatwierdzonych treningów od $fromDate. Ranking etapu liczy tylko km przebyte
+     * za punktem $fromRouteKm: suma narastająca drużyny mówi, gdzie na trasie był każdy trening,
+     * a trening przekraczający punkt liczy się częściowo (km po przekroczeniu).
+     * LEFT JOIN: uczestnik bez treningów w okresie też jest w tabeli, z 0 km. RANK(): remis = to samo miejsce.
+     */
+    public function findRanking(int $expeditionId, string $fromDate, float $fromRouteKm): array
+    {
+        $statement = Database::connect()->prepare(
+            "WITH approved AS (
+                 SELECT a.id, a.user_id, a.discipline_id, a.activity_date,
+                        LEAST(a.route_km, GREATEST(0, sum(a.route_km) OVER (ORDER BY a.activity_date, a.id) - :from_km)) AS km
+                 FROM activities a
+                 WHERE a.expedition_id = :expedition AND a.status = 'APPROVED'
+             )
+             SELECT u.id, u.name, (e.captain_id = u.id) AS is_captain,
+                    COALESCE(sum(ap.km), 0) AS km,
+                    count(ap.id) AS workouts,
+                    string_agg(DISTINCT d.name, ', ' ORDER BY d.name) AS disciplines,
+                    RANK() OVER (ORDER BY COALESCE(sum(ap.km), 0) DESC) AS position
+             FROM expedition_members m
+             JOIN users u ON u.id = m.user_id
+             JOIN expeditions e ON e.id = m.expedition_id
+             LEFT JOIN approved ap ON ap.user_id = m.user_id
+                                  AND ap.activity_date >= :from_date
+                                  AND ap.km > 0
+             LEFT JOIN disciplines d ON d.id = ap.discipline_id
+             WHERE m.expedition_id = :expedition
+             GROUP BY u.id, u.name, e.captain_id
+             ORDER BY km DESC, u.name"
+        );
+        $statement->execute(['expedition' => $expeditionId, 'from_date' => $fromDate, 'from_km' => $fromRouteKm]);
+
+        return array_map(static fn (array $row): array => [
+            'id' => (int) $row['id'],
+            'name' => $row['name'],
+            'isCaptain' => (bool) $row['is_captain'],
+            'km' => (float) $row['km'],
+            'workouts' => (int) $row['workouts'],
+            'disciplines' => $row['disciplines'] === null ? [] : explode(', ', $row['disciplines']),
+            'position' => (int) $row['position'],
+        ], $statement->fetchAll());
+    }
+
     /** Dyscypliny włączone w wyprawie z jej przelicznikiem (km trasy za 1 km lub 1 minutę treningu). */
     public function findDisciplineFactors(int $expeditionId): array
     {
