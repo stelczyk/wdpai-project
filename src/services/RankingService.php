@@ -51,6 +51,32 @@ final class RankingService
         ];
     }
 
+    /** Ta sama tabela jako JSON dla ranking.js – tylko pola potrzebne do odświeżenia widoku, surowe liczby. */
+    public static function toJson(array $table): array
+    {
+        return [
+            'range' => $table['range'],
+            'rows' => array_map(static fn (array $row): array => [
+                'position' => $row['position'],
+                'name' => $row['name'],
+                'initials' => $row['initials'],
+                'isMe' => $row['isMe'],
+                'isCaptain' => $row['isCaptain'],
+                'km' => $row['km'],
+                'share' => $row['share'],
+                'workouts' => $row['workouts'],
+                'disciplines' => $row['disciplineLabels'],
+            ], $table['rows']),
+            'leader' => $table['leader'] === null ? null : ['name' => $table['leader']['name'], 'km' => $table['leader']['km']],
+            'averageKm' => $table['averageKm'],
+            'me' => $table['me'] === null ? null : [
+                'position' => $table['me']['position'],
+                'leadKm' => $table['me']['leadKm'],
+                'behindKm' => $table['me']['behindKm'],
+            ],
+        ];
+    }
+
     /**
      * Od kiedy liczymy: [data od, km trasy od]. Etap nie ma daty – zaczyna się, gdy drużyna
      * przekroczyła km jego pierwszego punktu (po dotarciu do mety: ostatni odcinek).

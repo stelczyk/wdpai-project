@@ -80,7 +80,7 @@ final class ActivityController extends AppController
 
         $this->render('activity-new', [
             'pageTitle' => Translator::get('activity.title'),
-            'scripts' => ['/js/activity-form.js', '/js/activity-preview.js'],
+            'scripts' => ['/js/activity-form.js', '/js/format.js', '/js/activity-preview.js'],
             'expeditions' => $choice['expeditions'],
             'expedition' => $expedition,
             // Stan trasy i rankingu dla podglądu na żywo – te same dane co dashboard, bez nowego SQL.

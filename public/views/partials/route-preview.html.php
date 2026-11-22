@@ -12,7 +12,6 @@ $percent = $route['progressPercent'];
 $members = array_map(static fn (array $m): array => ['km' => $m['km'], 'me' => $m['isMe']], $route['members']);
 ?>
 <aside class="activity-aside" data-route-preview
-       data-locale="<?= htmlspecialchars($locale) ?>"
        data-approved="<?= $route['approvedKm'] ?>" data-total="<?= $route['totalKm'] ?>"
        data-next-name="<?= htmlspecialchars($stage['to'] ?? '') ?>" data-next-km="<?= $stage['toKm'] ?? '' ?>"
        data-members="<?= htmlspecialchars(json_encode($members, JSON_THROW_ON_ERROR)) ?>"
