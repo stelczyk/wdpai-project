@@ -153,10 +153,17 @@ final class ExpeditionController extends AppController
         $expedition = (new ExpeditionService())->dashboard($user, $id)
             ?? throw new HttpException(404, 'Expedition not found');
 
+        $ranking = (new RankingService())->table($expedition, $user, $range);
+        // Ten sam adres dla ranking.js (fetch z Accept: application/json) – bez osobnej trasy i drugiej kopii logiki.
+        if ($this->wantsJson()) {
+            $this->json(RankingService::toJson($ranking));
+        }
+
         $this->render('ranking', [
             'pageTitle' => Translator::get('ranking.title'),
+            'scripts' => ['/js/format.js', '/js/ranking.js'],
             'expedition' => $expedition,
-            'ranking' => (new RankingService())->table($expedition, $user, $range),
+            'ranking' => $ranking,
             'disciplines' => (new ActivityService())->disciplines($id),
         ]);
     }

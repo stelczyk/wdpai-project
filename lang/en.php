@@ -264,6 +264,8 @@ return [
     'ranking.empty' => 'Nobody has approved workouts in this period yet.',
     'ranking.balance_title' => 'Your standing',
     'ranking.not_member' => 'You are viewing the leaderboard as an administrator – you are not a member of this expedition.',
+    'ranking.refresh' => 'Refresh',
+    'ranking.load_error' => 'Could not load the leaderboard – check your connection and try again.',
 
     // Captain panel
     'captain.title' => 'Captain panel',

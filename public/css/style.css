@@ -3290,7 +3290,16 @@ li.share-2 { color: var(--color-muted); }
 }
 
 /* Ranking wyprawy: zakładki zakresu (jak .exp-tabs listy wypraw), tabela z podium, mój wiersz podświetlony */
+.ranking-page [hidden] {
+  display: none !important;
+}
+
 .ranking-ranges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
   max-width: 100%;
   padding: var(--space-2);
   border-radius: var(--radius-md);
@@ -3480,4 +3489,26 @@ li.share-2 { color: var(--color-muted); }
   .ranking-km {
     text-align: right !important;
   }
+}
+
+/* Ranking odświeżany przez fetch: w trakcie ładowania tabela przygasa, a kursor pokazuje oczekiwanie */
+.ranking-board[aria-busy="true"] .ranking-table {
+  opacity: 0.5;
+  transition: opacity 0.15s;
+  cursor: progress;
+}
+
+.ranking-ranges .exp-tabs {
+  min-width: 0;
+}
+
+.ranking-refresh {
+  flex-shrink: 0;
+}
+
+/* Liczba w kafelku podmieniana przez JS – wygląda jak reszta .stat-value, nie jak jednostka */
+.stat-value .stat-number {
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
 }

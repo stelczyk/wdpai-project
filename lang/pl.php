@@ -264,6 +264,8 @@ return [
     'ranking.empty' => 'W tym okresie nikt nie ma jeszcze zatwierdzonych treningów.',
     'ranking.balance_title' => 'Twój bilans',
     'ranking.not_member' => 'Oglądasz ranking jako administrator – nie należysz do tej wyprawy.',
+    'ranking.refresh' => 'Odśwież',
+    'ranking.load_error' => 'Nie udało się wczytać rankingu – sprawdź połączenie i spróbuj ponownie.',
 
     // Panel kapitana
     'captain.title' => 'Panel kapitana',
