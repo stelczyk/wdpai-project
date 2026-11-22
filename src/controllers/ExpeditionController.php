@@ -7,8 +7,10 @@ namespace App\Controller;
 use App\HttpException;
 use App\Model\User;
 use App\Service\ActivityFeedService;
+use App\Service\ActivityService;
 use App\Service\ExpeditionCreationService;
 use App\Service\ExpeditionService;
+use App\Service\RankingService;
 use App\Session;
 use DateTimeImmutable;
 use App\Translator;
@@ -139,18 +141,23 @@ final class ExpeditionController extends AppController
         ]);
     }
 
+    // Ranking z filtrem ?range=all|stage|week|month – stan widoku w adresie, jak filtry listy wypraw.
     public function ranking(int $id): void
     {
-        $this->requireExpeditionMember($id);
+        $user = $this->requireExpeditionMember($id);
+        $range = (string) ($_GET['range'] ?? RankingService::RANGE_ALL);
+        if (!in_array($range, RankingService::RANGES, true)) {
+            throw new HttpException(400, 'Invalid ranking range');
+        }
+
+        $expedition = (new ExpeditionService())->dashboard($user, $id)
+            ?? throw new HttpException(404, 'Expedition not found');
 
         $this->render('ranking', [
             'pageTitle' => Translator::get('ranking.title'),
-            'expeditionId' => $id,
-            'ranking' => [
-                ['name' => 'Anna', 'km' => 128],
-                ['name' => 'Piotr', 'km' => 104],
-                ['name' => 'Kasia', 'km' => 80],
-            ],
+            'expedition' => $expedition,
+            'ranking' => (new RankingService())->table($expedition, $user, $range),
+            'disciplines' => (new ActivityService())->disciplines($id),
         ]);
     }
 }
