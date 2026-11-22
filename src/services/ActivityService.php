@@ -54,13 +54,19 @@ final class ActivityService
 
         $selected = $open[$requestedId ?? 0] ?? $open[$activeId ?? 0] ?? (reset($open) ?: null);
         if ($selected !== null) {
-            $selected['disciplines'] = array_map(static fn (array $d): array => $d + [
-                'label' => Translator::get('discipline.' . $d['name']),
-                'style' => ActivityFeedService::DISCIPLINE_STYLES[$d['name']] ?? 'other',
-            ], $this->expeditions->findDisciplineFactors($selected['id']));
+            $selected['disciplines'] = $this->disciplines($selected['id']);
         }
 
         return ['expeditions' => array_values($open), 'expedition' => $selected];
+    }
+
+    /** Dyscypliny wyprawy z przelicznikiem, etykietą w bieżącym języku i kolorem – formularz i ranking. */
+    public function disciplines(int $expeditionId): array
+    {
+        return array_map(static fn (array $d): array => $d + [
+            'label' => Translator::get('discipline.' . $d['name']),
+            'style' => ActivityFeedService::DISCIPLINE_STYLES[$d['name']] ?? 'other',
+        ], $this->expeditions->findDisciplineFactors($expeditionId));
     }
 
     /** Pusty formularz: pierwsza dyscyplina wyprawy i dzisiejsza data. */
