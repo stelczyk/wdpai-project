@@ -66,6 +66,11 @@
   --color-accent-surface: rgb(255 90 31 / 0.2);
 }
 
+/* Atrybut hidden zawsze ukrywa – inaczej przegrywa z display: flex/grid klas (JS przełącza go w wielu miejscach) */
+[hidden] {
+  display: none !important;
+}
+
 *,
 *::before,
 *::after {
@@ -2927,10 +2932,6 @@ li.share-2 { color: var(--color-muted); }
   max-width: none;
 }
 
-.activity-form [hidden] {
-  display: none;
-}
-
 /* Fieldset jako karta: bez domyślnej ramki, legenda jak nagłówek karty */
 .discipline-picker,
 .duration-field {
@@ -3296,10 +3297,6 @@ li.share-2 { color: var(--color-muted); }
 }
 
 /* Ranking wyprawy: zakładki zakresu (jak .exp-tabs listy wypraw), tabela z podium, mój wiersz podświetlony */
-.ranking-page [hidden] {
-  display: none !important;
-}
-
 .ranking-ranges {
   display: flex;
   flex-wrap: wrap;
@@ -3622,4 +3619,56 @@ li.share-2 { color: var(--color-muted); }
 .approve-all button:disabled {
   opacity: 0.5;
   cursor: progress;
+}
+
+/* Log decyzji kapitana: kropka w kolorze decyzji, szczegóły i „kto · kiedy” */
+.audit-log {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.audit-entry {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-divider);
+  font-size: 0.8125rem;
+}
+
+.audit-entry:last-child {
+  border-bottom: 0;
+}
+
+.audit-entry > span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.audit-entry--approved .dot {
+  background-color: var(--color-accent);
+}
+
+.audit-entry--rejected .dot {
+  background-color: var(--color-error);
+}
+
+.audit-detail {
+  overflow-wrap: anywhere;
+}
+
+.audit-by {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.activity-aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
 }

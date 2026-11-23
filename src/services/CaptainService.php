@@ -8,6 +8,7 @@ use App\Database;
 use App\Model\User;
 use App\Repository\ActivityRepository;
 use App\Repository\AuditLogRepository;
+use App\Translator;
 use DateTimeImmutable;
 
 /** Panel kapitana: kolejka aktywności do weryfikacji, decyzje i ich wpływ na postęp wyprawy. */
@@ -16,6 +17,7 @@ final class CaptainService
     // Zakładki z adresu (?status=…) → status w bazie. Pierwsza jest domyślna.
     public const TABS = ['pending' => 'PENDING', 'approved' => 'APPROVED', 'rejected' => 'REJECTED'];
     public const QUEUE_LIMIT = 50;
+    private const LOG_LIMIT = 10;
     // Decyzja z przycisku → status w bazie (i akcja w audit_log).
     public const DECISIONS = ['approve' => 'APPROVED', 'reject' => 'REJECTED'];
 
@@ -56,7 +58,51 @@ final class CaptainService
             $counts[$name] = $byStatus[$status] ?? ['count' => 0, 'km' => 0.0];
         }
 
-        return ['counts' => $counts, 'impact' => self::impact($expedition, $counts['pending']['km'])];
+        return [
+            'counts' => $counts,
+            'impact' => self::impact($expedition, $counts['pending']['km']),
+            'log' => $this->recentDecisions($expedition['id']),
+        ];
+    }
+
+    /**
+     * Ostatnie decyzje do panelu – gotowe teksty (te same dla strony i odpowiedzi JSON po decyzji).
+     *
+     * @return list<array{action: string, label: string, detail: string, by: string}>
+     */
+    private function recentDecisions(int $expeditionId, ?DateTimeImmutable $now = null): array
+    {
+        $now ??= new DateTimeImmutable();
+
+        return array_map(static fn (array $row): array => [
+            'action' => strtolower($row['action']),
+            'label' => Translator::get('captain.log_' . strtolower($row['action'])),
+            // Aktywność usunięta (activity_id = NULL po ON DELETE SET NULL) – zostaje sam fakt decyzji.
+            'detail' => $row['discipline'] === null
+                ? Translator::get('captain.log_deleted')
+                : Translator::get('captain.log_detail', [
+                    'discipline' => Translator::get('discipline.' . $row['discipline']),
+                    'author' => $row['author_name'],
+                    'km' => Translator::number((float) $row['route_km']),
+                ]),
+            'by' => Translator::get('captain.log_by', [
+                'actor' => $row['actor_name'] ?? Translator::get('captain.log_unknown_actor'),
+                'when' => self::ago(new DateTimeImmutable($row['created_at']), $now),
+            ]),
+        ], $this->audit->findRecent($expeditionId, self::LOG_LIMIT));
+    }
+
+    // „przed chwilą” / „12 min temu” / „3 godz. temu”, a starsze jak w feedzie („Wczoraj”, „5 dni temu”).
+    private static function ago(DateTimeImmutable $at, DateTimeImmutable $now): string
+    {
+        $minutes = intdiv($now->getTimestamp() - $at->getTimestamp(), 60);
+
+        return match (true) {
+            $minutes < 1 => Translator::get('captain.time_now'),
+            $minutes < 60 => Translator::get('captain.time_minutes', ['count' => $minutes]),
+            $minutes < 24 * 60 => Translator::get('captain.time_hours', ['count' => intdiv($minutes, 60)]),
+            default => ActivityFeedService::relativeDay($at->setTime(0, 0), $now->setTime(0, 0)),
+        };
     }
 
     /**
