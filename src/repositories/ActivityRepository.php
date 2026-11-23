@@ -8,12 +8,56 @@ use App\Database;
 
 final class ActivityRepository
 {
-    /**
-     * Ostatnie aktywności drużyny: zatwierdzone wszystkich + własne (także oczekujące i odrzucone) oglądającego.
-     * JOIN-y: autor (users), dyscyplina ze słownika (disciplines), kapitan wyprawy (expeditions).
-     * total = liczba wszystkich widocznych wpisów (funkcja okna liczona przed LIMIT).
-     */
+    /** Feed: zatwierdzone wszystkich + własne (także oczekujące i odrzucone) oglądającego, od najnowszych. */
     public function findRecentForExpedition(int $expeditionId, int $viewerId, int $limit): array
+    {
+        return $this->findCards(
+            "(a.status = 'APPROVED' OR a.user_id = :viewer)",
+            ['viewer' => $viewerId],
+            'a.activity_date DESC, a.created_at DESC',
+            $expeditionId,
+            $limit,
+        );
+    }
+
+    /**
+     * Kolejka kapitana: aktywności o danym statusie. Oczekujące od najstarszej (rozpatrywane po kolei),
+     * już rozpatrzone od najnowszej.
+     */
+    public function findByStatus(int $expeditionId, string $status, int $limit): array
+    {
+        return $this->findCards(
+            'a.status = :status',
+            ['status' => $status],
+            $status === 'PENDING' ? 'a.activity_date, a.created_at' : 'a.activity_date DESC, a.created_at DESC',
+            $expeditionId,
+            $limit,
+        );
+    }
+
+    /** Liczba aktywności i suma km trasy w każdym statusie – liczniki zakładek panelu kapitana. */
+    public function countByStatus(int $expeditionId): array
+    {
+        $statement = Database::connect()->prepare(
+            'SELECT status, count(*) AS total, sum(route_km) AS km FROM activities
+             WHERE expedition_id = :expedition GROUP BY status'
+        );
+        $statement->execute(['expedition' => $expeditionId]);
+
+        $counts = [];
+        foreach ($statement->fetchAll() as $row) {
+            $counts[$row['status']] = ['count' => (int) $row['total'], 'km' => (float) $row['km']];
+        }
+
+        return $counts;
+    }
+
+    /**
+     * Wspólne zapytanie kart aktywności (feed i panel kapitana). JOIN-y: autor (users), dyscyplina ze słownika
+     * (disciplines), kapitan wyprawy (expeditions). total = liczba pasujących wpisów (funkcja okna przed LIMIT).
+     * $where i $orderBy to stałe fragmenty z tej klasy – dane od użytkownika idą tylko przez $params.
+     */
+    private function findCards(string $where, array $params, string $orderBy, int $expeditionId, int $limit): array
     {
         $statement = Database::connect()->prepare(
             "SELECT a.id, a.user_id, u.name AS user_name, (e.captain_id = a.user_id) AS is_captain,
@@ -24,13 +68,15 @@ final class ActivityRepository
              JOIN users u ON u.id = a.user_id
              JOIN disciplines d ON d.id = a.discipline_id
              JOIN expeditions e ON e.id = a.expedition_id
-             WHERE a.expedition_id = :expedition AND (a.status = 'APPROVED' OR a.user_id = :viewer)
-             ORDER BY a.activity_date DESC, a.created_at DESC
+             WHERE a.expedition_id = :expedition AND $where
+             ORDER BY $orderBy
              LIMIT :limit"
         );
         $statement->bindValue('expedition', $expeditionId, \PDO::PARAM_INT);
-        $statement->bindValue('viewer', $viewerId, \PDO::PARAM_INT);
         $statement->bindValue('limit', $limit, \PDO::PARAM_INT);
+        foreach ($params as $name => $value) {
+            $statement->bindValue($name, $value, is_int($value) ? \PDO::PARAM_INT : \PDO::PARAM_STR);
+        }
         $statement->execute();
 
         return $statement->fetchAll();

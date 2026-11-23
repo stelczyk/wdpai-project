@@ -25,8 +25,17 @@ final class ActivityFeedService
     public function recentForExpedition(User $viewer, int $expeditionId, ?DateTimeImmutable $today = null): array
     {
         $today ??= new DateTimeImmutable('today');
-        $rows = $this->activities->findRecentForExpedition($expeditionId, $viewer->id, self::FEED_LIMIT);
+        return $this->cards($this->activities->findRecentForExpedition($expeditionId, $viewer->id, self::FEED_LIMIT), $viewer, $today);
+    }
 
+    /**
+     * Wiersze z ActivityRepository → karty (partial activity-card) + liczba wszystkich pasujących wpisów.
+     * Wspólne dla feedu na dashboardzie i kolejki w panelu kapitana.
+     *
+     * @return array{items: list<array>, total: int}
+     */
+    public function cards(array $rows, User $viewer, DateTimeImmutable $today): array
+    {
         return [
             'items' => array_map(fn (array $row): array => $this->card($row, $viewer, $today), $rows),
             'total' => (int) ($rows[0]['total'] ?? 0),
