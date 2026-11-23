@@ -289,6 +289,14 @@ return [
     'captain.impact_next' => 'After approving all pending workouts, {km} km will be left to {name}.',
     'captain.impact_passes' => 'Approving the queue takes the team past {name}!',
     'captain.impact_none' => 'No pending workouts – route progress is up to date.',
+    'captain.decision_label' => 'Captain decision',
+    'captain.approve' => 'Approve',
+    'captain.reject' => 'Reject',
+    'captain.decision_busy' => 'Saving the decision…',
+    'captain.decided_approve' => 'Approved – the kilometres count towards the route.',
+    'captain.decided_reject' => 'Rejected – the workout does not count towards the route.',
+    'captain.already_decided' => 'This activity has already been reviewed.',
+    'captain.decision_error' => 'Could not save the decision – please try again.',
 
     // Add activity
     'activity.title' => 'Add activity',

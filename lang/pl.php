@@ -289,6 +289,14 @@ return [
     'captain.impact_next' => 'Po zatwierdzeniu wszystkich oczekujących do punktu {name} zostanie {km} km.',
     'captain.impact_passes' => 'Zatwierdzenie kolejki przeniesie drużynę za punkt {name}!',
     'captain.impact_none' => 'Brak oczekujących treningów – postęp trasy jest aktualny.',
+    'captain.decision_label' => 'Decyzja kapitana',
+    'captain.approve' => 'Zatwierdź',
+    'captain.reject' => 'Odrzuć',
+    'captain.decision_busy' => 'Zapisywanie decyzji…',
+    'captain.decided_approve' => 'Zatwierdzono – kilometry doliczone do trasy.',
+    'captain.decided_reject' => 'Odrzucono – trening nie liczy się do trasy.',
+    'captain.already_decided' => 'Ta aktywność została już rozpatrzona.',
+    'captain.decision_error' => 'Nie udało się zapisać decyzji – spróbuj ponownie.',
 
     // Dodaj aktywność
     'activity.title' => 'Dodaj aktywność',

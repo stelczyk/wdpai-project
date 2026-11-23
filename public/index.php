@@ -41,6 +41,7 @@ $routing->get('/expeditions/{id}/ranking', ExpeditionController::class, 'ranking
 $routing->get('/activities/new', ActivityController::class, 'create');
 $routing->post('/activities', ActivityController::class, 'store');
 $routing->get('/captain/{id}', CaptainController::class, 'panel');
+$routing->post('/captain/{id}/activities/{activityId}', CaptainController::class, 'decide');
 
 // Jedno miejsce obsługi błędów: kontrolowane błędy HTTP dostają swój status,
 // a każdy inny wyjątek kończy się 500 bez pokazywania szczegółów użytkownikowi.

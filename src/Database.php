@@ -34,4 +34,28 @@ final class Database
 
         return self::$connection;
     }
+
+    /**
+     * Wykonuje $work w jednej transakcji: wszystkie zapytania zapisują się razem albo żadne –
+     * wyjątek w dowolnym kroku cofa całość (rollBack) i leci dalej. Zwraca wynik $work.
+     *
+     * @template T
+     * @param callable(): T $work
+     * @return T
+     */
+    public static function transaction(callable $work): mixed
+    {
+        $db = self::connect();
+        $db->beginTransaction();
+
+        try {
+            $result = $work();
+            $db->commit();
+
+            return $result;
+        } catch (\Throwable $exception) {
+            $db->rollBack();
+            throw $exception;
+        }
+    }
 }
