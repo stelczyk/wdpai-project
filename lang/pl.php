@@ -297,6 +297,9 @@ return [
     'captain.decided_reject' => 'Odrzucono – trening nie liczy się do trasy.',
     'captain.already_decided' => 'Ta aktywność została już rozpatrzona.',
     'captain.decision_error' => 'Nie udało się zapisać decyzji – spróbuj ponownie.',
+    'captain.approve_all' => 'Zatwierdź wszystkie',
+    'captain.approve_all_confirm' => 'Zatwierdzić wszystkie oczekujące treningi ({count})? Ich kilometry od razu doliczą się do trasy.',
+    'captain.decided_approve_all' => 'Zatwierdzono wszystkie oczekujące treningi.',
 
     // Dodaj aktywność
     'activity.title' => 'Dodaj aktywność',

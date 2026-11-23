@@ -297,6 +297,9 @@ return [
     'captain.decided_reject' => 'Rejected – the workout does not count towards the route.',
     'captain.already_decided' => 'This activity has already been reviewed.',
     'captain.decision_error' => 'Could not save the decision – please try again.',
+    'captain.approve_all' => 'Approve all',
+    'captain.approve_all_confirm' => 'Approve all pending workouts ({count})? Their kilometres will count towards the route right away.',
+    'captain.decided_approve_all' => 'All pending workouts have been approved.',
 
     // Add activity
     'activity.title' => 'Add activity',
