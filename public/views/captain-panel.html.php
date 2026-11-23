@@ -74,6 +74,18 @@ $decisionUrl = '/captain/' . $e['id'] . '/activities/';
                 </ul>
             </nav>
 
+            <?php // Cała kolejka jedną transakcją; captain.js pyta o potwierdzenie i wysyła fetch. ?>
+            <?php if ($q['tab'] === 'pending'): ?>
+                <form class="approve-all" method="post" action="/captain/<?= $e['id'] ?>/activities/approve-all" data-approve-all
+                      data-confirm="<?= $t('captain.approve_all_confirm') ?>"<?= $q['counts']['pending']['count'] === 0 ? ' hidden' : '' ?>>
+                    <?= $csrfField ?>
+                    <p class="activity-decision-message" role="status" data-approve-all-message></p>
+                    <button class="exp-button exp-button--primary" type="submit">
+                        <?= $t('captain.approve_all') ?> (<span data-count="pending"><?= $q['counts']['pending']['count'] ?></span>)
+                    </button>
+                </form>
+            <?php endif; ?>
+
             <?php foreach ($q['items'] as $activity): ?>
                 <?php require __DIR__ . '/partials/activity-card.html.php'; ?>
             <?php endforeach; ?>

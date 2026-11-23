@@ -41,6 +41,8 @@ $routing->get('/expeditions/{id}/ranking', ExpeditionController::class, 'ranking
 $routing->get('/activities/new', ActivityController::class, 'create');
 $routing->post('/activities', ActivityController::class, 'store');
 $routing->get('/captain/{id}', CaptainController::class, 'panel');
+// approve-all przed trasą z {activityId} – inaczej „approve-all” trafiłoby tam jako błędne id (400).
+$routing->post('/captain/{id}/activities/approve-all', CaptainController::class, 'approveAll');
 $routing->post('/captain/{id}/activities/{activityId}', CaptainController::class, 'decide');
 
 // Jedno miejsce obsługi błędów: kontrolowane błędy HTTP dostają swój status,

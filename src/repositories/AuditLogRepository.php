@@ -22,4 +22,24 @@ final class AuditLogRepository
             'action' => $action,
         ]);
     }
+
+    /**
+     * Ta sama decyzja dla wielu aktywności jednym zapytaniem („zatwierdź wszystkie”).
+     * Id przekazujemy jako tablicę PostgreSQL i rozwijamy przez unnest – bez sklejania SQL z danych.
+     *
+     * @param list<int> $activityIds
+     */
+    public function insertMany(int $expeditionId, array $activityIds, int $actorId, string $action): void
+    {
+        $statement = Database::connect()->prepare(
+            'INSERT INTO audit_log (expedition_id, activity_id, actor_id, action)
+             SELECT :expedition, id, :actor, :action FROM unnest(CAST(:ids AS int[])) AS id'
+        );
+        $statement->execute([
+            'expedition' => $expeditionId,
+            'actor' => $actorId,
+            'action' => $action,
+            'ids' => '{' . implode(',', array_map('intval', $activityIds)) . '}',
+        ]);
+    }
 }

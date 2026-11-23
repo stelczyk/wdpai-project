@@ -78,6 +78,22 @@ final class CaptainService
         });
     }
 
+    /**
+     * Zatwierdza całą kolejkę jednej wyprawy: zmiana statusów i wpisy w audit_log w jednej transakcji –
+     * błąd przy zapisie logu cofa też zatwierdzenia. Zwraca liczbę zatwierdzonych aktywności.
+     */
+    public function approveAll(User $captain, int $expeditionId): int
+    {
+        return Database::transaction(function () use ($captain, $expeditionId): int {
+            $ids = $this->activities->approveAllPending($expeditionId);
+            if ($ids !== []) {
+                $this->audit->insertMany($expeditionId, $ids, $captain->id, self::DECISIONS['approve']);
+            }
+
+            return count($ids);
+        });
+    }
+
     /** Ile dałoby zatwierdzenie całej kolejki: postęp trasy po zatwierdzeniu i km do najbliższego punktu. */
     private static function impact(array $expedition, float $pendingKm): array
     {

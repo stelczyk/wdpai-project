@@ -16,9 +16,16 @@ function setOut(name, text) {
 
 // Kafelki, liczniki zakładek i „wpływ kolejki” z odpowiedzi serwera (te same pola co przy renderowaniu strony).
 function renderSummary({ counts, impact }) {
+    // Licznik oczekujących jest w zakładce i w przycisku „Zatwierdź wszystkie” – aktualizujemy każde wystąpienie.
     Object.entries(counts).forEach(([tab, { count }]) => {
-        captain.querySelector(`[data-count="${tab}"]`).textContent = count;
+        captain.querySelectorAll(`[data-count="${tab}"]`).forEach((element) => {
+            element.textContent = count;
+        });
     });
+    const approveAll = captain.querySelector('[data-approve-all]');
+    if (approveAll) {
+        approveAll.hidden = counts.pending.count === 0;
+    }
     setOut('pending-count', counts.pending.count);
     setOut('pending-km', captainMessage('msgPendingKm', { km: formatNumber(counts.pending.km) }));
     setOut('approved-km', formatNumber(impact.approvedKm));
@@ -110,14 +117,53 @@ async function decide(form, decision) {
     setBusy(card, form, false);
 }
 
+// „Zatwierdź wszystkie”: po potwierdzeniu jedno żądanie, serwer zatwierdza całą kolejkę w jednej transakcji.
+async function approveAll(form) {
+    const button = form.querySelector('button');
+    const message = form.querySelector('[data-approve-all-message]');
+    const cards = [...captain.querySelectorAll('.activity-card--pending')];
+    button.disabled = true;
+    message.textContent = captain.dataset.msgBusy;
+    cards.forEach((card) => card.classList.add('is-busy'));
+
+    try {
+        const response = await fetch(form.action, {
+            method: 'POST',
+            headers: { Accept: 'application/json', 'X-CSRF-Token': form.elements._csrf.value },
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.error);
+        }
+
+        cards.forEach((card) => markDecided(card, card.querySelector('[data-decision-form]'), { status: 'APPROVED', message: data.message }));
+        message.textContent = data.message;
+        renderSummary(data);
+    } catch {
+        message.textContent = captain.dataset.msgError;
+        cards.forEach((card) => card.classList.remove('is-busy'));
+    }
+    button.disabled = false;
+}
+
 if (captain) {
     // Delegacja: jeden nasłuchiwacz na całą kolejkę; event.submitter mówi, który przycisk kliknięto.
     captain.addEventListener('submit', (event) => {
-        const form = event.target.closest('[data-decision-form]');
-        if (!form) {
+        const decisionForm = event.target.closest('[data-decision-form]');
+        const approveAllForm = event.target.closest('[data-approve-all]');
+        if (!decisionForm && !approveAllForm) {
             return;
         }
         event.preventDefault();
-        decide(form, event.submitter?.value ?? '');
+
+        if (decisionForm) {
+            decide(decisionForm, event.submitter?.value ?? '');
+            return;
+        }
+        const count = captain.querySelector('[data-count="pending"]').textContent;
+        // Masowa decyzja jest nieodwracalna z poziomu panelu – zwykłe potwierdzenie przeglądarki.
+        if (window.confirm(fillTemplate(approveAllForm.dataset.confirm, { count }))) {
+            approveAll(approveAllForm);
+        }
     });
 }

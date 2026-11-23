@@ -62,6 +62,19 @@ final class ActivityRepository
         return $statement->rowCount() === 1;
     }
 
+    /** Zatwierdza wszystkie oczekujące aktywności wyprawy; zwraca id zmienionych wierszy (do audit_log). */
+    public function approveAllPending(int $expeditionId): array
+    {
+        $statement = Database::connect()->prepare(
+            "UPDATE activities SET status = 'APPROVED'
+             WHERE expedition_id = :expedition AND status = 'PENDING'
+             RETURNING id"
+        );
+        $statement->execute(['expedition' => $expeditionId]);
+
+        return array_map('intval', $statement->fetchAll(\PDO::FETCH_COLUMN));
+    }
+
     /** Liczba aktywności i suma km trasy w każdym statusie – liczniki zakładek panelu kapitana. */
     public function countByStatus(int $expeditionId): array
     {

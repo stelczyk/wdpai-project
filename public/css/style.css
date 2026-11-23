@@ -3602,3 +3602,24 @@ li.share-2 { color: var(--color-muted); }
     animation: none;
   }
 }
+
+/* „Zatwierdź wszystkie” nad kolejką */
+.approve-all {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.approve-all button {
+  border: 0;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.approve-all button:disabled {
+  opacity: 0.5;
+  cursor: progress;
+}
