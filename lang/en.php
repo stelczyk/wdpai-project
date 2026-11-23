@@ -269,8 +269,26 @@ return [
 
     // Captain panel
     'captain.title' => 'Captain panel',
-    'captain.heading' => 'Captain panel – expedition #{id}',
-    'captain.pending' => 'Activities awaiting approval',
+    'captain.lead' => 'Review submitted workouts – only approved ones move the team along the route.',
+    'captain.kpi_label' => 'Review summary',
+    'captain.kpi_pending' => 'Awaiting approval',
+    'captain.kpi_pending_km' => '{km} km awaiting a decision',
+    'captain.kpi_approved' => 'Approved km',
+    'captain.kpi_approved_count' => 'Approved workouts: {count}',
+    'captain.kpi_rejected' => 'Rejected',
+    'captain.tabs_label' => 'Activity status',
+    'captain.tab_pending' => 'Awaiting approval',
+    'captain.tab_approved' => 'Approved',
+    'captain.tab_rejected' => 'Rejected',
+    'captain.empty_pending' => 'The queue is empty – all workouts have been reviewed.',
+    'captain.empty' => 'No activities in this tab.',
+    'captain.more' => 'Showing {shown} of {total}.',
+    'captain.impact_title' => 'Queue impact on the expedition',
+    'captain.impact_progress' => 'After approving the queue',
+    'captain.impact_pending' => 'In the queue: +{km} km',
+    'captain.impact_next' => 'After approving all pending workouts, {km} km will be left to {name}.',
+    'captain.impact_passes' => 'Approving the queue takes the team past {name}!',
+    'captain.impact_none' => 'No pending workouts – route progress is up to date.',
 
     // Add activity
     'activity.title' => 'Add activity',
