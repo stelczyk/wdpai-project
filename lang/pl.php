@@ -269,8 +269,26 @@ return [
 
     // Panel kapitana
     'captain.title' => 'Panel kapitana',
-    'captain.heading' => 'Panel kapitana – wyprawa nr {id}',
-    'captain.pending' => 'Aktywności do zatwierdzenia',
+    'captain.lead' => 'Sprawdź zgłoszone treningi – dopiero zatwierdzone przesuwają drużynę po trasie.',
+    'captain.kpi_label' => 'Podsumowanie weryfikacji',
+    'captain.kpi_pending' => 'Do zatwierdzenia',
+    'captain.kpi_pending_km' => '{km} km czeka na decyzję',
+    'captain.kpi_approved' => 'Zatwierdzone km',
+    'captain.kpi_approved_count' => 'Zatwierdzone treningi: {count}',
+    'captain.kpi_rejected' => 'Odrzucone',
+    'captain.tabs_label' => 'Status aktywności',
+    'captain.tab_pending' => 'Do zatwierdzenia',
+    'captain.tab_approved' => 'Zaakceptowane',
+    'captain.tab_rejected' => 'Odrzucone',
+    'captain.empty_pending' => 'Kolejka jest pusta – wszystkie treningi są rozpatrzone.',
+    'captain.empty' => 'Brak aktywności w tej zakładce.',
+    'captain.more' => 'Pokazano {shown} z {total}.',
+    'captain.impact_title' => 'Wpływ kolejki na wyprawę',
+    'captain.impact_progress' => 'Po zatwierdzeniu kolejki',
+    'captain.impact_pending' => 'W kolejce: +{km} km',
+    'captain.impact_next' => 'Po zatwierdzeniu wszystkich oczekujących do punktu {name} zostanie {km} km.',
+    'captain.impact_passes' => 'Zatwierdzenie kolejki przeniesie drużynę za punkt {name}!',
+    'captain.impact_none' => 'Brak oczekujących treningów – postęp trasy jest aktualny.',
 
     // Dodaj aktywność
     'activity.title' => 'Dodaj aktywność',

@@ -2917,6 +2917,11 @@ li.share-2 { color: var(--color-muted); }
   align-items: start;
 }
 
+/* min-width: 0 – kolumna nie rozpycha się do szerokości zakładek czy tabeli (poziome przewijanie na telefonie) */
+.activity-layout > * {
+  min-width: 0;
+}
+
 .activity-form {
   max-width: none;
 }
@@ -3432,12 +3437,19 @@ li.share-2 { color: var(--color-muted); }
 /* Telefon: wiersz tabeli jako karta – etykiety kolumn z data-label, bez poziomego przewijania */
 @media (max-width: 47.99rem) {
   /* Cztery kafelki podsumowania w dwóch kolumnach zamiast czterech ekranów przewijania */
-  .ranking-page .exp-stats {
+  .ranking-page .exp-stats,
+  .captain-page .exp-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .ranking-page .stat-value {
+  .ranking-page .stat-value,
+  .captain-page .stat-value {
     font-size: 1.75rem;
+  }
+
+  /* Data (10 znaków bez miejsca na złamanie) nie mieści się w połowie ekranu dużą czcionką */
+  .captain-page .stat-value.captain-eta {
+    font-size: 1.25rem;
   }
 
   .ranking-table thead {
