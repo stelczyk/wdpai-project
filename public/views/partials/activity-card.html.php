@@ -54,4 +54,15 @@ $routeKm = \App\Translator::number($activity['routeKm']);
             <span class="activity-status"><?= $t('activity.status_' . $activity['status']) ?></span>
         <?php endif; ?>
     </footer>
+
+    <?php // Przyciski decyzji tylko w panelu kapitana ($decisionUrl ustawia widok panelu, feed go nie ma). ?>
+    <?php if (isset($decisionUrl) && $activity['status'] === 'PENDING'): ?>
+        <form class="activity-decision" method="post" action="<?= $decisionUrl . $activity['id'] ?>"
+              aria-label="<?= $t('captain.decision_label') ?>" data-decision-form>
+            <?= $csrfField ?>
+            <p class="activity-decision-message" role="status" data-decision-message></p>
+            <button class="exp-button exp-button--ghost" type="submit" name="decision" value="reject"><?= $t('captain.reject') ?></button>
+            <button class="exp-button exp-button--primary" type="submit" name="decision" value="approve"><?= $t('captain.approve') ?></button>
+        </form>
+    <?php endif; ?>
 </article>

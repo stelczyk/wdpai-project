@@ -35,6 +35,33 @@ final class ActivityRepository
         );
     }
 
+    /** Status aktywności tej wyprawy albo null, gdy takiej aktywności w tej wyprawie nie ma. */
+    public function findStatus(int $activityId, int $expeditionId): ?string
+    {
+        $statement = Database::connect()->prepare(
+            'SELECT status FROM activities WHERE id = :activity AND expedition_id = :expedition'
+        );
+        $statement->execute(['activity' => $activityId, 'expedition' => $expeditionId]);
+        $status = $statement->fetchColumn();
+
+        return $status === false ? null : $status;
+    }
+
+    /**
+     * Decyzja kapitana. Warunek status = 'PENDING' w samym UPDATE: przy dwóch równoczesnych decyzjach
+     * tylko pierwsza zmieni wiersz, druga dostanie 0 i nie nadpisze wyniku. Zwraca, czy wiersz zmieniono.
+     */
+    public function decide(int $activityId, int $expeditionId, string $status): bool
+    {
+        $statement = Database::connect()->prepare(
+            "UPDATE activities SET status = :status
+             WHERE id = :activity AND expedition_id = :expedition AND status = 'PENDING'"
+        );
+        $statement->execute(['status' => $status, 'activity' => $activityId, 'expedition' => $expeditionId]);
+
+        return $statement->rowCount() === 1;
+    }
+
     /** Liczba aktywności i suma km trasy w każdym statusie – liczniki zakładek panelu kapitana. */
     public function countByStatus(int $expeditionId): array
     {
