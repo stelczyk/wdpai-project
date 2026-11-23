@@ -126,6 +126,17 @@ $decisionUrl = '/captain/' . $e['id'] . '/activities/';
                 <?php endif; ?>
                 <p class="activity-review" data-impact-none<?= $hasPending ? ' hidden' : '' ?>><?= $t('captain.impact_none') ?></p>
             </section>
+
+            <section class="stat-card preview-card" aria-labelledby="log-title">
+                <h2 id="log-title"><?= $t('captain.log_title') ?></h2>
+                <ul class="audit-log" data-audit-log>
+                    <?php foreach ($q['log'] as $entry): ?>
+                        <?php require __DIR__ . '/partials/audit-entry.html.php'; ?>
+                    <?php endforeach; ?>
+                </ul>
+                <p class="activity-review" data-audit-empty<?= $q['log'] === [] ? '' : ' hidden' ?>><?= $t('captain.log_empty') ?></p>
+                <template data-audit-template><?php $entry = ['action' => '', 'label' => '', 'detail' => '', 'by' => '']; require __DIR__ . '/partials/audit-entry.html.php'; ?></template>
+            </section>
         </aside>
     </div>
 </main>

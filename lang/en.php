@@ -300,6 +300,17 @@ return [
     'captain.approve_all' => 'Approve all',
     'captain.approve_all_confirm' => 'Approve all pending workouts ({count})? Their kilometres will count towards the route right away.',
     'captain.decided_approve_all' => 'All pending workouts have been approved.',
+    'captain.log_title' => 'Recent decisions',
+    'captain.log_empty' => 'No decisions yet – no workout has been reviewed.',
+    'captain.log_approved' => 'Approved',
+    'captain.log_rejected' => 'Rejected',
+    'captain.log_detail' => '{discipline} · {author} · +{km} km',
+    'captain.log_deleted' => 'The activity has been deleted',
+    'captain.log_by' => '{actor} · {when}',
+    'captain.log_unknown_actor' => 'Deleted account',
+    'captain.time_now' => 'just now',
+    'captain.time_minutes' => '{count} min ago',
+    'captain.time_hours' => '{count} h ago',
 
     // Add activity
     'activity.title' => 'Add activity',

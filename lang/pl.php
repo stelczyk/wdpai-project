@@ -300,6 +300,17 @@ return [
     'captain.approve_all' => 'Zatwierdź wszystkie',
     'captain.approve_all_confirm' => 'Zatwierdzić wszystkie oczekujące treningi ({count})? Ich kilometry od razu doliczą się do trasy.',
     'captain.decided_approve_all' => 'Zatwierdzono wszystkie oczekujące treningi.',
+    'captain.log_title' => 'Ostatnie decyzje',
+    'captain.log_empty' => 'Brak decyzji – żaden trening nie został jeszcze rozpatrzony.',
+    'captain.log_approved' => 'Zatwierdzono',
+    'captain.log_rejected' => 'Odrzucono',
+    'captain.log_detail' => '{discipline} · {author} · +{km} km',
+    'captain.log_deleted' => 'Aktywność została usunięta',
+    'captain.log_by' => '{actor} · {when}',
+    'captain.log_unknown_actor' => 'Konto usunięte',
+    'captain.time_now' => 'przed chwilą',
+    'captain.time_minutes' => '{count} min temu',
+    'captain.time_hours' => '{count} godz. temu',
 
     // Dodaj aktywność
     'activity.title' => 'Dodaj aktywność',

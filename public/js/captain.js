@@ -14,8 +14,23 @@ function setOut(name, text) {
     }
 }
 
-// Kafelki, liczniki zakładek i „wpływ kolejki” z odpowiedzi serwera (te same pola co przy renderowaniu strony).
-function renderSummary({ counts, impact }) {
+// Log decyzji z odpowiedzi serwera: klon <template> (ten sam partial co na stronie), teksty przez textContent.
+function renderLog(entries) {
+    const template = captain.querySelector('[data-audit-template]');
+    captain.querySelector('[data-audit-log]').replaceChildren(...entries.map((entry) => {
+        const item = template.content.firstElementChild.cloneNode(true);
+        item.className = `audit-entry audit-entry--${entry.action}`;
+        ['label', 'detail', 'by'].forEach((name) => {
+            item.querySelector(`[data-field="${name}"]`).textContent = entry[name];
+        });
+        return item;
+    }));
+    captain.querySelector('[data-audit-empty]').hidden = entries.length > 0;
+}
+
+// Kafelki, liczniki zakładek, „wpływ kolejki” i log z odpowiedzi serwera (te same pola co przy renderowaniu strony).
+function renderSummary({ counts, impact, log }) {
+    renderLog(log);
     // Licznik oczekujących jest w zakładce i w przycisku „Zatwierdź wszystkie” – aktualizujemy każde wystąpienie.
     Object.entries(counts).forEach(([tab, { count }]) => {
         captain.querySelectorAll(`[data-count="${tab}"]`).forEach((element) => {
