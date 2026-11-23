@@ -10,7 +10,6 @@ use App\Repository\ExpeditionRepository;
 use App\Translator;
 use DateTimeImmutable;
 use RuntimeException;
-use Throwable;
 
 /** Tworzenie wyprawy przez kapitana: walidacja formularza i zapis w jednej transakcji. */
 final class ExpeditionCreationService
@@ -124,10 +123,8 @@ final class ExpeditionCreationService
     public function create(User $captain, array $form): array
     {
         $joinCode = $this->uniqueJoinCode();
-        $db = Database::connect();
-        $db->beginTransaction();
 
-        try {
+        $id = Database::transaction(function () use ($captain, $form, $joinCode): int {
             $id = $this->expeditions->insertExpedition(
                 $form['name'], $captain->id, $form['startDate'], $form['endDate'], (int) $form['maxMembers'], $joinCode,
             );
@@ -141,11 +138,9 @@ final class ExpeditionCreationService
             }
 
             $this->expeditions->insertMember($id, $captain->id);
-            $db->commit();
-        } catch (Throwable $exception) {
-            $db->rollBack();
-            throw $exception;
-        }
+
+            return $id;
+        });
 
         return ['id' => $id, 'joinCode' => $joinCode];
     }
