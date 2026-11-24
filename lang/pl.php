@@ -416,7 +416,8 @@ return [
     'validation.email' => 'Podaj poprawny adres e-mail.',
     'validation.max_length' => 'Maksymalnie {max} znaków.',
     'validation.min_length' => 'Minimum {min} znaków.',
-    'validation.email_taken' => 'Konto z tym adresem e-mail już istnieje.',
+    'validation.password_max' => 'Maksymalnie {max} bajtów (ok. {max} znaków bez polskich liter).',
+    'login.locked' => 'Zbyt wiele nieudanych prób logowania. Spróbuj ponownie za {minutes} min.',
     'validation.password_mismatch' => 'Hasła nie są identyczne.',
     'validation.terms' => 'Musisz zaakceptować regulamin.',
 
@@ -434,6 +435,12 @@ return [
     'register.submit' => 'Utwórz konto',
     'register.has_account' => 'Masz już profil wyprawy?',
     'register.login_link' => 'Zaloguj się',
+    'register.done_title' => 'Sprawdź skrzynkę',
+    'register.done_text' => 'Wysłaliśmy wiadomość na podany adres. Jeśli konto zostało utworzone, możesz się już zalogować.',
+    'register.welcome_subject' => 'Witaj w Dystansie!',
+    'register.welcome_body' => "Cześć {name},\n\nTwoje konto w Dystansie jest gotowe. Zaloguj się, dołącz do wyprawy kodem od kapitana i zamieniaj treningi na kilometry trasy:\n\n{link}\n\nDo zobaczenia na trasie!\nZespół Dystansu",
+    'register.exists_subject' => 'Dystans – próba założenia konta na Twój adres',
+    'register.exists_body' => "Cześć {name},\n\nktoś (być może Ty) próbował założyć konto w Dystansie na ten adres e-mail, ale konto już istnieje – nic nie zmieniliśmy.\nJeśli nie pamiętasz hasła, ustaw nowe tutaj:\n\n{link}\n\nJeśli to nie Ty, zignoruj tę wiadomość.\n\nZespół Dystansu",
 
     // Reset hasła
     'reset.forgot_title' => 'Reset hasła',

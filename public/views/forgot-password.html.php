@@ -20,7 +20,7 @@
                 <div class="field">
                     <label for="email"><?= $t('auth.email') ?> <span class="required" aria-hidden="true">*</span></label>
                     <div class="input-wrap">
-                        <input type="email" id="email" name="email" required
+                        <input type="email" id="email" name="email" required maxlength="255"
                                autocomplete="email" placeholder="<?= $t('auth.email_placeholder') ?>"
                                value="<?= htmlspecialchars($email) ?>"
                                aria-describedby="email-error"

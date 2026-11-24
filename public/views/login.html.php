@@ -14,6 +14,14 @@
                     </div>
                 </div>
             <?php endif; ?>
+            <?php if ($registered): ?>
+                <div class="alert alert--success" role="status">
+                    <div class="alert-content">
+                        <p class="alert-title"><?= $t('register.done_title') ?></p>
+                        <p class="alert-text"><?= $t('register.done_text') ?></p>
+                    </div>
+                </div>
+            <?php endif; ?>
 
             <?php if ($formError !== null): ?>
                 <div class="alert" role="alert" data-alert>
@@ -33,7 +41,7 @@
                 <div class="field">
                     <label for="email"><?= $t('auth.email') ?> <span class="required" aria-hidden="true">*</span></label>
                     <div class="input-wrap">
-                        <input type="email" id="email" name="email" required
+                        <input type="email" id="email" name="email" required maxlength="255"
                                autocomplete="email" placeholder="<?= $t('auth.email_placeholder') ?>"
                                value="<?= htmlspecialchars($email) ?>"
                                aria-describedby="email-hint email-error"
@@ -50,7 +58,7 @@
                         <a href="/forgot-password"><?= $t('login.forgot') ?></a>
                     </div>
                     <div class="input-wrap">
-                        <input type="password" id="password" name="password" required
+                        <input type="password" id="password" name="password" required maxlength="72"
                                autocomplete="current-password" placeholder="••••••••••••"
                                aria-describedby="password-error"
                                <?= isset($errors['password']) ? 'aria-invalid="true"' : '' ?>>

@@ -27,11 +27,17 @@ RUN apk add --no-cache \
         pdo_pgsql \
     && apk del .build-deps
 
+# Błędy tylko do logu kontenera (docker compose logs php), nigdy na stronę – stack trace zdradza ścieżki i SQL.
+# Limity uploadu = client_max_body_size 8m w nginx; zdjęcie aktywności i tak ma limit w PhotoUploadService.
 RUN { \
-      echo 'memory_limit = -1'; \
-      echo 'upload_max_filesize = 512M'; \
-      echo 'post_max_size = 512M'; \
-      echo 'max_file_uploads = 20'; \
-    } > /usr/local/etc/php/conf.d/mealplanner.ini
+      echo 'display_errors = Off'; \
+      echo 'display_startup_errors = Off'; \
+      echo 'log_errors = On'; \
+      echo 'expose_php = Off'; \
+      echo 'memory_limit = 256M'; \
+      echo 'upload_max_filesize = 8M'; \
+      echo 'post_max_size = 8M'; \
+      echo 'max_file_uploads = 5'; \
+    } > /usr/local/etc/php/conf.d/dystans.ini
 
 COPY . .

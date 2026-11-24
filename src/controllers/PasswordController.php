@@ -20,11 +20,7 @@ final class PasswordController extends AppController
     {
         $email = trim((string) ($_POST['email'] ?? ''));
 
-        $error = match (true) {
-            $email === '' => Translator::get('validation.required'),
-            filter_var($email, FILTER_VALIDATE_EMAIL) === false => Translator::get('validation.email'),
-            default => null,
-        };
+        $error = RegistrationService::emailError($email);
 
         if ($error !== null) {
             http_response_code(422);

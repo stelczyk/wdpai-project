@@ -35,7 +35,19 @@ final class SecurityController extends AppController
         }
 
         $auth = new AuthService();
-        $user = $auth->attempt($email, $password);
+        $ip = (string) ($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
+
+        // Przy blokadzie hasła w ogóle nie sprawdzamy – nawet poprawne nie przejdzie, więc zgadywanie nic nie da.
+        $lockedMinutes = $auth->lockedMinutes($email, $ip);
+        if ($lockedMinutes > 0) {
+            http_response_code(429);
+            header('Retry-After: ' . $lockedMinutes * 60);
+            $this->renderLogin($email, [], Translator::get('login.locked', ['minutes' => $lockedMinutes]));
+
+            return;
+        }
+
+        $user = $auth->attempt($email, $password, $ip);
 
         // Jeden komunikat dla złego e-maila i złego hasła – nie zdradzamy, które konta istnieją.
         if ($user === null) {
@@ -76,11 +88,6 @@ final class SecurityController extends AppController
         $registration = new RegistrationService();
         $errors = $registration->validate($name, $email, $password, $passwordConfirm, $termsAccepted);
 
-        $user = $errors === [] ? $registration->register($name, $email, $password) : null;
-        if ($errors === [] && $user === null) {
-            $errors['email'] = Translator::get('validation.email_taken');
-        }
-
         if ($errors !== []) {
             http_response_code(422);
             $this->renderRegister($name, $email, $errors);
@@ -88,8 +95,10 @@ final class SecurityController extends AppController
             return;
         }
 
-        (new AuthService())->login($user);   // od razu zalogowany, z nowym ID sesji
-        $this->redirect(self::AFTER_LOGIN);
+        // Ta sama odpowiedź dla nowego i zajętego adresu – formularz nie zdradza, kto ma konto.
+        // Bez automatycznego logowania: inaczej różnica (zalogowany / nie) znów by to zdradzała.
+        $registration->registerOrNotify($name, $email, $password);
+        $this->redirect('/login?registered=1');
     }
 
     /** @return array<string, string> komunikaty błędów pól, klucz = nazwa pola */
@@ -97,14 +106,16 @@ final class SecurityController extends AppController
     {
         $errors = [];
 
-        if ($email === '') {
-            $errors['email'] = Translator::get('validation.required');
-        } elseif (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
-            $errors['email'] = Translator::get('validation.email');
+        $emailError = RegistrationService::emailError($email);
+        if ($emailError !== null) {
+            $errors['email'] = $emailError;
         }
 
+        // Dłuższego hasła nie da się ustawić, więc nie ma po co go weryfikować (limit długości wejścia).
         if ($password === '') {
             $errors['password'] = Translator::get('validation.required');
+        } elseif (strlen($password) > RegistrationService::PASSWORD_MAX_BYTES) {
+            $errors['password'] = Translator::get('validation.password_max', ['max' => RegistrationService::PASSWORD_MAX_BYTES]);
         }
 
         return $errors;
@@ -136,6 +147,7 @@ final class SecurityController extends AppController
             'formError' => $formError,
             // Po zmianie hasła PasswordController przekierowuje tu z ?password_reset=1.
             'passwordChanged' => ($_GET['password_reset'] ?? '') === '1',
+            'registered' => ($_GET['registered'] ?? '') === '1',
         ]);
     }
 }
