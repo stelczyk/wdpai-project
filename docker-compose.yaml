@@ -22,6 +22,24 @@ services:
     networks:
       - app-network
 
+  # Zadania cykliczne (docker/cron/crontab) na tym samym obrazie co php. crond nie przekazuje zadaniom
+  # zmiennych kontenera (.env: baza, SMTP), więc przy starcie zapisujemy je do /etc/cron.env, który
+  # zadanie wczytuje. tr usuwa CRLF – crontab z repozytorium mógł dostać windowsowe końce linii.
+  cron:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    env_file: .env
+    volumes:
+      - .:/app
+    # Pojedynczy cudzysłów YAML nie interpretuje „\” – znak CR podajemy ósemkowo (\015) dla tr.
+    command: ['sh', '-c', 'export -p > /etc/cron.env && tr -d "\015" < /app/docker/cron/crontab > /etc/crontabs/root && crond -f -l 8']
+    depends_on:
+      - db
+      - mailpit
+    networks:
+      - app-network
+
   db:
     build:
       context: .
