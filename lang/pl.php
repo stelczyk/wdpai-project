@@ -379,6 +379,14 @@ return [
     'photo.choose_again' => 'Popraw pozostałe pola i wybierz zdjęcie ponownie.',
     'photo.alt' => 'Zdjęcie z treningu: {name}',
 
+    // Mail z przypomnieniem dla nieaktywnych (cron)
+    'reminder.subject' => 'Drużyna {expedition} czeka na Twój trening',
+    'reminder.greeting' => 'Cześć {name},',
+    'reminder.body' => 'od {hours} godzin nie ma Twojego treningu w wyprawie {expedition}. Drużyna przeszła już {approved} z {total} km',
+    'reminder.next' => ' – do punktu {name} zostało {km} km.',
+    'reminder.cta' => 'Dodaj trening, żeby pchnąć drużynę dalej: {url}',
+    'reminder.footer' => "Do zobaczenia na trasie!\nZespół Dystans",
+
     // Logowanie i rejestracja – wspólne
     'auth.email' => 'Adres e-mail',
     'auth.email_placeholder' => 'jan.kowalski@dystans.app',

@@ -1,0 +1,4 @@
+# Dystans – zadania cykliczne (serwis „cron” w docker-compose.yaml, busybox crond).
+# min godz dzień mies dz.tyg  polecenie
+# Codziennie o 18:00 – przypomnienia dla uczestników bez treningu od 48 h; wynik dopisywany do logu.
+0 18 * * * . /etc/cron.env; php /app/bin/send-reminders.php >> /var/log/reminders.log 2>&1

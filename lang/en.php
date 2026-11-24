@@ -379,6 +379,14 @@ return [
     'photo.choose_again' => 'Fix the other fields and choose the photo again.',
     'photo.alt' => 'Workout photo: {name}',
 
+    // Reminder e-mail for inactive members (cron)
+    'reminder.subject' => 'Team {expedition} is waiting for your workout',
+    'reminder.greeting' => 'Hi {name},',
+    'reminder.body' => 'we have not seen a workout from you in the {expedition} expedition for {hours} hours. The team has already covered {approved} of {total} km',
+    'reminder.next' => ' – {km} km left to {name}.',
+    'reminder.cta' => 'Add a workout to push the team further: {url}',
+    'reminder.footer' => "See you on the route!\nThe Dystans team",
+
     // Sign in and sign up – shared
     'auth.email' => 'Email address',
     'auth.email_placeholder' => 'john.smith@dystans.app',
