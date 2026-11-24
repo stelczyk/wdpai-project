@@ -417,6 +417,7 @@ return [
     'validation.max_length' => 'Maksymalnie {max} znaków.',
     'validation.min_length' => 'Minimum {min} znaków.',
     'validation.password_max' => 'Maksymalnie {max} bajtów (ok. {max} znaków bez polskich liter).',
+    'login.locked' => 'Zbyt wiele nieudanych prób logowania. Spróbuj ponownie za {minutes} min.',
     'validation.password_mismatch' => 'Hasła nie są identyczne.',
     'validation.terms' => 'Musisz zaakceptować regulamin.',
 

@@ -35,7 +35,19 @@ final class SecurityController extends AppController
         }
 
         $auth = new AuthService();
-        $user = $auth->attempt($email, $password);
+        $ip = (string) ($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
+
+        // Przy blokadzie hasła w ogóle nie sprawdzamy – nawet poprawne nie przejdzie, więc zgadywanie nic nie da.
+        $lockedMinutes = $auth->lockedMinutes($email, $ip);
+        if ($lockedMinutes > 0) {
+            http_response_code(429);
+            header('Retry-After: ' . $lockedMinutes * 60);
+            $this->renderLogin($email, [], Translator::get('login.locked', ['minutes' => $lockedMinutes]));
+
+            return;
+        }
+
+        $user = $auth->attempt($email, $password, $ip);
 
         // Jeden komunikat dla złego e-maila i złego hasła – nie zdradzamy, które konta istnieją.
         if ($user === null) {

@@ -417,6 +417,7 @@ return [
     'validation.max_length' => 'At most {max} characters.',
     'validation.min_length' => 'At least {min} characters.',
     'validation.password_max' => 'At most {max} bytes (about {max} characters without accented letters).',
+    'login.locked' => 'Too many failed sign-in attempts. Try again in {minutes} min.',
     'validation.password_mismatch' => 'Passwords do not match.',
     'validation.terms' => 'You must accept the terms.',
 

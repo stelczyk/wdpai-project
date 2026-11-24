@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Model\User;
+use App\Repository\LoginAttemptRepository;
 use App\Repository\UserRepository;
 use App\Session;
 
@@ -17,17 +18,39 @@ final class AuthService
     // Jeden odczyt zalogowanego użytkownika na żądanie (header, kontroler).
     private static ?User $currentUser = null;
 
-    public function __construct(private readonly UserRepository $users = new UserRepository())
-    {
+    // 5 nieudanych prób w ciągu 15 minut (na ten e-mail albo z tego IP) blokuje logowanie.
+    private const MAX_ATTEMPTS = 5;
+    private const WINDOW_MINUTES = 15;
+
+    public function __construct(
+        private readonly UserRepository $users = new UserRepository(),
+        private readonly LoginAttemptRepository $attempts = new LoginAttemptRepository(),
+    ) {
     }
 
-    /** Zwraca użytkownika, gdy e-mail i hasło są poprawne; w przeciwnym razie null. */
-    public function attempt(string $email, string $password): ?User
+    /** Minuty do końca blokady logowania; 0 = można próbować. Sprawdzane PRZED weryfikacją hasła. */
+    public function lockedMinutes(string $email, string $ip): int
+    {
+        return $this->attempts->lockedMinutes(mb_strtolower($email), $ip, self::MAX_ATTEMPTS, self::WINDOW_MINUTES);
+    }
+
+    /** Zwraca użytkownika, gdy e-mail i hasło są poprawne; w przeciwnym razie null i zapis porażki. */
+    public function attempt(string $email, string $password, string $ip): ?User
     {
         $user = $this->users->findByEmail($email);
         $passwordMatches = password_verify($password, $user?->passwordHash ?? self::DUMMY_HASH);
 
-        return $user !== null && $passwordMatches ? $user : null;
+        if ($user !== null && $passwordMatches) {
+            $this->attempts->clear(mb_strtolower($email));
+
+            return $user;
+        }
+
+        $this->attempts->record(mb_strtolower($email), $ip);
+        // Log bezpieczeństwa: kto i skąd – nigdy hasło.
+        error_log(sprintf('Failed login for %s from %s', $email, $ip));
+
+        return null;
     }
 
     public function login(User $user): void
