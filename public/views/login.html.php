@@ -14,6 +14,14 @@
                     </div>
                 </div>
             <?php endif; ?>
+            <?php if ($registered): ?>
+                <div class="alert alert--success" role="status">
+                    <div class="alert-content">
+                        <p class="alert-title"><?= $t('register.done_title') ?></p>
+                        <p class="alert-text"><?= $t('register.done_text') ?></p>
+                    </div>
+                </div>
+            <?php endif; ?>
 
             <?php if ($formError !== null): ?>
                 <div class="alert" role="alert" data-alert>

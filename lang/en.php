@@ -416,7 +416,6 @@ return [
     'validation.email' => 'Enter a valid email address.',
     'validation.max_length' => 'At most {max} characters.',
     'validation.min_length' => 'At least {min} characters.',
-    'validation.email_taken' => 'An account with this email already exists.',
     'validation.password_max' => 'At most {max} bytes (about {max} characters without accented letters).',
     'validation.password_mismatch' => 'Passwords do not match.',
     'validation.terms' => 'You must accept the terms.',
@@ -435,6 +434,12 @@ return [
     'register.submit' => 'Create account',
     'register.has_account' => 'Already have an expedition profile?',
     'register.login_link' => 'Sign in',
+    'register.done_title' => 'Check your inbox',
+    'register.done_text' => 'We have sent a message to the address you entered. If the account was created, you can sign in now.',
+    'register.welcome_subject' => 'Welcome to Dystans!',
+    'register.welcome_body' => "Hi {name},\n\nyour Dystans account is ready. Sign in, join an expedition with the code from your captain and turn workouts into route kilometres:\n\n{link}\n\nSee you on the route!\nThe Dystans team",
+    'register.exists_subject' => 'Dystans – someone tried to sign up with your address',
+    'register.exists_body' => "Hi {name},\n\nsomeone (maybe you) tried to create a Dystans account with this email address, but the account already exists – nothing was changed.\nIf you forgot your password, set a new one here:\n\n{link}\n\nIf this wasn't you, ignore this message.\n\nThe Dystans team",
 
     // Password reset
     'reset.forgot_title' => 'Password reset',

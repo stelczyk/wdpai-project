@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Env;
+use App\Mailer;
 use App\Model\User;
 use App\Repository\UserRepository;
 use App\Translator;
 use PDOException;
+use Throwable;
 
 final class RegistrationService
 {
@@ -18,8 +21,38 @@ final class RegistrationService
     public const PASSWORD_MAX_BYTES = 72;
     private const UNIQUE_VIOLATION = '23505'; // kod błędu PostgreSQL: naruszenie UNIQUE
 
-    public function __construct(private readonly UserRepository $users = new UserRepository())
+    public function __construct(
+        private readonly UserRepository $users = new UserRepository(),
+        private readonly Mailer $mailer = new Mailer(),
+    ) {
+    }
+
+    /**
+     * Rejestracja bez zdradzania, czy e-mail jest zajęty: kontroler zawsze pokazuje to samo.
+     * Nowy adres → konto + mail powitalny. Zajęty adres → mail do właściciela („ktoś próbował
+     * założyć konto”, z linkiem do resetu hasła). Co zaszło, wie tylko właściciel skrzynki.
+     */
+    public function registerOrNotify(string $name, string $email, string $password): void
     {
+        $existing = $this->users->findByEmail($email);
+        $user = $existing === null ? $this->register($name, $email, $password) : null;
+        $existing ??= $user === null ? $this->users->findByEmail($email) : null;   // null z register() = wyścig o ten sam adres
+
+        $url = rtrim(Env::get('APP_URL'), '/');
+        // Do istniejącego konta piszemy na adres z bazy, nie na wpisany (może różnić się wielkością liter).
+        [$to, $toName, $key, $link] = $user !== null
+            ? [$user->email, $user->name, 'register.welcome', $url . '/login']
+            : [$existing?->email ?? $email, $existing?->name ?? $name, 'register.exists', $url . '/forgot-password'];
+
+        try {
+            $this->mailer->send($to, $toName, Translator::get($key . '_subject'), Translator::get($key . '_body', [
+                'name' => explode(' ', trim($toName))[0],
+                'link' => $link,
+            ]));
+        } catch (Throwable $exception) {
+            // Błąd SMTP do logu; użytkownik widzi ten sam komunikat co zawsze (bez 500 i bez zdradzania konta).
+            error_log('Registration mail failed: ' . $exception->getMessage());
+        }
     }
 
     /** @return array<string, string> błędy pól, klucz = nazwa pola w formularzu */
@@ -80,7 +113,7 @@ final class RegistrationService
      * Zapisuje konto z zahashowanym hasłem. Zwraca null, gdy e-mail zajęto w międzyczasie
      * (dwie rejestracje naraz) – wtedy unikalny indeks w bazie odrzuca drugi INSERT.
      */
-    public function register(string $name, string $email, string $password): ?User
+    private function register(string $name, string $email, string $password): ?User
     {
         try {
             return $this->users->create($email, $name, password_hash($password, PASSWORD_DEFAULT));

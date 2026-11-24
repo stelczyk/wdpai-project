@@ -76,11 +76,6 @@ final class SecurityController extends AppController
         $registration = new RegistrationService();
         $errors = $registration->validate($name, $email, $password, $passwordConfirm, $termsAccepted);
 
-        $user = $errors === [] ? $registration->register($name, $email, $password) : null;
-        if ($errors === [] && $user === null) {
-            $errors['email'] = Translator::get('validation.email_taken');
-        }
-
         if ($errors !== []) {
             http_response_code(422);
             $this->renderRegister($name, $email, $errors);
@@ -88,8 +83,10 @@ final class SecurityController extends AppController
             return;
         }
 
-        (new AuthService())->login($user);   // od razu zalogowany, z nowym ID sesji
-        $this->redirect(self::AFTER_LOGIN);
+        // Ta sama odpowiedź dla nowego i zajętego adresu – formularz nie zdradza, kto ma konto.
+        // Bez automatycznego logowania: inaczej różnica (zalogowany / nie) znów by to zdradzała.
+        $registration->registerOrNotify($name, $email, $password);
+        $this->redirect('/login?registered=1');
     }
 
     /** @return array<string, string> komunikaty błędów pól, klucz = nazwa pola */
@@ -138,6 +135,7 @@ final class SecurityController extends AppController
             'formError' => $formError,
             // Po zmianie hasła PasswordController przekierowuje tu z ?password_reset=1.
             'passwordChanged' => ($_GET['password_reset'] ?? '') === '1',
+            'registered' => ($_GET['registered'] ?? '') === '1',
         ]);
     }
 }
