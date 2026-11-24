@@ -25,7 +25,7 @@
                     <div class="field">
                         <label for="password"><?= $t('reset.new_password') ?> <span class="required" aria-hidden="true">*</span></label>
                         <div class="input-wrap">
-                            <input type="password" id="password" name="password" required minlength="8"
+                            <input type="password" id="password" name="password" required minlength="8" maxlength="72"
                                    autocomplete="new-password" placeholder="••••••••••••"
                                    aria-describedby="password-hint password-error"
                                    <?= isset($errors['password']) ? 'aria-invalid="true"' : '' ?>>
@@ -42,7 +42,7 @@
                     <div class="field">
                         <label for="password-confirm"><?= $t('register.password_confirm') ?> <span class="required" aria-hidden="true">*</span></label>
                         <div class="input-wrap">
-                            <input type="password" id="password-confirm" name="password_confirm" required minlength="8"
+                            <input type="password" id="password-confirm" name="password_confirm" required minlength="8" maxlength="72"
                                    autocomplete="new-password" placeholder="••••••••••••"
                                    aria-describedby="password-confirm-error"
                                    <?= isset($errors['password_confirm']) ? 'aria-invalid="true"' : '' ?>>

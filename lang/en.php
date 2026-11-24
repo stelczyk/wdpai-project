@@ -417,6 +417,7 @@ return [
     'validation.max_length' => 'At most {max} characters.',
     'validation.min_length' => 'At least {min} characters.',
     'validation.email_taken' => 'An account with this email already exists.',
+    'validation.password_max' => 'At most {max} bytes (about {max} characters without accented letters).',
     'validation.password_mismatch' => 'Passwords do not match.',
     'validation.terms' => 'You must accept the terms.',
 

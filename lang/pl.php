@@ -417,6 +417,7 @@ return [
     'validation.max_length' => 'Maksymalnie {max} znaków.',
     'validation.min_length' => 'Minimum {min} znaków.',
     'validation.email_taken' => 'Konto z tym adresem e-mail już istnieje.',
+    'validation.password_max' => 'Maksymalnie {max} bajtów (ok. {max} znaków bez polskich liter).',
     'validation.password_mismatch' => 'Hasła nie są identyczne.',
     'validation.terms' => 'Musisz zaakceptować regulamin.',
 

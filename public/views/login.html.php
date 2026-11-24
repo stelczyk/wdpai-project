@@ -33,7 +33,7 @@
                 <div class="field">
                     <label for="email"><?= $t('auth.email') ?> <span class="required" aria-hidden="true">*</span></label>
                     <div class="input-wrap">
-                        <input type="email" id="email" name="email" required
+                        <input type="email" id="email" name="email" required maxlength="255"
                                autocomplete="email" placeholder="<?= $t('auth.email_placeholder') ?>"
                                value="<?= htmlspecialchars($email) ?>"
                                aria-describedby="email-hint email-error"
@@ -50,7 +50,7 @@
                         <a href="/forgot-password"><?= $t('login.forgot') ?></a>
                     </div>
                     <div class="input-wrap">
-                        <input type="password" id="password" name="password" required
+                        <input type="password" id="password" name="password" required maxlength="72"
                                autocomplete="current-password" placeholder="••••••••••••"
                                aria-describedby="password-error"
                                <?= isset($errors['password']) ? 'aria-invalid="true"' : '' ?>>

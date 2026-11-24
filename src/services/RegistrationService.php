@@ -12,7 +12,10 @@ use PDOException;
 final class RegistrationService
 {
     private const NAME_MAX_LENGTH = 50;      // = VARCHAR(50) w tabeli users
+    private const EMAIL_MAX_LENGTH = 255;    // = VARCHAR(255) w tabeli users
     private const PASSWORD_MIN_LENGTH = 8;
+    // bcrypt (PASSWORD_DEFAULT) bierze pod uwagę tylko pierwsze 72 bajty – dłuższe hasło byłoby złudzeniem.
+    public const PASSWORD_MAX_BYTES = 72;
     private const UNIQUE_VIOLATION = '23505'; // kod błędu PostgreSQL: naruszenie UNIQUE
 
     public function __construct(private readonly UserRepository $users = new UserRepository())
@@ -30,12 +33,9 @@ final class RegistrationService
             $errors['name'] = Translator::get('validation.max_length', ['max' => self::NAME_MAX_LENGTH]);
         }
 
-        if ($email === '') {
-            $errors['email'] = Translator::get('validation.required');
-        } elseif (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
-            $errors['email'] = Translator::get('validation.email');
-        } elseif ($this->users->findByEmail($email) !== null) {
-            $errors['email'] = Translator::get('validation.email_taken');
+        $emailError = self::emailError($email);
+        if ($emailError !== null) {
+            $errors['email'] = $emailError;
         }
 
         $errors += self::validatePassword($password, $passwordConfirm);
@@ -47,6 +47,17 @@ final class RegistrationService
         return $errors;
     }
 
+    /** Reguły adresu e-mail wspólne dla logowania, rejestracji i resetu hasła. Null = poprawny. */
+    public static function emailError(string $email): ?string
+    {
+        return match (true) {
+            $email === '' => Translator::get('validation.required'),
+            mb_strlen($email) > self::EMAIL_MAX_LENGTH => Translator::get('validation.max_length', ['max' => self::EMAIL_MAX_LENGTH]),
+            filter_var($email, FILTER_VALIDATE_EMAIL) === false => Translator::get('validation.email'),
+            default => null,
+        };
+    }
+
     /** Reguły hasła wspólne dla rejestracji i resetu hasła. */
     public static function validatePassword(string $password, string $passwordConfirm): array
     {
@@ -54,6 +65,8 @@ final class RegistrationService
 
         if (mb_strlen($password) < self::PASSWORD_MIN_LENGTH) {
             $errors['password'] = Translator::get('validation.min_length', ['min' => self::PASSWORD_MIN_LENGTH]);
+        } elseif (strlen($password) > self::PASSWORD_MAX_BYTES) {
+            $errors['password'] = Translator::get('validation.password_max', ['max' => self::PASSWORD_MAX_BYTES]);
         }
 
         if ($passwordConfirm !== $password) {

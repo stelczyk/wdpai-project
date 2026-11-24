@@ -97,14 +97,16 @@ final class SecurityController extends AppController
     {
         $errors = [];
 
-        if ($email === '') {
-            $errors['email'] = Translator::get('validation.required');
-        } elseif (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
-            $errors['email'] = Translator::get('validation.email');
+        $emailError = RegistrationService::emailError($email);
+        if ($emailError !== null) {
+            $errors['email'] = $emailError;
         }
 
+        // Dłuższego hasła nie da się ustawić, więc nie ma po co go weryfikować (limit długości wejścia).
         if ($password === '') {
             $errors['password'] = Translator::get('validation.required');
+        } elseif (strlen($password) > RegistrationService::PASSWORD_MAX_BYTES) {
+            $errors['password'] = Translator::get('validation.password_max', ['max' => RegistrationService::PASSWORD_MAX_BYTES]);
         }
 
         return $errors;
