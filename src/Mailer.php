@@ -35,4 +35,17 @@ final class Mailer
 
         $mail->send();
     }
+
+    /**
+     * Wysyłka „przy okazji” akcji użytkownika (rejestracja, reset hasła): błąd SMTP trafia do logu,
+     * a użytkownik widzi zwykły komunikat – bez 500 i bez zdradzania, czy konto istnieje.
+     */
+    public function sendOrLog(string $toEmail, string $toName, string $subject, string $body): void
+    {
+        try {
+            $this->send($toEmail, $toName, $subject, $body);
+        } catch (\Throwable $exception) {   // SMTP, ale też np. brak ustawienia w .env
+            error_log('Mail "' . $subject . '" failed: ' . $exception->getMessage());
+        }
+    }
 }

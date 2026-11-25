@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Env;
 use App\Mailer;
+use App\Model\User;
 use App\Repository\ReminderRepository;
 use App\Translator;
 use PHPMailer\PHPMailer\Exception as MailerException;
@@ -72,8 +73,7 @@ final class ReminderService
         ]);
 
         $body = implode("\n\n", [
-            // Zwracamy się imieniem – pierwszy człon nazwy konta.
-            Translator::get('reminder.greeting', ['name' => explode(' ', trim($member['name']))[0]]),
+            Translator::get('reminder.greeting', ['name' => User::firstNameOf($member['name'])]),
             Translator::get('reminder.body', [
                 'hours' => self::INACTIVE_HOURS,
                 'expedition' => $member['expedition_name'],
@@ -81,7 +81,7 @@ final class ReminderService
                 'total' => Translator::number((float) $member['total_km'], 0),
             ]) . $next,
             Translator::get('reminder.cta', [
-                'url' => rtrim(Env::get('APP_URL'), '/') . '/activities/new?expedition=' . $member['expedition_id'],
+                'url' => Env::url('/activities/new?expedition=' . $member['expedition_id']),
             ]),
             Translator::get('reminder.footer'),
         ]);

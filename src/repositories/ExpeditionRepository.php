@@ -228,32 +228,23 @@ final class ExpeditionRepository
      */
     public function addMemberIfSpace(int $expeditionId, int $userId): bool
     {
-        $db = Database::connect();
-        $db->beginTransaction();
-
-        try {
+        return Database::transaction(static function () use ($expeditionId, $userId): bool {
+            $db = Database::connect();
             $limit = $db->prepare('SELECT max_members FROM expeditions WHERE id = :id FOR UPDATE');
             $limit->execute(['id' => $expeditionId]);
             $maxMembers = (int) $limit->fetchColumn();
 
             $count = $db->prepare('SELECT count(*) FROM expedition_members WHERE expedition_id = :id');
             $count->execute(['id' => $expeditionId]);
-
             if ((int) $count->fetchColumn() >= $maxMembers) {
-                $db->rollBack();
-
-                return false;
+                return false;   // nic nie zapisaliśmy – zatwierdzenie pustej transakcji tylko zwalnia blokadę
             }
 
             $insert = $db->prepare('INSERT INTO expedition_members (expedition_id, user_id) VALUES (:expedition, :user)');
             $insert->execute(['expedition' => $expeditionId, 'user' => $userId]);
-            $db->commit();
 
             return true;
-        } catch (\Throwable $exception) {
-            $db->rollBack();
-            throw $exception;
-        }
+        });
     }
 
     /** Słownik dyscyplin do formularza tworzenia wyprawy. */

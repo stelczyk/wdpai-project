@@ -10,7 +10,6 @@ use App\Model\User;
 use App\Repository\UserRepository;
 use App\Translator;
 use PDOException;
-use Throwable;
 
 final class RegistrationService
 {
@@ -38,21 +37,15 @@ final class RegistrationService
         $user = $existing === null ? $this->register($name, $email, $password) : null;
         $existing ??= $user === null ? $this->users->findByEmail($email) : null;   // null z register() = wyścig o ten sam adres
 
-        $url = rtrim(Env::get('APP_URL'), '/');
         // Do istniejącego konta piszemy na adres z bazy, nie na wpisany (może różnić się wielkością liter).
-        [$to, $toName, $key, $link] = $user !== null
-            ? [$user->email, $user->name, 'register.welcome', $url . '/login']
-            : [$existing?->email ?? $email, $existing?->name ?? $name, 'register.exists', $url . '/forgot-password'];
+        [$to, $toName, $key, $path] = $user !== null
+            ? [$user->email, $user->name, 'register.welcome', '/login']
+            : [$existing?->email ?? $email, $existing?->name ?? $name, 'register.exists', '/forgot-password'];
 
-        try {
-            $this->mailer->send($to, $toName, Translator::get($key . '_subject'), Translator::get($key . '_body', [
-                'name' => explode(' ', trim($toName))[0],
-                'link' => $link,
-            ]));
-        } catch (Throwable $exception) {
-            // Błąd SMTP do logu; użytkownik widzi ten sam komunikat co zawsze (bez 500 i bez zdradzania konta).
-            error_log('Registration mail failed: ' . $exception->getMessage());
-        }
+        $this->mailer->sendOrLog($to, $toName, Translator::get($key . '_subject'), Translator::get($key . '_body', [
+            'name' => User::firstNameOf($toName),
+            'link' => Env::url($path),
+        ]));
     }
 
     /** @return array<string, string> błędy pól, klucz = nazwa pola w formularzu */
