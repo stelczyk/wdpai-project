@@ -3672,3 +3672,106 @@ li.share-2 { color: var(--color-muted); }
   flex-direction: column;
   gap: var(--space-3);
 }
+
+/* Panel administratora – użytkownicy (/admin/users, users.js) */
+.users-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.users-status {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-muted);
+  flex: 1;
+}
+
+.users-status.is-error {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  color: var(--color-error);
+  background-color: var(--color-error-surface);
+}
+
+.users-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.user-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "avatar identity actions"
+    "avatar badges actions";
+  align-items: center;
+  column-gap: var(--space-3);
+  row-gap: var(--space-1);
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-panel);
+}
+
+.user-row .activity-avatar { grid-area: avatar; }
+.user-identity { grid-area: identity; display: flex; flex-direction: column; min-width: 0; }
+.user-badges { grid-area: badges; }
+.user-actions { grid-area: actions; display: flex; gap: var(--space-1); }
+
+.user-email {
+  overflow-wrap: anywhere;
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
+
+.user-state {
+  color: var(--color-accent);
+  background-color: var(--color-chip);
+}
+
+.user-row.is-blocked .user-state {
+  color: var(--color-error);
+  background-color: var(--color-error-surface);
+}
+
+.user-row.is-blocked .user-identity,
+.user-row.is-blocked .activity-avatar {
+  opacity: 0.6;
+}
+
+.icon-button {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  cursor: pointer;
+}
+
+.icon-button svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icon-button:hover:not(:disabled) { background-color: var(--color-chip); }
+.icon-button--danger:hover:not(:disabled) { color: var(--color-error); background-color: var(--color-error-surface); }
+.icon-button:disabled { cursor: not-allowed; opacity: 0.35; }
+
+/* Kłódka pokazuje akcję: otwarta = konto zablokowane (kliknij, by odblokować) */
+.icon-button .icon-unlock,
+.user-row.is-blocked .icon-lock { display: none; }
+.user-row.is-blocked .icon-unlock { display: block; }

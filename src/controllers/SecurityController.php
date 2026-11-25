@@ -57,6 +57,14 @@ final class SecurityController extends AppController
             return;
         }
 
+        // Blokadę zdradzamy dopiero po poprawnym haśle – bez niego nie da się sprawdzić, czy konto jest zablokowane.
+        if ($user->isBlocked) {
+            http_response_code(403);
+            $this->renderLogin($email, [], Translator::get('login.blocked'));
+
+            return;
+        }
+
         $auth->login($user);
         $this->redirect(self::AFTER_LOGIN);
     }

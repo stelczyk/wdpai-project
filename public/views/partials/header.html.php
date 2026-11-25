@@ -6,6 +6,10 @@ $navLinks = [
     '/expeditions' => 'nav.expeditions',
     '/activities/new' => 'nav.add_activity',
 ];
+// Link tylko dla administratora – to wygoda, dostęp i tak sprawdza AdminController (403).
+if ($currentUser?->isAdmin()) {
+    $navLinks['/admin/users'] = 'nav.admin_users';
+}
 ?>
 <header class="site-header<?= $showNav ? '' : ' site-header--auth' ?>">
     <div class="site-header-inner">

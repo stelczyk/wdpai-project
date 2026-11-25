@@ -117,8 +117,10 @@ abstract class AppController
     }
 
     // fetch() w naszym JS wysyła Accept: application/json – wtedy błędy też zwracamy jako JSON.
+    // Adresy /api/ to zawsze JSON, nawet bez nagłówka (np. curl).
     protected function wantsJson(): bool
     {
-        return str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json');
+        return str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json')
+            || str_starts_with((string) parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH), '/api/');
     }
 }
