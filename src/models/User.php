@@ -16,6 +16,7 @@ final readonly class User
         public string $name,
         public string $role,
         public string $passwordHash,
+        public bool $isBlocked = false,
     ) {
     }
 

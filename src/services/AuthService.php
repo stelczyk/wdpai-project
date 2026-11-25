@@ -70,6 +70,11 @@ final class AuthService
     {
         if (self::$currentUser === null && Session::userId() !== null) {
             self::$currentUser = $this->users->findById(Session::userId());
+
+            // Konto zablokowane lub usunięte przez administratora: sesja kończy się przy najbliższym żądaniu.
+            if (self::$currentUser === null || self::$currentUser->isBlocked) {
+                $this->logout();
+            }
         }
 
         return self::$currentUser;

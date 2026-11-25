@@ -418,6 +418,7 @@ return [
     'validation.min_length' => 'Minimum {min} znaków.',
     'validation.password_max' => 'Maksymalnie {max} bajtów (ok. {max} znaków bez polskich liter).',
     'login.locked' => 'Zbyt wiele nieudanych prób logowania. Spróbuj ponownie za {minutes} min.',
+    'login.blocked' => 'To konto zostało zablokowane przez administratora.',
     'validation.password_mismatch' => 'Hasła nie są identyczne.',
     'validation.terms' => 'Musisz zaakceptować regulamin.',
 

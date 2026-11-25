@@ -418,6 +418,7 @@ return [
     'validation.min_length' => 'At least {min} characters.',
     'validation.password_max' => 'At most {max} bytes (about {max} characters without accented letters).',
     'login.locked' => 'Too many failed sign-in attempts. Try again in {minutes} min.',
+    'login.blocked' => 'This account has been blocked by an administrator.',
     'validation.password_mismatch' => 'Passwords do not match.',
     'validation.terms' => 'You must accept the terms.',
 
