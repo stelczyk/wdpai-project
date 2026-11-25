@@ -24,8 +24,19 @@ return [
 
     // Strona główna
     'home.title' => 'Start',
-    'home.tagline' => 'Wirtualne wyprawy ze znajomymi: każdy trening to kilometry na wspólnej trasie.',
     'home.cta' => 'Zobacz wyprawy',
+    'home.eyebrow' => 'Wirtualne wyprawy ze znajomymi',
+    'home.heading' => 'Każdy trening to kilometry na wspólnej trasie',
+    'home.lead' => 'Bieg, rower, pływanie czy siłownia – Dystans przelicza treningi na kilometry, a cała drużyna przesuwa się po trasie z checkpointami, np. z Krakowa do Monzy.',
+    'home.cta_register' => 'Załóż konto',
+    'home.cta_login' => 'Zaloguj się',
+    'home.steps_title' => 'Jak to działa',
+    'home.step_join_title' => 'Dołącz do wyprawy',
+    'home.step_join_text' => 'Kapitan wyznacza trasę z punktami kontrolnymi i daje drużynie sześciocyfrowy kod.',
+    'home.step_log_title' => 'Loguj treningi',
+    'home.step_log_text' => 'Dodajesz aktywność, a przelicznik dyscypliny zamienia ją na kilometry trasy.',
+    'home.step_ride_title' => 'Jedźcie razem',
+    'home.step_ride_text' => 'Kapitan zatwierdza treningi, drużyna mija kolejne punkty, a ranking pokazuje, kto ciągnie wyprawę.',
 
     // Wyprawy
     'expeditions.title' => 'Wyprawy',

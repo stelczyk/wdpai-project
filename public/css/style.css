@@ -3697,3 +3697,39 @@ li.share-2 { color: var(--color-muted); }
 .icon-button .icon-unlock,
 .user-row.is-blocked .icon-lock { display: none; }
 .user-row.is-blocked .icon-unlock { display: block; }
+
+/* Strona startowa (/) */
+.home-page .exp-hero-text {
+  max-width: 44rem;
+}
+
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-2) 0 0;
+}
+
+.home-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-step h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.home-step p {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.home-step-number {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-accent);
+}
