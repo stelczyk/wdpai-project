@@ -3,11 +3,13 @@
 declare(strict_types=1);
 
 use App\Controller\ActivityController;
+use App\Controller\AdminController;
 use App\Controller\CaptainController;
 use App\Controller\DefaultController;
 use App\Controller\ExpeditionController;
 use App\Controller\PasswordController;
 use App\Controller\SecurityController;
+use App\Controller\UserApiController;
 use App\HttpException;
 use App\Routing;
 use App\Session;
@@ -44,14 +46,20 @@ $routing->get('/captain/{id}', CaptainController::class, 'panel');
 // approve-all przed trasą z {activityId} – inaczej „approve-all” trafiłoby tam jako błędne id (400).
 $routing->post('/captain/{id}/activities/approve-all', CaptainController::class, 'approveAll');
 $routing->post('/captain/{id}/activities/{activityId}', CaptainController::class, 'decide');
+// Panel administratora: strona HTML + API JSON, z którego korzysta public/js/users.js.
+$routing->get('/admin/users', AdminController::class, 'users');
+$routing->get('/api/users', UserApiController::class, 'index');
+$routing->patch('/api/users/{id}/block', UserApiController::class, 'block');
+$routing->delete('/api/users/{id}', UserApiController::class, 'delete');
 
 // Jedno miejsce obsługi błędów: kontrolowane błędy HTTP dostają swój status,
 // a każdy inny wyjątek kończy się 500 bez pokazywania szczegółów użytkownikowi.
 try {
-    // CSRF sprawdzany centralnie dla każdego POST – nowa trasa nie może przypadkiem zostać bez ochrony.
+    // CSRF sprawdzany centralnie dla każdej metody zmieniającej dane (POST, PATCH, DELETE…) –
+    // nowa trasa nie może przypadkiem zostać bez ochrony. GET/HEAD niczego nie zmieniają.
     // Formularze wysyłają token w polu _csrf, żądania fetch() – w nagłówku X-CSRF-Token.
     $csrfToken = $_POST['_csrf'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? null;
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && !Session::isValidCsrfToken($csrfToken)) {
+    if (!in_array($_SERVER['REQUEST_METHOD'], ['GET', 'HEAD'], true) && !Session::isValidCsrfToken($csrfToken)) {
         throw new HttpException(403, 'Invalid CSRF token');
     }
 
