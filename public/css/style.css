@@ -338,13 +338,10 @@ input:focus-visible {
   color: var(--color-text);
 }
 
-.footer-dot {
-  color: var(--color-border);
-}
-
-/* Na wąskim ekranie tekst się zawija, więc separator wisiałby na końcu linii */
+/* Na wąskim ekranie tekst się zawija, więc separator wisiałby na końcu linii (pokazuje go media query niżej) */
 .footer-dot {
   display: none;
+  color: var(--color-border);
 }
 
 .footer-links {
@@ -417,7 +414,12 @@ input:focus-visible {
   gap: var(--space-2);
 }
 
-.field label {
+.field label,
+.exp-planned-km span,
+.dash-readouts dt,
+.activity-metrics dt,
+.activity-switch label,
+.duration-field legend {
   font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -922,7 +924,8 @@ input:focus-visible {
 }
 
 .stat-card h2,
-.exp-facts dt {
+.exp-facts dt,
+.dash-label {
   margin: 0;
   font-size: 0.6875rem;
   font-weight: 600;
@@ -1332,14 +1335,6 @@ li.share-2 { color: var(--color-muted); }
   font-size: 1.25rem;
 }
 
-.exp-planned-km span {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-muted);
-}
-
 .exp-facts {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
@@ -1358,7 +1353,10 @@ li.share-2 { color: var(--color-muted); }
 }
 
 /* Archiwum */
-.exp-archive {
+.exp-archive,
+.checkpoint-list,
+.discipline-list,
+.users-list {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
@@ -1759,16 +1757,6 @@ li.share-2 { color: var(--color-muted); }
   color: var(--color-muted);
 }
 
-.checkpoint-list,
-.discipline-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
 .checkpoint-row input,
 .factor input {
   width: 100%;
@@ -1822,7 +1810,8 @@ li.share-2 { color: var(--color-muted); }
 }
 
 .create-row,
-.create-actions {
+.create-actions,
+.users-toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -1985,15 +1974,6 @@ li.share-2 { color: var(--color-muted); }
   gap: var(--space-3);
 }
 
-.dash-label {
-  margin: 0;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--color-muted);
-}
-
 .dash-total {
   display: flex;
   flex-wrap: wrap;
@@ -2039,14 +2019,6 @@ li.share-2 { color: var(--color-muted); }
 
 .dash-readouts > div + div {
   border-left: 1px solid var(--color-divider);
-}
-
-.dash-readouts dt {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-muted);
 }
 
 .dash-readouts dd {
@@ -2210,7 +2182,8 @@ li.share-2 { color: var(--color-muted); }
 }
 
 /* Na telefonie punkty trasy jako lista pod paskiem */
-.route-checkpoints {
+.route-checkpoints,
+.activity-factors ul {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
@@ -2357,6 +2330,10 @@ li.share-2 { color: var(--color-muted); }
   border: 1px solid var(--color-divider);
   border-radius: var(--radius-md);
   background-color: var(--color-card);
+  /* relative + overflow: pasek ładowania decyzji kapitana; transition: znikanie karty po decyzji */
+  position: relative;
+  overflow: hidden;
+  transition: opacity 0.3s, transform 0.3s;
 }
 
 .activity-card--rejected {
@@ -2499,14 +2476,6 @@ li.share-2 { color: var(--color-muted); }
 
 .activity-metrics > div:not(:last-child) {
   padding-right: var(--space-2);
-}
-
-.activity-metrics dt {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-muted);
 }
 
 .activity-metrics dd {
@@ -2905,14 +2874,6 @@ li.share-2 { color: var(--color-muted); }
   gap: 0.375rem;
 }
 
-.activity-switch label {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-muted);
-}
-
 .activity-switch select {
   min-width: 14rem;
 }
@@ -2957,14 +2918,6 @@ li.share-2 { color: var(--color-muted); }
 
 .duration-field {
   padding: 0;
-}
-
-.duration-field legend {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-muted);
 }
 
 /* Kafelki dyscyplin: radio ukryte wizualnie, zaznaczenie widać po ramce (kolory jak odznaki w feedzie) */
@@ -3178,15 +3131,6 @@ li.share-2 { color: var(--color-muted); }
 .activity-factors li.is-selected {
   font-weight: 700;
   color: var(--discipline);
-}
-
-.activity-factors ul {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  margin: 0;
-  padding: 0;
-  list-style: none;
 }
 
 .activity-factors li {
@@ -3524,11 +3468,6 @@ li.share-2 { color: var(--color-muted); }
 }
 
 /* Decyzje kapitana na karcie: przyciski, pasek ładowania (jak „Loading state” w Figmie), znikanie po decyzji */
-.activity-card {
-  position: relative;
-  overflow: hidden;
-  transition: opacity 0.3s, transform 0.3s;
-}
 
 .activity-decision {
   display: flex;
@@ -3674,14 +3613,6 @@ li.share-2 { color: var(--color-muted); }
 }
 
 /* Panel administratora – użytkownicy (/admin/users, users.js) */
-.users-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
-}
-
 .users-status {
   margin: 0;
   font-size: 0.875rem;
@@ -3694,15 +3625,6 @@ li.share-2 { color: var(--color-muted); }
   border-radius: var(--radius-sm);
   color: var(--color-error);
   background-color: var(--color-error-surface);
-}
-
-.users-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  margin: 0;
-  padding: 0;
-  list-style: none;
 }
 
 .user-row {
