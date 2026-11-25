@@ -59,6 +59,7 @@ erDiagram
         varchar password_hash
         varchar name
         varchar role "USER | CAPTAIN | ADMIN"
+        boolean is_blocked "blokada przez administratora"
         timestamptz created_at
     }
 
@@ -131,7 +132,17 @@ erDiagram
         varchar error
         timestamptz created_at
     }
+
+    login_attempts {
+        int id PK
+        varchar email "bez FK – liczą się też nieistniejące konta"
+        inet ip
+        timestamptz attempted_at
+    }
 ```
+
+Kolejne migracje (`03`–`07` w `docker/db/`) nowa baza ładuje sama; na istniejącej uruchom brakujące ręcznie, np.
+`docker compose exec db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f /docker-entrypoint-initdb.d/07-user-blocking.sql'`.
 
 **Najważniejsze decyzje:**
 - `activities` ma złożone klucze obce do `expedition_members` i `expedition_disciplines` – baza sama pilnuje,
@@ -174,6 +185,23 @@ docker compose exec php php bin/send-reminders.php             # drugi raz: „s
 docker compose exec -e SMTP_PORT=1 php php bin/send-reminders.php   # symulacja awarii SMTP → wpisy FAILED, kod 2
 docker compose exec cron sh -c 'cat /etc/crontabs/root; tail /var/log/reminders.log'   # harmonogram i log crona
 ```
+
+## Panel administratora i API użytkowników
+
+Strona `/admin/users` (tylko rola `ADMIN`, link w nagłówku) to szkielet – [`public/js/users.js`](public/js/users.js)
+pobiera listę przez `fetch()`, buduje wiersze z `<template>` przez `textContent` i blokuje / usuwa konta bez przeładowania.
+
+| Metoda i endpoint | Działanie | Odpowiedź |
+|---|---|---|
+| `GET /api/users` | lista kont (bez hasha hasła) | `200` `{"data": [{"id", "name", "email", "role", "isBlocked", "isCaptain"}]}` |
+| `PATCH /api/users/{id}/block` | body `{"isBlocked": true\|false}` | `200` `{"data": {"id", "isBlocked"}}` |
+| `DELETE /api/users/{id}` | usuwa konto z aktywnościami i członkostwami | `204` bez treści |
+
+Błędy zawsze jako `{"error": "..."}`: `401` gość, `403` brak roli admina lub tokenu CSRF, `400` błędny JSON lub id,
+`404` brak użytkownika, `422` `isBlocked` nie jest boolem albo admin wskazał własne konto,
+`409` próba usunięcia kapitana wyprawy (w bazie `ON DELETE RESTRICT` – zamiast tego można go zablokować).
+`PATCH` i `DELETE` wymagają nagłówka `X-CSRF-Token` (sprawdzany centralnie w `public/index.php` dla każdej metody poza GET).
+Zablokowany użytkownik nie zaloguje się, a jego otwarta sesja kończy się przy następnym żądaniu.
 
 ## Zasady developmentu
 
