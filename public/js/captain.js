@@ -103,25 +103,20 @@ async function decide(form, decision) {
     message.textContent = captain.dataset.msgBusy;
 
     try {
-        const response = await fetch(form.action, {
+        const { ok, status, data } = await fetchJson(form.action, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'X-CSRF-Token': form.elements._csrf.value,
-            },
-            body: JSON.stringify({ decision }),
+            csrf: form.elements._csrf.value,
+            body: { decision },
         });
-        const data = await response.json();
 
-        if (response.ok) {
+        if (ok) {
             markDecided(card, form, data);
             renderSummary(data);
             return;
         }
         // 409: ktoś już rozpatrzył tę aktywność – przyciski nie mają sensu, zostaje sam komunikat.
-        message.textContent = data.error ?? captain.dataset.msgError;
-        if (response.status === 409) {
+        message.textContent = data?.error ?? captain.dataset.msgError;
+        if (status === 409) {
             form.querySelectorAll('button').forEach((button) => button.remove());
             card.classList.remove('is-busy');
             return;
@@ -142,13 +137,9 @@ async function approveAll(form) {
     cards.forEach((card) => card.classList.add('is-busy'));
 
     try {
-        const response = await fetch(form.action, {
-            method: 'POST',
-            headers: { Accept: 'application/json', 'X-CSRF-Token': form.elements._csrf.value },
-        });
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.error);
+        const { ok, data } = await fetchJson(form.action, { method: 'POST', csrf: form.elements._csrf.value });
+        if (!ok) {
+            throw new Error(data?.error);
         }
 
         cards.forEach((card) => markDecided(card, card.querySelector('[data-decision-form]'), { status: 'APPROVED', message: data.message }));

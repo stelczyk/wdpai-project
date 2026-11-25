@@ -34,19 +34,14 @@ async function joinExpedition(event) {
     showJoinMessage('', '');
 
     try {
-        const response = await fetch(joinForm.action, {
+        const { ok, data } = await fetchJson(joinForm.action, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'X-CSRF-Token': joinForm.elements._csrf.value,
-            },
-            body: JSON.stringify({ code }),
+            csrf: joinForm.elements._csrf.value,
+            body: { code },
         });
-        const data = await response.json();
 
-        if (!response.ok) {
-            showJoinMessage(data.error ?? joinForm.dataset.errorMessage, 'error');
+        if (!ok || data === null) {
+            showJoinMessage(data?.error ?? joinForm.dataset.errorMessage, 'error');
             return;
         }
 

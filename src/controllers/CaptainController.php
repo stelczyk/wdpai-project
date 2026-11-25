@@ -28,7 +28,7 @@ final class CaptainController extends AppController
 
         $this->render('captain-panel', [
             'pageTitle' => Translator::get('captain.title'),
-            'scripts' => ['/js/format.js', '/js/captain.js'],
+            'scripts' => ['/js/api.js', '/js/format.js', '/js/captain.js'],
             'expedition' => $expedition,
             'queue' => (new CaptainService())->queue($expedition, $captain, $tab),
             // ?decided=… po decyzji bez JS (formularz → przekierowanie) – komunikat nad kolejką.

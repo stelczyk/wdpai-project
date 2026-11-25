@@ -47,7 +47,7 @@ final class ExpeditionController extends AppController
         $this->render('expeditions', [
             'created' => $created,
             'pageTitle' => Translator::get('expeditions.title'),
-            'scripts' => ['/js/expeditions.js'],
+            'scripts' => ['/js/api.js', '/js/expeditions.js'],
             'user' => $user,
             'sections' => $overview['sections'],
             'counts' => $overview['counts'],
@@ -159,7 +159,7 @@ final class ExpeditionController extends AppController
 
         $this->render('ranking', [
             'pageTitle' => Translator::get('ranking.title'),
-            'scripts' => ['/js/format.js', '/js/ranking.js'],
+            'scripts' => ['/js/api.js', '/js/format.js', '/js/ranking.js'],
             'expedition' => $expedition,
             'ranking' => $ranking,
             'disciplines' => (new ActivityService())->disciplines($id),
