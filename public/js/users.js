@@ -16,30 +16,18 @@ if (panel) {
         status.classList.toggle('is-error', isError);
     };
 
-    // Treść błędu z JSON-a API ({error}); gdy serwer nie odpowie JSON-em – kod HTTP.
-    const readError = async (response) => {
-        try {
-            return (await response.json()).error ?? `HTTP ${response.status}`;
-        } catch {
-            return `HTTP ${response.status}`;
-        }
-    };
-
-    // fetch() odrzuca obietnicę tylko przy błędzie sieci; błąd HTTP (4xx/5xx) sprawdzamy przez response.ok.
+    // fetchJson (api.js) + komunikat błędu: sieć → tekst z data-msg-network, HTTP → {error} z API albo kod.
     const request = async (url, options = {}) => {
-        let response;
+        let result;
         try {
-            response = await fetch(url, {
-                ...options,
-                headers: { Accept: 'application/json', 'X-CSRF-Token': msg.csrfToken, ...options.headers },
-            });
+            result = await fetchJson(url, { csrf: msg.csrfToken, ...options });
         } catch {
             throw new Error(msg.msgNetwork);
         }
-        if (!response.ok) {
-            throw new Error(await readError(response));
+        if (!result.ok) {
+            throw new Error(result.data?.error ?? `HTTP ${result.status}`);
         }
-        return response.status === 204 ? null : response.json();
+        return result.data;
     };
 
     const initials = (name) => name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase();
@@ -111,8 +99,7 @@ if (panel) {
         try {
             const { data } = await request(`${msg.endpoint}/${row.dataset.userId}/block`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ isBlocked }),
+                body: { isBlocked },
             });
             applyBlocked(row, data.isBlocked);
             setStatus(fillTemplate(data.isBlocked ? msg.msgDoneBlocked : msg.msgDoneUnblocked, { name: row.dataset.name }));

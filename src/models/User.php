@@ -40,6 +40,12 @@ final readonly class User
         )));
     }
 
+    /** Imię do powitania w mailu: pierwszy człon nazwy konta („Jan Kowalski” → „Jan”). */
+    public static function firstNameOf(string $name): string
+    {
+        return explode(' ', trim($name))[0];
+    }
+
     // Zakładać wyprawy mogą kapitanowie i administrator.
     public function canCreateExpeditions(): bool
     {

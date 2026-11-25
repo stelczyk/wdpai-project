@@ -24,12 +24,11 @@ final class CaptainController extends AppController
             throw new HttpException(400, 'Invalid captain tab');
         }
 
-        $expedition = (new ExpeditionService())->dashboard($captain, $id)
-            ?? throw new HttpException(404, 'Expedition not found');
+        $expedition = $this->expeditionDashboard($captain, $id);
 
         $this->render('captain-panel', [
             'pageTitle' => Translator::get('captain.title'),
-            'scripts' => ['/js/format.js', '/js/captain.js'],
+            'scripts' => ['/js/api.js', '/js/format.js', '/js/captain.js'],
             'expedition' => $expedition,
             'queue' => (new CaptainService())->queue($expedition, $captain, $tab),
             // ?decided=… po decyzji bez JS (formularz → przekierowanie) – komunikat nad kolejką.
@@ -81,7 +80,7 @@ final class CaptainController extends AppController
             $this->redirect('/captain/' . $id . '?decided=' . $decided);
         }
 
-        $expedition = (new ExpeditionService())->dashboard($captain, $id);
+        $expedition = $this->expeditionDashboard($captain, $id);
         $this->json($payload + ['message' => Translator::get('captain.decided_' . $decided)]
             + (new CaptainService())->summary($expedition));
     }

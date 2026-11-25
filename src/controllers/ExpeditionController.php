@@ -47,7 +47,7 @@ final class ExpeditionController extends AppController
         $this->render('expeditions', [
             'created' => $created,
             'pageTitle' => Translator::get('expeditions.title'),
-            'scripts' => ['/js/expeditions.js'],
+            'scripts' => ['/js/api.js', '/js/expeditions.js'],
             'user' => $user,
             'sections' => $overview['sections'],
             'counts' => $overview['counts'],
@@ -129,8 +129,7 @@ final class ExpeditionController extends AppController
         $user = $this->requireExpeditionMember($id);
         Session::setActiveExpedition($id);
 
-        $expedition = (new ExpeditionService())->dashboard($user, $id)
-            ?? throw new HttpException(404, 'Expedition not found');
+        $expedition = $this->expeditionDashboard($user, $id);
 
         $this->render('expedition', [
             'pageTitle' => $expedition['name'],
@@ -150,8 +149,7 @@ final class ExpeditionController extends AppController
             throw new HttpException(400, 'Invalid ranking range');
         }
 
-        $expedition = (new ExpeditionService())->dashboard($user, $id)
-            ?? throw new HttpException(404, 'Expedition not found');
+        $expedition = $this->expeditionDashboard($user, $id);
 
         $ranking = (new RankingService())->table($expedition, $user, $range);
         // Ten sam adres dla ranking.js (fetch z Accept: application/json) – bez osobnej trasy i drugiej kopii logiki.
@@ -161,7 +159,7 @@ final class ExpeditionController extends AppController
 
         $this->render('ranking', [
             'pageTitle' => Translator::get('ranking.title'),
-            'scripts' => ['/js/format.js', '/js/ranking.js'],
+            'scripts' => ['/js/api.js', '/js/format.js', '/js/ranking.js'],
             'expedition' => $expedition,
             'ranking' => $ranking,
             'disciplines' => (new ActivityService())->disciplines($id),

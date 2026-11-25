@@ -24,8 +24,19 @@ return [
 
     // Home
     'home.title' => 'Home',
-    'home.tagline' => 'Virtual expeditions with friends: every workout adds kilometres to a shared route.',
     'home.cta' => 'Browse expeditions',
+    'home.eyebrow' => 'Virtual expeditions with friends',
+    'home.heading' => 'Every workout adds kilometres to a shared route',
+    'home.lead' => 'Running, cycling, swimming or the gym – Dystans converts workouts into kilometres and the whole team moves along a route with checkpoints, e.g. from Kraków to Monza.',
+    'home.cta_register' => 'Create an account',
+    'home.cta_login' => 'Sign in',
+    'home.steps_title' => 'How it works',
+    'home.step_join_title' => 'Join an expedition',
+    'home.step_join_text' => 'The captain sets a route with checkpoints and gives the team a six-digit code.',
+    'home.step_log_title' => 'Log workouts',
+    'home.step_log_text' => 'You add an activity and the discipline factor turns it into route kilometres.',
+    'home.step_ride_title' => 'Go the distance together',
+    'home.step_ride_text' => 'The captain approves workouts, the team passes checkpoints and the leaderboard shows who pulls the expedition.',
 
     // Expeditions
     'expeditions.title' => 'Expeditions',

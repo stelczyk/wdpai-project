@@ -87,15 +87,14 @@ async function loadRange(link, { push }) {
     error.textContent = '';
 
     try {
-        const response = await fetch(link.href, { headers: { Accept: 'application/json' } });
+        const { ok, status, data } = await fetchJson(link.href);
         // Sesja wygasła – pełne przejście pod ten adres pokaże stronę logowania / błędu.
-        if (response.status === 401) {
+        if (status === 401) {
             window.location.assign(link.href);
             return;
         }
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.error ?? response.statusText);
+        if (!ok || data === null) {
+            throw new Error(data?.error);
         }
 
         render(data, link);

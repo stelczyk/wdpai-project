@@ -10,7 +10,6 @@ use App\Mailer;
 use App\Repository\PasswordResetRepository;
 use App\Repository\UserRepository;
 use App\Translator;
-use Throwable;
 
 final class PasswordResetService
 {
@@ -38,19 +37,16 @@ final class PasswordResetService
         $token = bin2hex(random_bytes(32));
         $this->resets->create($user->id, hash('sha256', $token), self::TOKEN_LIFETIME);
 
-        $link = rtrim(Env::get('APP_URL'), '/') . '/reset-password?token=' . $token;
-
-        try {
-            $this->mailer->send(
-                $user->email,
-                $user->name,
-                Translator::get('reset.mail_subject'),
-                Translator::get('reset.mail_body', ['name' => $user->name, 'link' => $link, 'minutes' => self::TOKEN_LIFETIME / 60]),
-            );
-        } catch (Throwable $exception) {
-            // Błąd SMTP do logu; użytkownik widzi ten sam komunikat co zawsze (bez 500 i bez zdradzania konta).
-            error_log('Password reset mail failed: ' . $exception->getMessage());
-        }
+        $this->mailer->sendOrLog(
+            $user->email,
+            $user->name,
+            Translator::get('reset.mail_subject'),
+            Translator::get('reset.mail_body', [
+                'name' => $user->name,
+                'link' => Env::url('/reset-password?token=' . $token),
+                'minutes' => self::TOKEN_LIFETIME / 60,
+            ]),
+        );
     }
 
     public function isTokenValid(string $token): bool
@@ -69,23 +65,14 @@ final class PasswordResetService
             return false;
         }
 
-        $db = Database::connect();
-        $db->beginTransaction();
-
-        try {
+        return Database::transaction(function () use ($reset, $newPassword): bool {
             if (!$this->resets->markUsed($reset['id'])) {
-                $db->rollBack();   // ktoś zużył token chwilę wcześniej
-
-                return false;
+                return false;   // ktoś zużył token chwilę wcześniej – hasła nie zmieniamy
             }
 
             $this->users->updatePassword($reset['userId'], password_hash($newPassword, PASSWORD_DEFAULT));
-            $db->commit();
-        } catch (Throwable $exception) {
-            $db->rollBack();
-            throw $exception;
-        }
 
-        return true;
+            return true;
+        });
     }
 }

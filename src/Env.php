@@ -20,6 +20,12 @@ final class Env
         return $value;
     }
 
+    // Pełny adres do linków w mailach: APP_URL z .env + ścieżka (np. '/login').
+    public static function url(string $path): string
+    {
+        return rtrim(self::get('APP_URL'), '/') . $path;
+    }
+
     // Dla ustawień, które mogą być puste, np. login SMTP w lokalnym Mailpicie.
     public static function optional(string $name): string
     {

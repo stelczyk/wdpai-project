@@ -16,7 +16,7 @@ final class AdminController extends AppController
 
         $this->render('admin-users', [
             'pageTitle' => Translator::get('admin.title'),
-            'scripts' => ['/js/format.js', '/js/users.js'],
+            'scripts' => ['/js/api.js', '/js/format.js', '/js/users.js'],
             'adminId' => $admin->id,
         ]);
     }

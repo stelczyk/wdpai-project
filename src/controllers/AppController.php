@@ -65,6 +65,17 @@ abstract class AppController
         return $user;
     }
 
+    /**
+     * Dane wyprawy dla dashboardu, rankingu i panelu kapitana (dostęp sprawdzony wcześniej przez require*).
+     *
+     * @throws HttpException 404, gdy wyprawy nie ma
+     */
+    protected function expeditionDashboard(User $user, int $expeditionId): array
+    {
+        return (new ExpeditionService())->dashboard($user, $expeditionId)
+            ?? throw new HttpException(404, 'Expedition not found');
+    }
+
     protected function render(string $template, array $variables = []): void
     {
         $templatePath = dirname(__DIR__, 2) . '/public/views/' . $template . '.html.php';
