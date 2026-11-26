@@ -1,0 +1,2 @@
+# Skrypty powłoki zawsze z końcami linii LF – z CRLF (checkout na Windows) sh przerywa na „set -eu”.
+*.sh text eol=lf

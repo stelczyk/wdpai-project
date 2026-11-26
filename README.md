@@ -37,6 +37,20 @@ Schemat: [`docker/db/01-schema.sql`](docker/db/01-schema.sql), dane demo: [`dock
 Oba pliki ładują się automatycznie przy pierwszym starcie kontenera `db`; żeby wgrać je od nowa:
 `docker compose down -v && docker compose up -d` (usuwa dane w bazie).
 
+**Eksport do jednego pliku:** [`dystans.sql`](dystans.sql) – schemat, widok i dane demo (fikcyjne osoby,
+hasła tylko jako hash bcrypt, bez sekretów) w jednej transakcji. Import do pustej bazy:
+
+```bash
+psql -v ON_ERROR_STOP=1 -U <użytkownik> -d <pusta_baza> -f dystans.sql
+# albo w kontenerze projektu:
+docker compose cp dystans.sql db:/tmp/dystans.sql
+docker compose exec db sh -c 'createdb -U "$POSTGRES_USER" dystans_demo && psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d dystans_demo -f /tmp/dystans.sql'
+```
+
+Plik składa skrypt `sh bin/export-sql.sh` ze skryptów `docker/db/*.sql` (uruchom go po każdej zmianie schematu).
+To nie jest `pg_dump`: zrzut zawierałby dane z lokalnych testów i zamroziłby daty, a seed liczy je od `CURRENT_DATE`,
+żeby wyprawa „w trakcie” była w trakcie w dniu importu.
+
 ```mermaid
 erDiagram
     users ||--o{ expeditions : "prowadzi (captain_id)"
